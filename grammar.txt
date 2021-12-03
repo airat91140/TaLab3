@@ -1,0 +1,48 @@
+program -> functions
+functions -> functions function | eps
+function -> TASK id ids stmtsGroup
+ids -> ids id | id
+var -> id | id[indexes]
+stmtsGroup -> (stmts)
+stmtOrGroup -> stmt | stmtGroup
+stmts -> stmts stmtsGroup | stmts stmt | eps
+stmt -> var = value
+stmt -> decl
+stmt -> FOR var BOUNDARY var STEP var stmtOrGroup
+stmt -> SWITCH logic TRUE stmtOrGroup
+     |  SWITCH logic FALSE stmtOrGroup
+     |  SWITCH logic TRUE stmtOrGroup FALSE stmtOrGroup
+     |  SWITCH logic FALSE stmtOrGroup TRUE stmtOrGroup
+stmt -> ROTATE LEFT | ROTATE RIGHT | MOVE | DO id vars | GET id
+
+vars -> vars var | var
+stmt -> PLEASE stmt | stmt THANKS
+decl -> VAR var = value
+indexes -> indexes, num | num
+value -> num | bool
+num -> OCT | DEC | HEX
+bool -> TRUE | FALSE
+stmt -> var = expr
+expr -> arith | logic
+arith -> arith + term | arith - term | term
+term -> term * lit | term / lit | lit
+lit -> num | (arith) | var | unary | DIGITIZE var | SIZE var | GET ENVIRONMENT
+unary -> REDUCE var | EXTEND var
+logic -> logic AND loc | loc
+loc -> bool
+    |  NOT var
+    |  LOGITIZE var
+    |  MXEQ var
+    |  MXLT var
+    |  MXGT var
+    |  MXLTE var
+    |  MXGTE var
+    |  ELEQ var
+    |  ELLT var
+    |  ELGT var
+    |  ELLTE var
+    |  ELGTE var
+    |  MXFALSE var
+    |  MXTRUE var
+    |  unary
+    | (logic)

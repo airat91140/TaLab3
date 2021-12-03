@@ -1,0 +1,54 @@
+%option noyywrap
+%option c++
+
+%%
+[ \t]
+
+TRUE|FALSE {}
+
+-?0[0-7]+
+
+(-?[0-9]*[8-9][0-9]*)|-?([1-9][0-9]*)
+
+(-?0x[A-F]([0-9]|[A-F])*)|-?0x[0-9]*|-?([0-9]|[A-F])+
+
+VAR
+
+SIZE
+
+(DI|LO)GITIZE
+
+REDUCE|EXTEND
+
+MXEQ|MXLT|MXGT|MXLTE|MXGTE|ELEQ|ELLT|ELGT|ELLTE|ELGTE|MXFALSE|MXTRUE
+
+FOR
+
+BOUNDARY
+
+STEP
+
+SWITCH
+
+\(|\)
+
+MOVE
+
+ROTATE (LEFT|RIGHT)
+
+GET ENVIRONMENT
+
+GET
+
+TASK
+
+DO
+
+FINDEXIT
+
+GET
+
+THANKS
+
+PLEASE
+%%

@@ -1,0 +1,24 @@
+TASK gout bool (
+    VAR env [5, 5, 2] = FALSE
+    env = GET ENVIRONMENT
+    VAR successCounter = 0
+    VAR successBoundary = 1
+    VAR successStep = 0
+    FOR successCounter BOUNDARY successBoundary STEP successStep (
+        SWITCH env[7,6,1] TRUE (//есть стена справа от робота
+            SWITCH env[6,7,1] TRUE (//есть стена прямо от робота
+                ROTATE LEFT
+                SWITCH env[5,6,1] TRUE ( //есть стена слева от изначального положения робота - тупик
+                    ROTATE LEFT
+                )
+            )
+        ) FALSE ( // есть проход справа
+            ROTATE RIGHT
+        )
+        env = GET ENVIRONMENT
+        SWITCH env[6,7,2] TRUE
+            successCounter = 1
+        MOVE
+    )
+    RESULT TRUE
+)

@@ -1,0 +1,18 @@
+TASK fib n (
+SWITCH MXLTE n - 2
+TRUE RESULT 1
+VAR n1 = 0
+n1 = n - 1
+VAR n2 = 0
+n2 = n - 2
+DO fib n1
+VAR tmp = 0
+tmp = GET fib
+DO fib n2
+tmp = tmp + GET fib
+RESULT tmp
+)
+
+TASK FINDEXIT (
+DO fib 10
+)
