@@ -46,3 +46,4 @@ loc -> bool
     |  MXTRUE var
     |  unary
     | (logic)
+id -> [a-zA-Z][a-zA-Z0-9]*
