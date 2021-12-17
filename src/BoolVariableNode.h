@@ -6,15 +6,14 @@
 #define LAB3_BOOLVARIABLENODE_H
 
 
-#include "AbstractNode.h"
+#include "AbstractVariableNode.h"
 
 #include <string>
 #include <vector>
 
 namespace lab3 {
-    class BoolVariableNode : public AbstractNode {
+    class BoolVariableNode : public AbstractVariableNode {
     protected:
-        std::string name;
         bool val;
 
     public:
@@ -22,13 +21,15 @@ namespace lab3 {
 
         bool getVal() const;
 
-        const std::string &getName() const;
-
         void setVal(bool val);
 
-        virtual inline bool isArray() {return false;}
+        inline bool isArray() override {return false;}
 
         virtual ~BoolVariableNode() = default;
+
+        AbstractNode *clone() override {return new BoolVariableNode(*this);}
+
+        AbstractNode *exec(AbstractNode *node) override;
     };
 }
 

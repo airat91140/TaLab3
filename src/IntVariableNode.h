@@ -29,6 +29,10 @@ namespace lab3 {
         virtual inline bool isArray() {return false;}
 
         virtual ~IntVariableNode() = default;
+
+        AbstractNode *clone() override {return new IntVariableNode(*this);}
+
+        AbstractNode *exec(AbstractNode *node) override;
     };
 }
 

@@ -8,4 +8,4 @@ ADD_LIBRARY(src STATIC
         IntArrayVariableNode.cpp
         BoolVariableNode.cpp
         BoolArrayVariableNode.cpp
-        OperationNode.cpp OperationNode.h)
+        OperationNode.cpp OperationNode.h FunctionNode.cpp FunctionNode.h ParameterNode.cpp ParameterNode.h AbstractVariableNode.cpp AbstractVariableNode.h)

@@ -4,14 +4,16 @@
 
 #include "BoolArrayVariableNode.h"
 
-lab3::BoolArrayVariableNode::BoolArrayVariableNode(const::std::string &name, bool val, int arrSize, int *dims) : BoolVariableNode(name, val) {
+lab3::BoolArrayVariableNode::BoolArrayVariableNode(const::std::string &name, bool val, std::list<int> &dims) : BoolVariableNode(name, val) {
     nodeType = BOOL_ARR;
-    if (arrSize == 1)
-        for (int i = 0; i < *dims; ++i)
+    if (dims.size() == 1)
+        for (int i = 0; i < dims.front(); ++i)
             array.push_back(new BoolVariableNode(name, val));
-    else
-        for (int i = 0; i < *dims; ++i)
-            array.push_back(new BoolArrayVariableNode(name, val, arrSize - 1, dims + 1));
+    else {
+        dims.pop_front();
+        for (int i = 0; i < dims.front(); ++i)
+            array.push_back(new BoolArrayVariableNode(name, val, dims));
+    }
 }
 
 lab3::BoolVariableNode *lab3::BoolArrayVariableNode::operator[](int index) {
@@ -26,15 +28,8 @@ lab3::BoolArrayVariableNode::~BoolArrayVariableNode() {
 lab3::BoolArrayVariableNode::BoolArrayVariableNode(const lab3::BoolArrayVariableNode &other) : BoolVariableNode(other.getName(), other.getVal()) {
     this->nodeType = BOOL_ARR;
     this->array.reserve(other.array.size());
-    if (other.array.front()->nodeType == BOOL_ARR)
-        for (const auto &i : other.array) {
-            auto *tmp = dynamic_cast<BoolArrayVariableNode *>(i);
-            this->array.push_back(new BoolArrayVariableNode(*tmp));
-        }
-    else {
-        for (const auto &i : other.array)
-            this->array.push_back(new BoolVariableNode(*i));
-    }
+    for (const auto &i : other.array)
+        this->array.push_back((BoolVariableNode *) i->clone());
 }
 
 lab3::BoolArrayVariableNode &lab3::BoolArrayVariableNode::operator=(const lab3::BoolArrayVariableNode &other) {
@@ -43,15 +38,8 @@ lab3::BoolArrayVariableNode &lab3::BoolArrayVariableNode::operator=(const lab3::
         this->array.reserve(other.array.size());
         this->name = other.name;
         this->val = other.val;
-        if (other.array.front()->nodeType == BOOL_ARR)
-            for (const auto &i : other.array) {
-                auto *tmp = dynamic_cast<BoolArrayVariableNode *>(i);
-                this->array.push_back(new BoolArrayVariableNode(*tmp));
-            }
-        else {
-            for (const auto &i : other.array)
-                this->array.push_back(new BoolVariableNode(*i));
-        }
+        for (const auto &i : other.array)
+            this->array.push_back((BoolVariableNode *) i->clone());
     }
     return *this;
 }
@@ -68,4 +56,12 @@ lab3::BoolArrayVariableNode &lab3::BoolArrayVariableNode::operator=(lab3::BoolAr
         std::swap(this->val, other.val);
     }
     return *this;
+}
+
+lab3::AbstractNode *lab3::BoolArrayVariableNode::clone() {
+    return new BoolArrayVariableNode(*this);
+}
+
+lab3::AbstractNode *lab3::BoolArrayVariableNode::exec(lab3::AbstractNode *) {
+    return this;
 }

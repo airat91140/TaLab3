@@ -21,3 +21,7 @@ lab3::IntVariableNode::IntVariableNode(const std::string &name, int val) {
     this->val = val;
     this->nodeType = INT_VAR;
 }
+
+lab3::AbstractNode *lab3::IntVariableNode::exec(lab3::AbstractNode *node) {
+    return this;
+}

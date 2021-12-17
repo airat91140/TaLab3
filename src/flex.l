@@ -1,8 +1,7 @@
 %option noyywrap
-%option c++
 
 %%
-[ \t]
+[ \t] ;
 
 TRUE|FALSE {}
 

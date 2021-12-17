@@ -26,14 +26,8 @@ lab3::IntArrayVariableNode::~IntArrayVariableNode() {
 lab3::IntArrayVariableNode::IntArrayVariableNode(const lab3::IntArrayVariableNode &other) : IntVariableNode(other.getName(), other.getVal()) {
     this->nodeType = INT_ARR;
     this->array.reserve(other.array.size());
-    if (other.array.front()->nodeType == INT_ARR)
-        for (const auto &i : other.array) {
-            auto *tmp = dynamic_cast<IntArrayVariableNode *>(i);
-            this->array.push_back(new IntArrayVariableNode(*tmp));
-        }
-    else {
-        for (const auto &i : other.array)
-            this->array.push_back(new IntVariableNode(*i));
+    for (const auto &i : other.array)
+        this->array.push_back((IntVariableNode *) i->clone());
     }
 }
 
@@ -43,15 +37,8 @@ lab3::IntArrayVariableNode &lab3::IntArrayVariableNode::operator=(const lab3::In
         this->array.reserve(other.array.size());
         this->name = other.name;
         this->val = other.val;
-        if (other.array.front()->nodeType == INT_ARR)
-            for (const auto &i : other.array) {
-                auto *tmp = dynamic_cast<IntArrayVariableNode *>(i);
-                this->array.push_back(new IntArrayVariableNode(*tmp));
-            }
-        else {
-            for (const auto &i : other.array)
-                this->array.push_back(new IntVariableNode(*i));
-        }
+        for (const auto &i : other.array)
+            this->array.push_back((IntVariableNode *)i->clone());
     }
     return *this;
 }
@@ -68,4 +55,8 @@ lab3::IntArrayVariableNode &lab3::IntArrayVariableNode::operator=(lab3::IntArray
         std::swap(this->val, other.val);
     }
     return *this;
+}
+
+lab3::AbstractNode *lab3::IntArrayVariableNode::exec(lab3::AbstractNode *node) {
+    return this;
 }

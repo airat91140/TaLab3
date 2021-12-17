@@ -9,13 +9,16 @@
 
 namespace lab3 {
     class BoolConstNode : public AbstractNode {
-        private:
-            bool val;
-        public:
-            explicit BoolConstNode(bool val);
+    private:
+        bool val;
+    public:
+        explicit BoolConstNode(bool val);
 
-            int getVal() const;
-        };
+        int getVal() const;
+
+        AbstractNode *exec(AbstractNode *node) override;
+
+        AbstractNode *clone() override {return new BoolConstNode(*this);}
     };
 }
 

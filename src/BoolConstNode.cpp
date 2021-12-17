@@ -12,3 +12,7 @@ lab3::BoolConstNode::BoolConstNode(bool val) {
 int lab3::BoolConstNode::getVal() const {
     return val;
 }
+
+lab3::AbstractNode *lab3::BoolConstNode::exec(lab3::AbstractNode *node) {
+    return this;
+}

@@ -19,3 +19,7 @@ lab3::IntConstNode::IntConstNode(std::string &str, int base) {
 int lab3::IntConstNode::getVal() const {
     return val;
 }
+
+lab3::AbstractNode *lab3::IntConstNode::exec(lab3::AbstractNode *node) {
+    return this;
+}

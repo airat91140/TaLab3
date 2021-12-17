@@ -15,9 +15,14 @@ namespace lab3 {
         int val;
     public:
         explicit IntConstNode(int num);
-        explicit IntConstNode(std::string &str, int base);
+
+        IntConstNode(std::string &str, int base);
 
         int getVal() const;
+
+        AbstractNode *clone() override {return new IntConstNode(*this);}
+
+        AbstractNode *exec(AbstractNode *node) override;
     };
 }
 
