@@ -3,6 +3,8 @@
 //
 
 #include "BoolArrayVariableNode.h"
+#include "IntArrayVariableNode.h"
+
 
 lab3::BoolArrayVariableNode::BoolArrayVariableNode(const::std::string &name, bool val, std::list<int> &dims) : BoolVariableNode(name, val) {
     nodeType = BOOL_ARR;
@@ -16,8 +18,8 @@ lab3::BoolArrayVariableNode::BoolArrayVariableNode(const::std::string &name, boo
     }
 }
 
-lab3::BoolVariableNode *lab3::BoolArrayVariableNode::operator[](int index) {
-    return array.at(index);
+lab3::BoolVariableNode *&lab3::BoolArrayVariableNode::operator[](int index) {
+    return array.at(index - 1);
 }
 
 lab3::BoolArrayVariableNode::~BoolArrayVariableNode() {
@@ -65,3 +67,74 @@ lab3::AbstractNode *lab3::BoolArrayVariableNode::clone() {
 lab3::AbstractNode *lab3::BoolArrayVariableNode::exec(lab3::AbstractNode *) {
     return this;
 }
+
+std::ostream &lab3::BoolArrayVariableNode::print(std::ostream &ostream) const {
+    ostream << "[";
+    for (const auto &it : array) {
+        it->print(ostream) << ",";
+    }
+    ostream << "]" << std::endl;
+    return ostream;
+}
+
+lab3::AbstractVariableNode * lab3::BoolArrayVariableNode::digitize(){
+    return dynamic_cast<AbstractVariableNode *>(new IntArrayVariableNode(this));
+}
+
+const lab3::BoolVariableNode *lab3::BoolArrayVariableNode::operator[](int index) const {
+    return array.at(index - 1);
+}
+
+lab3::BoolArrayVariableNode::BoolArrayVariableNode(AbstractVariableNode *other) : BoolVariableNode("tmp", 0) {
+    nodeType = BOOL_ARR;
+    auto t = (IntArrayVariableNode *)other;
+    array.reserve(t->getSize());
+    for (int i = 1; i <= t->getSize(); ++i) {
+        array.push_back(dynamic_cast<BoolVariableNode *>((*t)[i]->logitize()));
+    }
+}
+
+lab3::BoolArrayVariableNode::BoolArrayVariableNode(int size) : BoolVariableNode("tmp", 0) {
+    nodeType = BOOL_ARR;
+    for (int i = 0; i < size; ++i)
+        array.push_back(new BoolVariableNode("tmp", 0));
+}
+
+lab3::BoolVariableNode *lab3::BoolArrayVariableNode::not_() {
+    auto res = new BoolArrayVariableNode(this->getSize());
+    for (int i = 1; i <= array.size(); ++i) {
+        delete (*res)[i];
+        (*res)[i] = (*this)[i]->not_();
+    }
+    return res;
+}
+
+lab3::AbstractVariableNode * lab3::BoolArrayVariableNode::and_(BoolConstNode *other) {
+    if (other->nodeType != BOOL_ARR || this->getSize() != ((BoolArrayVariableNode *)other)->getSize())
+        throw std::runtime_error("Array sizes mismatch");
+    auto res = new BoolArrayVariableNode(this->getSize());
+    for (int i = 1; i <= array.size(); ++i) {
+        delete (*res)[i];
+        (*res)[i] = dynamic_cast<BoolVariableNode *>((*this)[i]->and_((*(BoolArrayVariableNode *) other)[i]));
+    }
+    return res;
+}
+
+lab3::BoolVariableNode *lab3::BoolArrayVariableNode::mxfalse() {
+    std::pair<int, int> cnt = {0, 0};
+    countBools(cnt);
+    return new BoolVariableNode("tmp",cnt.first < cnt.second);
+}
+
+lab3::BoolVariableNode *lab3::BoolArrayVariableNode::mxtrue() {
+    std::pair<int, int> cnt = {0, 0};
+    countBools(cnt);
+    return new BoolVariableNode("tmp",cnt.first > cnt.second);}
+
+void lab3::BoolArrayVariableNode::countBools(std::pair<int, int> &cnt) {
+    for (const auto &i : array)
+        i->countBools(cnt);
+}
+
+
+

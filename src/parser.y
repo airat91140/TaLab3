@@ -1,6 +1,8 @@
 %{
 #include <string>
 #include <map>
+#include <stack>
+#include <exception>
 #include "AbstractNode.h"
 #include "BoolArrayVariableNode.h"
 #include "BoolConstNode.h"
@@ -9,15 +11,17 @@
 #include "IntConstNode.h"
 #include "IntVariableNode.h"
 #include "OperationNode.h"
+#include "FunctionNode.h"
+#include "ParameterNode.h"
 
-enum dir {UP, LEFT, RIGHT, DOWN};
+enum dir {U, L, R, D};
 extern FILE *yyin;
-std::map<std::string, AbstractNode *> functionsTable;
-std::map<std::string, AbstractNode *> lastCall;
+std::map<std::string, lab3::AbstractNode *> functionsTable;
+std::map<std::string, lab3::AbstractNode *> lastCall;
 std::vector<std::vector<bool> > labyrinth;
 std::pair<int, int> position;
 dir direction;
-std::stack<FunctionNode *> functionStack;
+std::stack<lab3::FunctionNode *> functionStack;
 /* prototypes */
 int yylex(void);
 void init (void);
@@ -26,84 +30,89 @@ void yyerror(char *s);
 %}
 
 %union {
-    AbstractNode *nPtr;
-    BoolConstNode boolVal;
-    IntConstNode intVal;
-    std::string name;
-    BoolArrayVariableNode boolArrVar;
-    BoolVariableNode boolVar;
-    IntArrayVariableNode intArrVar;
-    IntVariableNode intVar;
+    lab3::AbstractNode *nPtr;
+    lab3::BoolConstNode *boolVal;
+    lab3::IntConstNode *intVal;
+    char *name;
+    lab3::BoolArrayVariableNode *boolArrVar;
+    lab3::BoolVariableNode *boolVar;
+    lab3::IntArrayVariableNode *intArrVar;
+    lab3::IntVariableNode *intVar;
 }
 
 %token <intVal> INTEGER
 %token <boolVal> BOOL
 %token <name> id
-%token <name> FUNC_NAME
-%token SWITCH FOR PRINT BOUNDARY STEP MOVE ROTATE LEFT RIGHT GET ENVIRONMENT TASK RESULT DO PLEASE THANKS VAR
-%nonassoc IFX
-%nonassoc ELSE
-%left GE LE EQ NE '>' '<'
+%token SWITCH FOR PRINT BOUNDARY STEP MOVE ROTATE LEFT RIGHT GET ENVIRONMENT TASK RESULT DO PLEASE VAR
+%left PLSX
+%left THANKS
+%nonassoc  SWITCHX
+%nonassoc  HIGHSWITCHX
+%left AND
 %left '+' '-'
 %left '*' '/'
+%nonassoc DIGITIZE REDUCE EXTEND SIZE NOT LOGITIZE MXEQ MXLT MXGT MXLTE MXGTE ELEQ ELLT ELGT ELLTE ELGTE MXFALSE MXTRUE
+
+%type<nPtr> functions function stmts ids logic arith expr indexes value parameters stmtsGroup stmt
+
+%%
 
 program:
     functions { if (!functionsTable.contains("FINDEXIT"))
-                    throw std::RuntimeException("Could not find FINDEXIT function");
+                    throw std::runtime_error("Could not find FINDEXIT function");
 
-                functionsTable.at("FINDEXIT").exec(new BoolConstNode(true));
+                functionsTable.at("FINDEXIT")->exec(new lab3::BoolConstNode(true));
                 for (const auto &[key, value] : functionsTable)
                     delete value;
                 exit(0);
                }
 
 functions:
-    functions function {functionsTable.insert({$2.getName(), $2}); lastCall.insert({$2.getName(), nullptr})}
+    functions function {functionsTable.insert({((lab3::FunctionNode *)$2)->getName(), $2}); lastCall.insert({((lab3::FunctionNode *)$2)->getName(), nullptr});}
     | %empty
 
 function:
-    TASK FUNC_NAME ids stmtsGroup {$$ = new FunctionNode($2, $3, $4);}
+    TASK id ids '\n' stmtsGroup {$$ = new lab3::FunctionNode($2, $3, $5);}
 
-ids: ids id {$$ = new OperationNode(' ', $1, new parameterNode($2);}
-    | id {$$ = new parameterNode($1);}
+ids: ids id {$$ = new lab3::OperationNode(' ', 2, $1, new lab3::ParameterNode($2));}
+    | id {$$ = new lab3::ParameterNode($1);}
 
-indexes: indexes ',' num {$$ = new OperationNode(',', 2, $1, $3); }
-        | num { $$ = new OperationNode(',', 1, $1) }
+indexes: indexes ',' expr {$$ = new lab3::OperationNode(',', 2, $1, $3); }
+        | expr { $$ = new lab3::OperationNode(',', 1, $1); }
 
-stmtsGroup: '(' stmts ')' {$$ = $2}
+stmtsGroup: '(' stmts ')' {$$ = $2;}
 
-stmts: stmts stmt {$$ = new OperationNode(';', 2, $1, $2);}
+stmts: stmts stmt {$$ = new lab3::OperationNode('\n', 2, $1, $2);}
      | stmt {$$ = $1;}
-     | %empty {$$ = nullptr;}
 
-stmt: %empty {$$ = nullptr;}
-     | id '=' expr {$$ = new OperationNode('=', 2, *(functionStack.top())[$1], $3);}
-     | id '[' indexes ']' '=' expr {$$ = new OperationNode('=', 3, *(functionStack.top())[$1], $3, $6);}
-     | VAR id '=' value {$$ = new OperationNode(VAR, 2, new parameterNode($2), $4);}
-     | VAR id '[' indexes ']' '=' value {$$ = new OperationNode(VAR, 3, new parameterNode($2), $4, $7);}
-     | FOR id BOUNDARY id STEP id stmtsGroup {$$ = new OperationNode(FOR, 4, *(functionStack.top())[$2], *(functionStack.top())[$4], *(functionStack.top())[$6], $7);}
-     | FOR id BOUNDARY id STEP id stmt {$$ = new OperationNode(FOR, 4, *(functionStack.top())[$2], *(functionStack.top())[$4], *(functionStack.top())[$6], $7);}
-     | SWITCH logic BOOL stmt {$$ = new OperationNode(SWITCH, 3, $2, $3, $4);}
-     | SWITCH logic BOOL stmt BOOL stmt {$$ = new OperationNode(SWITCH, 5, $2, $3, $4, $5, $6);}
-     | SWITCH logic BOOL stmt BOOL stmtGroup {$$ = new OperationNode(SWITCH, 5, $2, $3, $4, $5, $6);}
-     | SWITCH logic BOOL stmtGroup {$$ = new OperationNode(SWITCH, 3, $2, $3, $4);}
-     | SWITCH logic BOOL stmtGroup BOOL stmt {$$ = new OperationNode(SWITCH, 5, $2, $3, $4, $5, $6);}
-     | SWITCH logic BOOL stmtGroup BOOL stmtGroup {$$ = new OperationNode(SWITCH, 5, $2, $3, $4, $5, $6);}
-     | ROTATE LEFT
-     | ROTATE RIGHT
-     | MOVE
-     | DO FUNC_NAME parameters {functionStack.push(functionsTable.at($2)->clone());
-                                $$ = new OperationNode('f', 2, functionStack.top(), $3);
+stmt:  '\n' { $$ = nullptr;}
+     | id '=' expr '\n' {$$ = new lab3::OperationNode('=', 2, (*functionStack.top())[$1], $3);}
+     | id '[' indexes ']' '=' expr '\n' {$$ = new lab3::OperationNode('=', 3, (*functionStack.top())[$1], $3, $6);}
+     | VAR id '=' value '\n' {$$ = new lab3::OperationNode(VAR, 2, new lab3::ParameterNode($2), $4);}
+     | VAR id '[' indexes ']' '=' value '\n' {$$ = new lab3::OperationNode(VAR, 3, new lab3::ParameterNode($2), $4, $7);}
+     | FOR id BOUNDARY id STEP id stmtsGroup '\n' {$$ = new lab3::OperationNode(FOR, 4, (*functionStack.top())[$2], (*functionStack.top())[$4], (*functionStack.top())[$6], $7);}
+     | FOR id BOUNDARY id STEP id stmt '\n' {$$ = new lab3::OperationNode(FOR, 4, (*functionStack.top())[$2], (*functionStack.top())[$4], (*functionStack.top())[$6], $7);}
+     | SWITCH logic '\n' BOOL stmt '\n' %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
+     | SWITCH logic '\n' BOOL stmt '\n' BOOL stmt '\n' %prec HIGHSWITCHX {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $7, $8);}
+     | SWITCH logic '\n' BOOL stmt '\n' BOOL stmtsGroup %prec HIGHSWITCHX{$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $7, $8);}
+     | SWITCH logic '\n' BOOL stmtsGroup '\n' %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
+     | SWITCH logic '\n' BOOL stmtsGroup '\n' BOOL stmt '\n' %prec HIGHSWITCHX {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $7, $8);}
+     | SWITCH logic '\n' BOOL stmtsGroup '\n' BOOL stmtsGroup '\n' %prec HIGHSWITCHX{$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $7, $8);}
+     | ROTATE LEFT '\n' {$$ = new lab3::OperationNode(LEFT, 0);}
+     | ROTATE RIGHT '\n' {$$ = new lab3::OperationNode(RIGHT, 0);}
+     | MOVE '\n' {$$ = new lab3::OperationNode(MOVE, 0);}
+     | DO id parameters '\n' {functionStack.push((lab3::FunctionNode *)functionsTable.at($2)->clone());
+                                $$ = new lab3::OperationNode('f', 2, functionStack.top(), $3);
                                 functionStack.pop();}
-     | PLEASE stmt
-     | stmt THANKS
-     | PRINT expr
-     | RESULT id {$$ = new OperationNode(RESULT, (*functionStack.top())[$2];}
+     | PLEASE stmt %prec PLSX '\n'
+     | stmt THANKS '\n'
+     | PRINT expr '\n'
+     | RESULT id '\n' {$$ = new lab3::OperationNode(RESULT, 1, (*functionStack.top())[$2]);}
 
-parameters: parameters id {$$ = new OperationNode(' ', 2, $1, *(functionStack.top())[$2]);}
-         | parameters id '[' indexes ']' {$$ = new OperationNode(' ', 3, $1, *(functionStack.top())[$2], $4);}
-         | id { ($$ = *(functionStack.top())[$1]; }
-         | id '[' indexes ']' {$$ = new OperationNode('[', *(functionStack.top())[$1], $3);}
+parameters: parameters id {$$ = new lab3::OperationNode(' ', 2, $1, (*functionStack.top())[$2]);}
+         | parameters id '[' indexes ']' {$$ = new lab3::OperationNode(' ', 3, $1, (*functionStack.top())[$2], $4);}
+         | id { $$ = (*functionStack.top())[$1]; }
+         | id '[' indexes ']' {$$ = new lab3::OperationNode('[', 2, (*functionStack.top())[$1], $3);}
 
 value: INTEGER {$$ = $1;}
      | BOOL {$$ = $1;}
@@ -113,36 +122,36 @@ expr: arith {$$ = $1;}
 
 arith: INTEGER
      | '(' arith ')' {$$ = $2;}
-     | id '[' indexes ']' {$$ = new OperationNode('[', 1, *(functionStack.top())[$1], $3);}
-     | REDUCE id '[' num ']' {$$ = new OperationNode(REDUCE, 2, *(functionStack.top())[$2], $4);}
-     | EXTEND id '[' num ']' {$$ = new OperationNode(EXTEND, 2, *(functionStack.top())[$2], $4);}
-     | DIGITIZE id {$$ = new OperationNode(DIGITIZE, 1, *(functionStack.top())[$2]);}
-     | SIZE id {$$ = new OperationNode(SIZE, 1, *(functionStack.top())[$2]);}
-     | arith + arith {$$ = new OperationNode('+', 2, $1, $3);}
-     | arith - arith {$$ = new OperationNode('-', 2, $1, $3);}
-     | arith * arith {$$ = new OperationNode('*', 2, $1, $3);}
-     | arith / arith {$$ = new OperationNode('/', 2, $1, $3);}
-     | GET ENVIRONMENT {$$ = new OperationNode(ENVIRONMENT, 0);}
-     | GET FUNC_NAME parameters {$$ = lastCall.at($2);}
+     | id '[' indexes ']' {$$ = new lab3::OperationNode('[', 1, (*functionStack.top())[$1], $3);}
+     | REDUCE id '[' INTEGER ']' {$$ = new lab3::OperationNode(REDUCE, 2, (*functionStack.top())[$2], $4);}
+     | EXTEND id '[' INTEGER ']' {$$ = new lab3::OperationNode(EXTEND, 2, (*functionStack.top())[$2], $4);}
+     | DIGITIZE id {$$ = new lab3::OperationNode(DIGITIZE, 1, (*functionStack.top())[$2]);}
+     | SIZE id {$$ = new lab3::OperationNode(SIZE, 1, (*functionStack.top())[$2]);}
+     | arith '+' arith {$$ = new lab3::OperationNode('+', 2, $1, $3);}
+     | arith '-' arith {$$ = new lab3::OperationNode('-', 2, $1, $3);}
+     | arith '*' arith {$$ = new lab3::OperationNode('*', 2, $1, $3);}
+     | arith '/' arith {$$ = new lab3::OperationNode('/', 2, $1, $3);}
+     | GET ENVIRONMENT {$$ = new lab3::OperationNode(ENVIRONMENT, 0);}
+     | GET id {$$ = lastCall.at($2);}
 
 logic: '(' logic ')' {$$ = $2;}
-     | logic AND logic {$$ = new OperationNode(AND, 2, $1, $3);}
+     | logic AND logic {$$ = new lab3::OperationNode(AND, 2, $1, $3);}
      | BOOL {$$ = $1;}
-     | id {$$ = *(functionStack.top())[$1];}
-     | id '[' indexes ']' {$$ = new OperationNode('[', 1, *(functionStack.top())[$1], $3);}
-     | NOT logic {$$ = new OperationNode(NOT, 1, $2);}
-     | LOGITIZE id {$$ = new OperationNode(LOGITIZE, 1, *(functionStack.top())[$2]);}
-     | MXEQ arith {$$ = new OperationNode(MXEQ, 1, $2);}
-     | MXLT arith {$$ = new OperationNode(MXLT, 1, $2);}
-     | MXGT arith {$$ = new OperationNode(MXGT, 1, $2);}
-     | MXLTE arith {$$ = new OperationNode(MXLTE, 1, $2);}
-     | MXGTE arith {$$ = new OperationNode(MXGTE, 1, $2);}
-     | ELEQ arith {$$ = new OperationNode(ELEQ, 1, $2);}
-     | ELLT arith {$$ = new OperationNode(ELLT, 1, $2);}
-     | ELGT arith {$$ = new OperationNode(ELGT, 1, $2);}
-     | ELLTE arith {$$ = new OperationNode(ELLTE, 1, $2);}
-     | ELGTE arith {$$ = new OperationNode(ELGTE, 1, $2);}
-     | MXFALSE logic {$$ = new OperationNode(MXFALSE, 1, $2);}
-     | MXTRUE logic {$$ = new OperationNode(MXTRUE, 1, $2);}
-     | REDUCE id '[' num ']' {$$ = new OperationNode(REDUCE, 2, *(functionStack.top())[$2], $4);}
-     | EXTEND id '[' num ']' {$$ = new OperationNode(EXTEND, 2, *(functionStack.top())[$2], $4);}
+     | id {$$ = (*functionStack.top())[$1];}
+     | id '[' indexes ']' {$$ = new lab3::OperationNode('[', 1, (*functionStack.top())[$1], $3);}
+     | NOT logic {$$ = new lab3::OperationNode(NOT, 1, $2);}
+     | LOGITIZE id {$$ = new lab3::OperationNode(LOGITIZE, 1, (*functionStack.top())[$2]);}
+     | MXEQ arith {$$ = new lab3::OperationNode(MXEQ, 1, $2);}
+     | MXLT arith {$$ = new lab3::OperationNode(MXLT, 1, $2);}
+     | MXGT arith {$$ = new lab3::OperationNode(MXGT, 1, $2);}
+     | MXLTE arith {$$ = new lab3::OperationNode(MXLTE, 1, $2);}
+     | MXGTE arith {$$ = new lab3::OperationNode(MXGTE, 1, $2);}
+     | ELEQ arith {$$ = new lab3::OperationNode(ELEQ, 1, $2);}
+     | ELLT arith {$$ = new lab3::OperationNode(ELLT, 1, $2);}
+     | ELGT arith {$$ = new lab3::OperationNode(ELGT, 1, $2);}
+     | ELLTE arith {$$ = new lab3::OperationNode(ELLTE, 1, $2);}
+     | ELGTE arith {$$ = new lab3::OperationNode(ELGTE, 1, $2);}
+     | MXFALSE logic {$$ = new lab3::OperationNode(MXFALSE, 1, $2);}
+     | MXTRUE logic {$$ = new lab3::OperationNode(MXTRUE, 1, $2);}
+     | REDUCE id '[' INTEGER ']' {$$ = new lab3::OperationNode(REDUCE, 2, (*functionStack.top())[$2], $4);}
+     | EXTEND id '[' INTEGER ']' {$$ = new lab3::OperationNode(EXTEND, 2, (*functionStack.top())[$2], $4);}

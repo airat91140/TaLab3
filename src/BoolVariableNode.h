@@ -5,31 +5,42 @@
 #ifndef LAB3_BOOLVARIABLENODE_H
 #define LAB3_BOOLVARIABLENODE_H
 
-
+#include "BoolConstNode.h"
 #include "AbstractVariableNode.h"
 
+
+#include <iostream>
 #include <string>
 #include <vector>
 
 namespace lab3 {
-    class BoolVariableNode : public AbstractVariableNode {
-    protected:
-        bool val;
-
+    class BoolVariableNode : public BoolConstNode {
     public:
-        BoolVariableNode(const std::string &name, int val);
+        virtual void countBools(std::pair<int, int> &cnt);
 
-        bool getVal() const;
+        BoolVariableNode(const std::string &name, int val);
 
         void setVal(bool val);
 
         inline bool isArray() override {return false;}
 
-        virtual ~BoolVariableNode() = default;
+        ~BoolVariableNode() override = default;
 
         AbstractNode *clone() override {return new BoolVariableNode(*this);}
 
         AbstractNode *exec(AbstractNode *node) override;
+
+        std::ostream &print(std::ostream &ostream) const override;
+
+        virtual AbstractVariableNode *digitize();
+
+        virtual BoolVariableNode *not_();
+
+        AbstractVariableNode * and_(BoolConstNode *other) override;
+
+        virtual BoolVariableNode *mxfalse();
+
+        virtual BoolVariableNode *mxtrue();
     };
 }
 

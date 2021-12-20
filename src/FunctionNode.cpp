@@ -33,10 +33,9 @@ lab3::AbstractNode *lab3::FunctionNode::getKid() const {
     return kid;
 }
 
-lab3::FunctionNode::FunctionNode(const std::string &name, int parCount, lab3::AbstractNode *kid) : name(name),
-                                                                                                   parCount(parCount),
-                                                                                                   kid(kid) {
+lab3::FunctionNode::FunctionNode(const std::string &name, AbstractNode *parameters, lab3::AbstractNode *kid) : name(name), kid(kid) {
     nodeType = FUNCTION;
+    parCount = parametersCount(parameters);
 }
 
 lab3::AbstractNode *lab3::FunctionNode::exec(lab3::AbstractNode *node) {
@@ -58,4 +57,21 @@ std::list<lab3::AbstractVariableNode *> lab3::FunctionNode::getParametersList(la
     if (result.size() != parCount)
         throw std::runtime_error("Invalid number of arguments");
     return result;
+}
+
+lab3::FunctionNode::~FunctionNode() {
+
+}
+
+int lab3::FunctionNode::parametersCount(lab3::AbstractNode *node) {
+    int count = 0;
+    AbstractNode *iter = node;
+    while (iter->nodeType == OPERATION) {
+        ++count;
+    }
+    return ++count;
+}
+
+std::ostream &lab3::FunctionNode::print(std::ostream &ostream) const {
+    return ostream;
 }

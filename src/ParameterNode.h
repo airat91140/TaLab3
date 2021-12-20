@@ -19,6 +19,10 @@ namespace lab3 {
         AbstractNode *clone() override;
 
         AbstractNode *exec(AbstractNode *node) override;
+
+        ~ParameterNode() override = default;
+
+        std::ostream &print(std::ostream &ostream) const override;
     };
 }
 

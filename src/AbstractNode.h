@@ -5,6 +5,8 @@
 #ifndef LAB3_ABSTRACTNODE_H
 #define LAB3_ABSTRACTNODE_H
 
+#include <ostream>
+
 namespace lab3 {
     enum type {
         ABSTRACT,
@@ -19,13 +21,15 @@ namespace lab3 {
         PARAMETER
     };
 
-    class AbstractVariableNode;
-
     class AbstractNode {
     public:
         type nodeType = ABSTRACT;
         virtual AbstractNode *clone() = 0;
         virtual AbstractNode *exec(AbstractNode *node) = 0;
+        virtual std::ostream &print(std::ostream &) const = 0;
+        virtual ~AbstractNode() = default;
+
+        friend std::ostream &operator<<(std::ostream &os, const AbstractNode &node);
     };
 }
 

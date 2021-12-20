@@ -7,20 +7,32 @@
 
 #include "AbstractNode.h"
 #include "IntVariableNode.h"
+#include "AbstractVariableNode.h"
 
 #include <cstdarg>
 #include <algorithm>
+#include <list>
 
 namespace lab3 {
     class IntArrayVariableNode : public IntVariableNode {
     private:
         std::vector<IntVariableNode *> array;
+
+        struct AverageCounter {
+            int x = 0, y = 0, z = 0;
+        };
+
+        AverageCounter recursiveCompareM(AverageCounter &cnt);
     public:
-        IntArrayVariableNode(const std::string &name, int val, int arrSize, int *dims);
+        inline int getSize() const { return array.size(); }
+
+        IntArrayVariableNode(const std::string &name, int val,  std::list<int> &dims);
 
         bool inline isArray() override { return true; }
 
         IntVariableNode *operator[](int index);
+
+        const IntVariableNode *operator[](int index) const;
 
         ~IntArrayVariableNode() override;
 
@@ -35,6 +47,26 @@ namespace lab3 {
         AbstractNode *clone() override {return new IntArrayVariableNode(*this);}
 
         AbstractNode *exec(AbstractNode *node) override;
+
+        bool addInCycle(IntVariableNode *bound, IntVariableNode *step) override;
+
+        std::ostream &print(std::ostream &ostream) const override;
+
+        IntArrayVariableNode (lab3::AbstractVariableNode *other);
+
+        int compareM() override;
+
+        AbstractVariableNode *logitize() override;
+
+        AbstractVariableNode *eleq() override;
+
+        AbstractVariableNode *ellt() override;
+
+        AbstractVariableNode *elgt() override;
+
+        AbstractVariableNode *ellte() override;
+
+        AbstractVariableNode *elgte() override;
     };
 }
 

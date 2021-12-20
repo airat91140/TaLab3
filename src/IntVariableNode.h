@@ -7,32 +7,35 @@
 
 
 #include "AbstractNode.h"
+#include "AbstractVariableNode.h"
+#include "IntConstNode.h"
 
 #include <string>
 #include <vector>
 
 namespace lab3 {
-    class IntVariableNode : public AbstractNode {
+    class IntVariableNode : public IntConstNode {
     protected:
         std::string name;
-        int val;
-
     public:
         IntVariableNode(const std::string &name, int val);
 
-        int getVal() const;
-
-        const std::string &getName() const;
-
         void setVal(int val);
 
-        virtual inline bool isArray() {return false;}
+        inline bool isArray() override {return false;}
 
-        virtual ~IntVariableNode() = default;
+        ~IntVariableNode() override = default;
 
         AbstractNode *clone() override {return new IntVariableNode(*this);}
 
         AbstractNode *exec(AbstractNode *node) override;
+
+        std::ostream &print(std::ostream &ostream) const override;
+
+        virtual bool addInCycle(IntVariableNode *bound, IntVariableNode *step); //returns if it was added or not
+
+        virtual AbstractVariableNode *logitize();
+
     };
 }
 

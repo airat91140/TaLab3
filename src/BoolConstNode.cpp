@@ -3,16 +3,36 @@
 //
 
 #include "BoolConstNode.h"
+#include "BoolVariableNode.h"
 
-lab3::BoolConstNode::BoolConstNode(bool val) {
+lab3::BoolConstNode::BoolConstNode(const std::string &val) {
     nodeType = BOOL_CONST;
-    this->val = val;
+    this->val = val == "TRUE";
 }
 
-int lab3::BoolConstNode::getVal() const {
+bool lab3::BoolConstNode::getVal() const {
     return val;
 }
 
 lab3::AbstractNode *lab3::BoolConstNode::exec(lab3::AbstractNode *node) {
     return this;
+}
+
+std::ostream &lab3::BoolConstNode::print(std::ostream &ostream) const {
+    ostream << val << std::endl;
+    return ostream;
+}
+
+lab3::BoolConstNode::BoolConstNode(bool val) : val(val) {
+    nodeType = BOOL_CONST;
+}
+
+bool lab3::BoolConstNode::isArray() {
+    return false;
+}
+
+lab3::AbstractVariableNode *lab3::BoolConstNode::and_(lab3::BoolConstNode *other) {
+    if (other->nodeType == BOOL_ARR)
+        throw std::runtime_error("type mismatch");
+    return new BoolVariableNode("tmp", this->val && other->getVal());
 }

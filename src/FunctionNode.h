@@ -23,7 +23,7 @@ namespace lab3 {
     public:
         int getParCount() const;
 
-        FunctionNode(const std::string &name, int parCount, AbstractNode *kid);
+        FunctionNode(const std::string &name, AbstractNode *parameters, AbstractNode *kid);
 
         AbstractNode *getKid() const;
 
@@ -38,6 +38,12 @@ namespace lab3 {
         AbstractNode *exec(AbstractNode *node) override;
 
         std::list<AbstractVariableNode *> getParametersList(AbstractNode *root);
+
+        int parametersCount(AbstractNode *);
+
+        ~FunctionNode() override;
+
+        std::ostream &print(std::ostream &ostream) const override;
     };
 }
 

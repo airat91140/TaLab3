@@ -21,6 +21,8 @@ namespace lab3 {
         AbstractNode *clone() override = 0;
 
         AbstractNode *exec(AbstractNode *node) override = 0;
+
+        ~AbstractVariableNode() override = default;
     };
 }
 

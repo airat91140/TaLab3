@@ -15,3 +15,7 @@ lab3::AbstractNode *lab3::ParameterNode::clone() {
 lab3::AbstractNode *lab3::ParameterNode::exec(lab3::AbstractNode *node) {
     return this;
 }
+
+std::ostream &lab3::ParameterNode::print(std::ostream &ostream) const {
+    return ostream;
+}

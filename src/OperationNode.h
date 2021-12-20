@@ -28,6 +28,10 @@ namespace lab3 {
         AbstractNode *clone() override {return new OperationNode(*this);}
 
         AbstractNode *exec(AbstractNode *node) override;
+
+        ~OperationNode() override;
+
+        std::ostream &print(std::ostream &ostream) const override;
     };
 }
 
