@@ -178,3 +178,40 @@ lab3::AbstractVariableNode *lab3::IntArrayVariableNode::elgte() {
     }
     return res;
 }
+
+lab3::AbstractVariableNode *lab3::IntArrayVariableNode::add(lab3::IntConstNode *other) {
+    if (other->nodeType != INT_ARR || this->getSize() != ((IntArrayVariableNode *)other)->getSize())
+        throw std::runtime_error("Array sizes mismatch");
+    auto res = new IntArrayVariableNode();
+    for (int i = 1; i <= array.size(); ++i)
+        res->array.push_back(dynamic_cast<IntVariableNode *>((*this)[i]->add((*(IntArrayVariableNode *) other)[i])));
+    return res;
+}
+
+lab3::AbstractVariableNode *lab3::IntArrayVariableNode::sub(lab3::IntConstNode *other) {
+    if (other->nodeType != INT_ARR || this->getSize() != ((IntArrayVariableNode *)other)->getSize())
+        throw std::runtime_error("Array sizes mismatch");
+    auto res = new IntArrayVariableNode();
+    for (int i = 1; i <= array.size(); ++i)
+        res->array.push_back(dynamic_cast<IntVariableNode *>((*this)[i]->sub((*(IntArrayVariableNode *) other)[i])));
+    return res;}
+
+lab3::AbstractVariableNode *lab3::IntArrayVariableNode::mul(lab3::IntConstNode *other) {
+    if (other->nodeType != INT_ARR || this->getSize() != ((IntArrayVariableNode *)other)->getSize())
+        throw std::runtime_error("Array sizes mismatch");
+    auto res = new IntArrayVariableNode();
+    for (int i = 1; i <= array.size(); ++i)
+        res->array.push_back(dynamic_cast<IntVariableNode *>((*this)[i]->mul((*(IntArrayVariableNode *) other)[i])));
+    return res;}
+
+lab3::AbstractVariableNode *lab3::IntArrayVariableNode::div(lab3::IntConstNode *other) {
+    if (other->nodeType != INT_ARR || this->getSize() != ((IntArrayVariableNode *)other)->getSize())
+        throw std::runtime_error("Array sizes mismatch");
+    auto res = new IntArrayVariableNode();
+    for (int i = 1; i <= array.size(); ++i)
+        res->array.push_back(dynamic_cast<IntVariableNode *>((*this)[i]->div((*(IntArrayVariableNode *) other)[i])));
+    return res;}
+
+lab3::IntArrayVariableNode::IntArrayVariableNode() : IntVariableNode("tmp", 0) {
+    nodeType = INT_ARR;
+}

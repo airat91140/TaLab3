@@ -58,6 +58,14 @@ namespace lab3 {
 
         AbstractVariableNode *logitize() override;
 
+        AbstractVariableNode *add(IntConstNode *other) override;
+
+        AbstractVariableNode *sub(IntConstNode *other) override;
+
+        AbstractVariableNode *mul(IntConstNode *other) override;
+
+        AbstractVariableNode *div(IntConstNode *other) override;
+
         AbstractVariableNode *eleq() override;
 
         AbstractVariableNode *ellt() override;
@@ -67,6 +75,8 @@ namespace lab3 {
         AbstractVariableNode *ellte() override;
 
         AbstractVariableNode *elgte() override;
+
+        IntArrayVariableNode();
     };
 }
 

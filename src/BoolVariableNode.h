@@ -34,13 +34,7 @@ namespace lab3 {
 
         virtual AbstractVariableNode *digitize();
 
-        virtual BoolVariableNode *not_();
-
         AbstractVariableNode * and_(BoolConstNode *other) override;
-
-        virtual BoolVariableNode *mxfalse();
-
-        virtual BoolVariableNode *mxtrue();
     };
 }
 

@@ -65,17 +65,25 @@ lab3::AbstractVariableNode *lab3::IntConstNode::elgte() {
 }
 
 lab3::AbstractVariableNode *lab3::IntConstNode::add(lab3::IntConstNode *other) {
+    if (other->isArray())
+        throw std::runtime_error("Array sizes mismatch");
     return new IntVariableNode("tmp", this->val + other->val);
 }
 
 lab3::AbstractVariableNode *lab3::IntConstNode::sub(lab3::IntConstNode *other) {
-    return nullptr;
+    if (other->isArray())
+        throw std::runtime_error("Array sizes mismatch");
+    return new IntVariableNode("tmp", this->val - other->val);
 }
 
 lab3::AbstractVariableNode *lab3::IntConstNode::mul(lab3::IntConstNode *other) {
-    return nullptr;
+    if (other->isArray())
+        throw std::runtime_error("Array sizes mismatch");
+    return new IntVariableNode("tmp", this->val * other->val);
 }
 
 lab3::AbstractVariableNode *lab3::IntConstNode::div(lab3::IntConstNode *other) {
-    return nullptr;
+    if (other->isArray())
+        throw std::runtime_error("Array sizes mismatch");
+    return new IntVariableNode("tmp", this->val / other->val);
 }

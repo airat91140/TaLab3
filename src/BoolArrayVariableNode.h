@@ -57,7 +57,7 @@ namespace lab3 {
         void countBools(std::pair<int, int> &cnt) override;
 
     public:
-        BoolVariableNode *not_() override;
+        AbstractVariableNode *not_() override;
 
         AbstractVariableNode * and_(BoolConstNode *other) override;
     };

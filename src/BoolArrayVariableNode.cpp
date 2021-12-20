@@ -100,11 +100,11 @@ lab3::BoolArrayVariableNode::BoolArrayVariableNode(int size) : BoolVariableNode(
         array.push_back(new BoolVariableNode("tmp", 0));
 }
 
-lab3::BoolVariableNode *lab3::BoolArrayVariableNode::not_() {
+lab3::AbstractVariableNode *lab3::BoolArrayVariableNode::not_() {
     auto res = new BoolArrayVariableNode(this->getSize());
     for (int i = 1; i <= array.size(); ++i) {
         delete (*res)[i];
-        (*res)[i] = (*this)[i]->not_();
+        (*res)[i] = dynamic_cast<BoolVariableNode *>((*this)[i]->not_());
     }
     return res;
 }

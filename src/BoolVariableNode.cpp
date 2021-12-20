@@ -30,22 +30,10 @@ lab3::AbstractVariableNode *lab3::BoolVariableNode::digitize(){
 
 }
 
-lab3::BoolVariableNode *lab3::BoolVariableNode::not_() {
-    return new BoolVariableNode("tmp", !val);
-}
-
 lab3::AbstractVariableNode *lab3::BoolVariableNode::and_(BoolConstNode *other) {
     if (other->nodeType == BOOL_ARR)
         throw std::runtime_error("type mismatch");
     return new BoolVariableNode("tmp", this->val && other->getVal());
-}
-
-lab3::BoolVariableNode *lab3::BoolVariableNode::mxfalse() {
-    return new BoolVariableNode("tmp", !val);
-}
-
-lab3::BoolVariableNode *lab3::BoolVariableNode::mxtrue() {
-    return new BoolVariableNode("tmp", val);
 }
 
 void lab3::BoolVariableNode::countBools(std::pair<int, int> &cnt) {

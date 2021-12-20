@@ -31,6 +31,11 @@ namespace lab3 {
 
         virtual AbstractVariableNode * and_(BoolConstNode *other);
 
+        virtual AbstractVariableNode *not_();
+
+        virtual AbstractVariableNode *mxfalse();
+
+        virtual AbstractVariableNode *mxtrue();
     };
 }
 

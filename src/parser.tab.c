@@ -83,22 +83,16 @@
 #include "OperationNode.h"
 #include "FunctionNode.h"
 #include "ParameterNode.h"
+#include "Driver.h"
 
-enum dir {U, L, R, D};
-extern FILE *yyin;
-std::map<std::string, lab3::AbstractNode *> functionsTable;
-std::map<std::string, lab3::AbstractNode *> lastCall;
-std::vector<std::vector<bool> > labyrinth;
-std::pair<int, int> position;
-dir direction;
-std::stack<lab3::FunctionNode *> functionStack;
+lab3::Driver dr;
 /* prototypes */
 int yylex(void);
 void init (void);
 void yyerror(char *s);
 
 
-#line 102 "parser.tab.c"
+#line 96 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -189,7 +183,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 32 "parser.y"
+#line 26 "parser.y"
 
     lab3::AbstractNode *nPtr;
     lab3::BoolConstNode *boolVal;
@@ -200,7 +194,7 @@ union YYSTYPE
     lab3::IntArrayVariableNode *intArrVar;
     lab3::IntVariableNode *intVar;
 
-#line 204 "parser.tab.c"
+#line 198 "parser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -679,14 +673,14 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    61,    61,    71,    72,    75,    77,    78,    80,    81,
-      83,    85,    86,    88,    89,    90,    91,    92,    93,    94,
-      95,    96,    97,    98,    99,   100,   101,   102,   103,   104,
-     107,   108,   109,   110,   112,   113,   114,   115,   117,   118,
-     120,   121,   123,   124,   125,   126,   127,   128,   129,   130,
-     131,   132,   133,   134,   135,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157
+       0,    55,    55,    65,    66,    69,    71,    72,    74,    75,
+      77,    79,    80,    82,    83,    84,    85,    86,    87,    88,
+      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
+     101,   102,   103,   104,   106,   107,   108,   109,   111,   112,
+     114,   115,   117,   118,   119,   120,   121,   122,   123,   124,
+     125,   126,   127,   128,   129,   131,   132,   133,   134,   135,
+     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
+     146,   147,   148,   149,   150,   151
 };
 #endif
 
@@ -1374,425 +1368,431 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: functions  */
-#line 61 "parser.y"
-              { if (!functionsTable.contains("FINDEXIT"))
+#line 55 "parser.y"
+              { if (!dr.functionsTable.contains("FINDEXIT"))
                     throw std::runtime_error("Could not find FINDEXIT function");
 
-                functionsTable.at("FINDEXIT")->exec(new lab3::BoolConstNode(true));
-                for (const auto &[key, value] : functionsTable)
+                dr.functionsTable.at("FINDEXIT")->exec(new lab3::BoolConstNode(true));
+                for (const auto &[key, value] : dr.functionsTable)
                     delete value;
                 exit(0);
                }
-#line 1387 "parser.tab.c"
+#line 1381 "parser.tab.c"
     break;
 
   case 3: /* functions: functions function  */
-#line 71 "parser.y"
-                       {functionsTable.insert({((lab3::FunctionNode *)(yyvsp[0].nPtr))->getName(), (yyvsp[0].nPtr)}); lastCall.insert({((lab3::FunctionNode *)(yyvsp[0].nPtr))->getName(), nullptr});}
-#line 1393 "parser.tab.c"
+#line 65 "parser.y"
+                       {dr.functionsTable.insert({((lab3::FunctionNode *)(yyvsp[0].nPtr))->getName(), (yyvsp[0].nPtr)}); dr.lastCall.insert({((lab3::FunctionNode *)(yyvsp[0].nPtr))->getName(), nullptr});}
+#line 1387 "parser.tab.c"
     break;
 
   case 5: /* function: TASK id ids '\n' stmtsGroup  */
-#line 75 "parser.y"
+#line 69 "parser.y"
                                 {(yyval.nPtr) = new lab3::FunctionNode((yyvsp[-3].name), (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
-#line 1399 "parser.tab.c"
+#line 1393 "parser.tab.c"
     break;
 
   case 6: /* ids: ids id  */
-#line 77 "parser.y"
+#line 71 "parser.y"
             {(yyval.nPtr) = new lab3::OperationNode(' ', 2, (yyvsp[-1].nPtr), new lab3::ParameterNode((yyvsp[0].name)));}
-#line 1405 "parser.tab.c"
+#line 1399 "parser.tab.c"
     break;
 
   case 7: /* ids: id  */
-#line 78 "parser.y"
+#line 72 "parser.y"
          {(yyval.nPtr) = new lab3::ParameterNode((yyvsp[0].name));}
-#line 1411 "parser.tab.c"
+#line 1405 "parser.tab.c"
     break;
 
   case 8: /* indexes: indexes ',' expr  */
-#line 80 "parser.y"
+#line 74 "parser.y"
                           {(yyval.nPtr) = new lab3::OperationNode(',', 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr)); }
-#line 1417 "parser.tab.c"
+#line 1411 "parser.tab.c"
     break;
 
   case 9: /* indexes: expr  */
-#line 81 "parser.y"
+#line 75 "parser.y"
                { (yyval.nPtr) = new lab3::OperationNode(',', 1, (yyvsp[0].nPtr)); }
-#line 1423 "parser.tab.c"
+#line 1417 "parser.tab.c"
     break;
 
   case 10: /* stmtsGroup: '(' stmts ')'  */
-#line 83 "parser.y"
+#line 77 "parser.y"
                           {(yyval.nPtr) = (yyvsp[-1].nPtr);}
-#line 1429 "parser.tab.c"
+#line 1423 "parser.tab.c"
     break;
 
   case 11: /* stmts: stmts stmt  */
-#line 85 "parser.y"
+#line 79 "parser.y"
                   {(yyval.nPtr) = new lab3::OperationNode('\n', 2, (yyvsp[-1].nPtr), (yyvsp[0].nPtr));}
-#line 1435 "parser.tab.c"
+#line 1429 "parser.tab.c"
     break;
 
   case 12: /* stmts: stmt  */
-#line 86 "parser.y"
+#line 80 "parser.y"
             {(yyval.nPtr) = (yyvsp[0].nPtr);}
-#line 1441 "parser.tab.c"
+#line 1435 "parser.tab.c"
     break;
 
   case 13: /* stmt: '\n'  */
-#line 88 "parser.y"
+#line 82 "parser.y"
             { (yyval.nPtr) = nullptr;}
-#line 1447 "parser.tab.c"
+#line 1441 "parser.tab.c"
     break;
 
   case 14: /* stmt: id '=' expr '\n'  */
-#line 89 "parser.y"
-                        {(yyval.nPtr) = new lab3::OperationNode('=', 2, (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
-#line 1453 "parser.tab.c"
+#line 83 "parser.y"
+                        {(yyval.nPtr) = new lab3::OperationNode('=', 2, (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
+#line 1447 "parser.tab.c"
     break;
 
   case 15: /* stmt: id '[' indexes ']' '=' expr '\n'  */
-#line 90 "parser.y"
-                                        {(yyval.nPtr) = new lab3::OperationNode('=', 3, (*functionStack.top())[(yyvsp[-6].name)], (yyvsp[-4].nPtr), (yyvsp[-1].nPtr));}
-#line 1459 "parser.tab.c"
+#line 84 "parser.y"
+                                        {(yyval.nPtr) = new lab3::OperationNode('=', 3, (*dr.functionStack.top())[(yyvsp[-6].name)], (yyvsp[-4].nPtr), (yyvsp[-1].nPtr));}
+#line 1453 "parser.tab.c"
     break;
 
   case 16: /* stmt: VAR id '=' value '\n'  */
-#line 91 "parser.y"
+#line 85 "parser.y"
                              {(yyval.nPtr) = new lab3::OperationNode(VAR, 2, new lab3::ParameterNode((yyvsp[-3].name)), (yyvsp[-1].nPtr));}
-#line 1465 "parser.tab.c"
+#line 1459 "parser.tab.c"
     break;
 
   case 17: /* stmt: VAR id '[' indexes ']' '=' value '\n'  */
-#line 92 "parser.y"
+#line 86 "parser.y"
                                              {(yyval.nPtr) = new lab3::OperationNode(VAR, 3, new lab3::ParameterNode((yyvsp[-6].name)), (yyvsp[-4].nPtr), (yyvsp[-1].nPtr));}
-#line 1471 "parser.tab.c"
+#line 1465 "parser.tab.c"
     break;
 
   case 18: /* stmt: FOR id BOUNDARY id STEP id stmtsGroup '\n'  */
-#line 93 "parser.y"
-                                                  {(yyval.nPtr) = new lab3::OperationNode(FOR, 4, (*functionStack.top())[(yyvsp[-6].name)], (*functionStack.top())[(yyvsp[-4].name)], (*functionStack.top())[(yyvsp[-2].name)], (yyvsp[-1].nPtr));}
-#line 1477 "parser.tab.c"
+#line 87 "parser.y"
+                                                  {(yyval.nPtr) = new lab3::OperationNode(FOR, 4, (*dr.functionStack.top())[(yyvsp[-6].name)], (*dr.functionStack.top())[(yyvsp[-4].name)], (*dr.functionStack.top())[(yyvsp[-2].name)], (yyvsp[-1].nPtr));}
+#line 1471 "parser.tab.c"
     break;
 
   case 19: /* stmt: FOR id BOUNDARY id STEP id stmt '\n'  */
-#line 94 "parser.y"
-                                            {(yyval.nPtr) = new lab3::OperationNode(FOR, 4, (*functionStack.top())[(yyvsp[-6].name)], (*functionStack.top())[(yyvsp[-4].name)], (*functionStack.top())[(yyvsp[-2].name)], (yyvsp[-1].nPtr));}
-#line 1483 "parser.tab.c"
+#line 88 "parser.y"
+                                            {(yyval.nPtr) = new lab3::OperationNode(FOR, 4, (*dr.functionStack.top())[(yyvsp[-6].name)], (*dr.functionStack.top())[(yyvsp[-4].name)], (*dr.functionStack.top())[(yyvsp[-2].name)], (yyvsp[-1].nPtr));}
+#line 1477 "parser.tab.c"
     break;
 
   case 20: /* stmt: SWITCH logic '\n' BOOL stmt '\n'  */
-#line 95 "parser.y"
+#line 89 "parser.y"
                                                       {(yyval.nPtr) = new lab3::OperationNode(SWITCH, 3, (yyvsp[-4].nPtr), (yyvsp[-2].boolVal), (yyvsp[-1].nPtr));}
-#line 1489 "parser.tab.c"
+#line 1483 "parser.tab.c"
     break;
 
   case 21: /* stmt: SWITCH logic '\n' BOOL stmt '\n' BOOL stmt '\n'  */
-#line 96 "parser.y"
+#line 90 "parser.y"
                                                                          {(yyval.nPtr) = new lab3::OperationNode(SWITCH, 5, (yyvsp[-7].nPtr), (yyvsp[-5].boolVal), (yyvsp[-4].nPtr), (yyvsp[-2].boolVal), (yyvsp[-1].nPtr));}
-#line 1495 "parser.tab.c"
+#line 1489 "parser.tab.c"
     break;
 
   case 22: /* stmt: SWITCH logic '\n' BOOL stmt '\n' BOOL stmtsGroup  */
-#line 97 "parser.y"
+#line 91 "parser.y"
                                                                          {(yyval.nPtr) = new lab3::OperationNode(SWITCH, 5, (yyvsp[-6].nPtr), (yyvsp[-4].boolVal), (yyvsp[-3].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
-#line 1501 "parser.tab.c"
+#line 1495 "parser.tab.c"
     break;
 
   case 23: /* stmt: SWITCH logic '\n' BOOL stmtsGroup '\n'  */
-#line 98 "parser.y"
+#line 92 "parser.y"
                                                             {(yyval.nPtr) = new lab3::OperationNode(SWITCH, 3, (yyvsp[-4].nPtr), (yyvsp[-2].boolVal), (yyvsp[-1].nPtr));}
-#line 1507 "parser.tab.c"
+#line 1501 "parser.tab.c"
     break;
 
   case 24: /* stmt: SWITCH logic '\n' BOOL stmtsGroup '\n' BOOL stmt '\n'  */
-#line 99 "parser.y"
+#line 93 "parser.y"
                                                                                {(yyval.nPtr) = new lab3::OperationNode(SWITCH, 5, (yyvsp[-7].nPtr), (yyvsp[-5].boolVal), (yyvsp[-4].nPtr), (yyvsp[-2].boolVal), (yyvsp[-1].nPtr));}
-#line 1513 "parser.tab.c"
+#line 1507 "parser.tab.c"
     break;
 
   case 25: /* stmt: SWITCH logic '\n' BOOL stmtsGroup '\n' BOOL stmtsGroup '\n'  */
-#line 100 "parser.y"
+#line 94 "parser.y"
                                                                                     {(yyval.nPtr) = new lab3::OperationNode(SWITCH, 5, (yyvsp[-7].nPtr), (yyvsp[-5].boolVal), (yyvsp[-4].nPtr), (yyvsp[-2].boolVal), (yyvsp[-1].nPtr));}
-#line 1519 "parser.tab.c"
+#line 1513 "parser.tab.c"
     break;
 
   case 26: /* stmt: ROTATE LEFT '\n'  */
-#line 101 "parser.y"
+#line 95 "parser.y"
                         {(yyval.nPtr) = new lab3::OperationNode(LEFT, 0);}
-#line 1525 "parser.tab.c"
+#line 1519 "parser.tab.c"
     break;
 
   case 27: /* stmt: ROTATE RIGHT '\n'  */
-#line 102 "parser.y"
+#line 96 "parser.y"
                          {(yyval.nPtr) = new lab3::OperationNode(RIGHT, 0);}
-#line 1531 "parser.tab.c"
+#line 1525 "parser.tab.c"
     break;
 
   case 28: /* stmt: MOVE '\n'  */
-#line 103 "parser.y"
+#line 97 "parser.y"
                  {(yyval.nPtr) = new lab3::OperationNode(MOVE, 0);}
-#line 1537 "parser.tab.c"
+#line 1531 "parser.tab.c"
     break;
 
   case 29: /* stmt: DO id parameters '\n'  */
-#line 104 "parser.y"
-                             {functionStack.push((lab3::FunctionNode *)functionsTable.at((yyvsp[-2].name))->clone());
-                                (yyval.nPtr) = new lab3::OperationNode('f', 2, functionStack.top(), (yyvsp[-1].nPtr));
-                                functionStack.pop();}
+#line 98 "parser.y"
+                             {dr.functionStack.push((lab3::FunctionNode *)dr.functionsTable.at((yyvsp[-2].name))->clone());
+                                (yyval.nPtr) = new lab3::OperationNode('DO', 2, dr.functionStack.top(), (yyvsp[-1].nPtr));
+                                dr.functionStack.pop();}
+#line 1539 "parser.tab.c"
+    break;
+
+  case 32: /* stmt: PRINT expr '\n'  */
+#line 103 "parser.y"
+                       {(yyval.nPtr) = new lab3::OperationNode(PRINT, 1, (yyvsp[-1].nPtr));}
 #line 1545 "parser.tab.c"
     break;
 
   case 33: /* stmt: RESULT id '\n'  */
-#line 110 "parser.y"
-                      {(yyval.nPtr) = new lab3::OperationNode(RESULT, 1, (*functionStack.top())[(yyvsp[-1].name)]);}
+#line 104 "parser.y"
+                      {(yyval.nPtr) = new lab3::OperationNode(RESULT, 1, (*dr.functionStack.top())[(yyvsp[-1].name)]);}
 #line 1551 "parser.tab.c"
     break;
 
   case 34: /* parameters: parameters id  */
-#line 112 "parser.y"
-                          {(yyval.nPtr) = new lab3::OperationNode(' ', 2, (yyvsp[-1].nPtr), (*functionStack.top())[(yyvsp[0].name)]);}
+#line 106 "parser.y"
+                          {(yyval.nPtr) = new lab3::OperationNode(' ', 2, (yyvsp[-1].nPtr), (*dr.functionStack.top())[(yyvsp[0].name)]);}
 #line 1557 "parser.tab.c"
     break;
 
   case 35: /* parameters: parameters id '[' indexes ']'  */
-#line 113 "parser.y"
-                                         {(yyval.nPtr) = new lab3::OperationNode(' ', 3, (yyvsp[-4].nPtr), (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
+#line 107 "parser.y"
+                                         {(yyval.nPtr) = new lab3::OperationNode(' ', 3, (yyvsp[-4].nPtr), (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
 #line 1563 "parser.tab.c"
     break;
 
   case 36: /* parameters: id  */
-#line 114 "parser.y"
-              { (yyval.nPtr) = (*functionStack.top())[(yyvsp[0].name)]; }
+#line 108 "parser.y"
+              { (yyval.nPtr) = (*dr.functionStack.top())[(yyvsp[0].name)]; }
 #line 1569 "parser.tab.c"
     break;
 
   case 37: /* parameters: id '[' indexes ']'  */
-#line 115 "parser.y"
-                              {(yyval.nPtr) = new lab3::OperationNode('[', 2, (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
+#line 109 "parser.y"
+                              {(yyval.nPtr) = new lab3::OperationNode('[', 2, (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
 #line 1575 "parser.tab.c"
     break;
 
   case 38: /* value: INTEGER  */
-#line 117 "parser.y"
+#line 111 "parser.y"
                {(yyval.nPtr) = (yyvsp[0].intVal);}
 #line 1581 "parser.tab.c"
     break;
 
   case 39: /* value: BOOL  */
-#line 118 "parser.y"
+#line 112 "parser.y"
             {(yyval.nPtr) = (yyvsp[0].boolVal);}
 #line 1587 "parser.tab.c"
     break;
 
   case 40: /* expr: arith  */
-#line 120 "parser.y"
+#line 114 "parser.y"
             {(yyval.nPtr) = (yyvsp[0].nPtr);}
 #line 1593 "parser.tab.c"
     break;
 
   case 41: /* expr: logic  */
-#line 121 "parser.y"
+#line 115 "parser.y"
             {(yyval.nPtr) = (yyvsp[0].nPtr);}
 #line 1599 "parser.tab.c"
     break;
 
   case 43: /* arith: '(' arith ')'  */
-#line 124 "parser.y"
+#line 118 "parser.y"
                      {(yyval.nPtr) = (yyvsp[-1].nPtr);}
 #line 1605 "parser.tab.c"
     break;
 
   case 44: /* arith: id '[' indexes ']'  */
-#line 125 "parser.y"
-                          {(yyval.nPtr) = new lab3::OperationNode('[', 1, (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
+#line 119 "parser.y"
+                          {(yyval.nPtr) = new lab3::OperationNode('[', 1, (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
 #line 1611 "parser.tab.c"
     break;
 
   case 45: /* arith: REDUCE id '[' INTEGER ']'  */
-#line 126 "parser.y"
-                                 {(yyval.nPtr) = new lab3::OperationNode(REDUCE, 2, (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].intVal));}
+#line 120 "parser.y"
+                                 {(yyval.nPtr) = new lab3::OperationNode(REDUCE, 2, (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].intVal));}
 #line 1617 "parser.tab.c"
     break;
 
   case 46: /* arith: EXTEND id '[' INTEGER ']'  */
-#line 127 "parser.y"
-                                 {(yyval.nPtr) = new lab3::OperationNode(EXTEND, 2, (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].intVal));}
+#line 121 "parser.y"
+                                 {(yyval.nPtr) = new lab3::OperationNode(EXTEND, 2, (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].intVal));}
 #line 1623 "parser.tab.c"
     break;
 
   case 47: /* arith: DIGITIZE id  */
-#line 128 "parser.y"
-                   {(yyval.nPtr) = new lab3::OperationNode(DIGITIZE, 1, (*functionStack.top())[(yyvsp[0].name)]);}
+#line 122 "parser.y"
+                   {(yyval.nPtr) = new lab3::OperationNode(DIGITIZE, 1, (*dr.functionStack.top())[(yyvsp[0].name)]);}
 #line 1629 "parser.tab.c"
     break;
 
   case 48: /* arith: SIZE id  */
-#line 129 "parser.y"
-               {(yyval.nPtr) = new lab3::OperationNode(SIZE, 1, (*functionStack.top())[(yyvsp[0].name)]);}
+#line 123 "parser.y"
+               {(yyval.nPtr) = new lab3::OperationNode(SIZE, 1, (*dr.functionStack.top())[(yyvsp[0].name)]);}
 #line 1635 "parser.tab.c"
     break;
 
   case 49: /* arith: arith '+' arith  */
-#line 130 "parser.y"
+#line 124 "parser.y"
                        {(yyval.nPtr) = new lab3::OperationNode('+', 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
 #line 1641 "parser.tab.c"
     break;
 
   case 50: /* arith: arith '-' arith  */
-#line 131 "parser.y"
+#line 125 "parser.y"
                        {(yyval.nPtr) = new lab3::OperationNode('-', 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
 #line 1647 "parser.tab.c"
     break;
 
   case 51: /* arith: arith '*' arith  */
-#line 132 "parser.y"
+#line 126 "parser.y"
                        {(yyval.nPtr) = new lab3::OperationNode('*', 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
 #line 1653 "parser.tab.c"
     break;
 
   case 52: /* arith: arith '/' arith  */
-#line 133 "parser.y"
+#line 127 "parser.y"
                        {(yyval.nPtr) = new lab3::OperationNode('/', 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
 #line 1659 "parser.tab.c"
     break;
 
   case 53: /* arith: GET ENVIRONMENT  */
-#line 134 "parser.y"
+#line 128 "parser.y"
                        {(yyval.nPtr) = new lab3::OperationNode(ENVIRONMENT, 0);}
 #line 1665 "parser.tab.c"
     break;
 
   case 54: /* arith: GET id  */
-#line 135 "parser.y"
-              {(yyval.nPtr) = lastCall.at((yyvsp[0].name));}
+#line 129 "parser.y"
+              {(yyval.nPtr) = dr.lastCall.at((yyvsp[0].name));}
 #line 1671 "parser.tab.c"
     break;
 
   case 55: /* logic: '(' logic ')'  */
-#line 137 "parser.y"
+#line 131 "parser.y"
                      {(yyval.nPtr) = (yyvsp[-1].nPtr);}
 #line 1677 "parser.tab.c"
     break;
 
   case 56: /* logic: logic AND logic  */
-#line 138 "parser.y"
+#line 132 "parser.y"
                        {(yyval.nPtr) = new lab3::OperationNode(AND, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
 #line 1683 "parser.tab.c"
     break;
 
   case 57: /* logic: BOOL  */
-#line 139 "parser.y"
+#line 133 "parser.y"
             {(yyval.nPtr) = (yyvsp[0].boolVal);}
 #line 1689 "parser.tab.c"
     break;
 
   case 58: /* logic: id  */
-#line 140 "parser.y"
-          {(yyval.nPtr) = (*functionStack.top())[(yyvsp[0].name)];}
+#line 134 "parser.y"
+          {(yyval.nPtr) = (*dr.functionStack.top())[(yyvsp[0].name)];}
 #line 1695 "parser.tab.c"
     break;
 
   case 59: /* logic: id '[' indexes ']'  */
-#line 141 "parser.y"
-                          {(yyval.nPtr) = new lab3::OperationNode('[', 1, (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
+#line 135 "parser.y"
+                          {(yyval.nPtr) = new lab3::OperationNode('[', 1, (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].nPtr));}
 #line 1701 "parser.tab.c"
     break;
 
   case 60: /* logic: NOT logic  */
-#line 142 "parser.y"
+#line 136 "parser.y"
                  {(yyval.nPtr) = new lab3::OperationNode(NOT, 1, (yyvsp[0].nPtr));}
 #line 1707 "parser.tab.c"
     break;
 
   case 61: /* logic: LOGITIZE id  */
-#line 143 "parser.y"
-                   {(yyval.nPtr) = new lab3::OperationNode(LOGITIZE, 1, (*functionStack.top())[(yyvsp[0].name)]);}
+#line 137 "parser.y"
+                   {(yyval.nPtr) = new lab3::OperationNode(LOGITIZE, 1, (*dr.functionStack.top())[(yyvsp[0].name)]);}
 #line 1713 "parser.tab.c"
     break;
 
   case 62: /* logic: MXEQ arith  */
-#line 144 "parser.y"
+#line 138 "parser.y"
                   {(yyval.nPtr) = new lab3::OperationNode(MXEQ, 1, (yyvsp[0].nPtr));}
 #line 1719 "parser.tab.c"
     break;
 
   case 63: /* logic: MXLT arith  */
-#line 145 "parser.y"
+#line 139 "parser.y"
                   {(yyval.nPtr) = new lab3::OperationNode(MXLT, 1, (yyvsp[0].nPtr));}
 #line 1725 "parser.tab.c"
     break;
 
   case 64: /* logic: MXGT arith  */
-#line 146 "parser.y"
+#line 140 "parser.y"
                   {(yyval.nPtr) = new lab3::OperationNode(MXGT, 1, (yyvsp[0].nPtr));}
 #line 1731 "parser.tab.c"
     break;
 
   case 65: /* logic: MXLTE arith  */
-#line 147 "parser.y"
+#line 141 "parser.y"
                    {(yyval.nPtr) = new lab3::OperationNode(MXLTE, 1, (yyvsp[0].nPtr));}
 #line 1737 "parser.tab.c"
     break;
 
   case 66: /* logic: MXGTE arith  */
-#line 148 "parser.y"
+#line 142 "parser.y"
                    {(yyval.nPtr) = new lab3::OperationNode(MXGTE, 1, (yyvsp[0].nPtr));}
 #line 1743 "parser.tab.c"
     break;
 
   case 67: /* logic: ELEQ arith  */
-#line 149 "parser.y"
+#line 143 "parser.y"
                   {(yyval.nPtr) = new lab3::OperationNode(ELEQ, 1, (yyvsp[0].nPtr));}
 #line 1749 "parser.tab.c"
     break;
 
   case 68: /* logic: ELLT arith  */
-#line 150 "parser.y"
+#line 144 "parser.y"
                   {(yyval.nPtr) = new lab3::OperationNode(ELLT, 1, (yyvsp[0].nPtr));}
 #line 1755 "parser.tab.c"
     break;
 
   case 69: /* logic: ELGT arith  */
-#line 151 "parser.y"
+#line 145 "parser.y"
                   {(yyval.nPtr) = new lab3::OperationNode(ELGT, 1, (yyvsp[0].nPtr));}
 #line 1761 "parser.tab.c"
     break;
 
   case 70: /* logic: ELLTE arith  */
-#line 152 "parser.y"
+#line 146 "parser.y"
                    {(yyval.nPtr) = new lab3::OperationNode(ELLTE, 1, (yyvsp[0].nPtr));}
 #line 1767 "parser.tab.c"
     break;
 
   case 71: /* logic: ELGTE arith  */
-#line 153 "parser.y"
+#line 147 "parser.y"
                    {(yyval.nPtr) = new lab3::OperationNode(ELGTE, 1, (yyvsp[0].nPtr));}
 #line 1773 "parser.tab.c"
     break;
 
   case 72: /* logic: MXFALSE logic  */
-#line 154 "parser.y"
+#line 148 "parser.y"
                      {(yyval.nPtr) = new lab3::OperationNode(MXFALSE, 1, (yyvsp[0].nPtr));}
 #line 1779 "parser.tab.c"
     break;
 
   case 73: /* logic: MXTRUE logic  */
-#line 155 "parser.y"
+#line 149 "parser.y"
                     {(yyval.nPtr) = new lab3::OperationNode(MXTRUE, 1, (yyvsp[0].nPtr));}
 #line 1785 "parser.tab.c"
     break;
 
   case 74: /* logic: REDUCE id '[' INTEGER ']'  */
-#line 156 "parser.y"
-                                 {(yyval.nPtr) = new lab3::OperationNode(REDUCE, 2, (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].intVal));}
+#line 150 "parser.y"
+                                 {(yyval.nPtr) = new lab3::OperationNode(REDUCE, 2, (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].intVal));}
 #line 1791 "parser.tab.c"
     break;
 
   case 75: /* logic: EXTEND id '[' INTEGER ']'  */
-#line 157 "parser.y"
-                                 {(yyval.nPtr) = new lab3::OperationNode(EXTEND, 2, (*functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].intVal));}
+#line 151 "parser.y"
+                                 {(yyval.nPtr) = new lab3::OperationNode(EXTEND, 2, (*dr.functionStack.top())[(yyvsp[-3].name)], (yyvsp[-1].intVal));}
 #line 1797 "parser.tab.c"
     break;
 

@@ -9,6 +9,7 @@
 #include <vector>
 #include <cstdarg>
 #include "AbstractNode.h"
+#include "Driver.h"
 
 namespace lab3 {
     class OperationNode : public AbstractNode {

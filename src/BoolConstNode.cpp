@@ -36,3 +36,15 @@ lab3::AbstractVariableNode *lab3::BoolConstNode::and_(lab3::BoolConstNode *other
         throw std::runtime_error("type mismatch");
     return new BoolVariableNode("tmp", this->val && other->getVal());
 }
+
+lab3::AbstractVariableNode *lab3::BoolConstNode::not_() {
+    return new BoolVariableNode("tmp", !val);
+}
+
+lab3::AbstractVariableNode *lab3::BoolConstNode::mxfalse() {
+    return new BoolVariableNode("tmp", !val);
+}
+
+lab3::AbstractVariableNode *lab3::BoolConstNode::mxtrue() {
+    return new BoolVariableNode("tmp", val);
+}
