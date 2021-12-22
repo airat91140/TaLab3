@@ -19,7 +19,7 @@ namespace lab3 {
     public:
         inline int getSize() const{return array.size();}
 
-        BoolArrayVariableNode(const std::string &name, bool val, std::list<int> &dims);
+        BoolArrayVariableNode(const std::string &name, bool val, std::list<int> dims);
 
         bool inline isArray() override { return true; }
 

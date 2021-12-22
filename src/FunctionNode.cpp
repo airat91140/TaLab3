@@ -3,6 +3,9 @@
 //
 
 #include "FunctionNode.h"
+#include "ParameterNode.h"
+#include "OperationNode.h"
+
 
 const std::string &lab3::FunctionNode::getName() const {
     return name;
@@ -15,7 +18,7 @@ const lab3::AbstractNode *lab3::FunctionNode::operator[](const std::string &name
 }
 
 lab3::AbstractNode *lab3::FunctionNode::clone() {
-    return new FunctionNode(this->name, this->parCount, this->kid->clone());
+    return new FunctionNode(this->name, this->parameters, this->kid->clone());
 }
 
 lab3::AbstractNode *lab3::FunctionNode::operator[](const std::string &name) {
@@ -26,52 +29,57 @@ lab3::AbstractNode *lab3::FunctionNode::operator[](const std::string &name) {
 }
 
 int lab3::FunctionNode::getParCount() const {
-    return parCount;
+    return parameters.size();
 }
 
 lab3::AbstractNode *lab3::FunctionNode::getKid() const {
     return kid;
 }
 
-lab3::FunctionNode::FunctionNode(const std::string &name, AbstractNode *parameters, lab3::AbstractNode *kid) : name(name), kid(kid) {
+lab3::FunctionNode::FunctionNode(const std::string &name, AbstractNode *pars, lab3::AbstractNode *kid) : name(name), kid(kid) {
     nodeType = FUNCTION;
-    parCount = parametersCount(parameters);
+    auto iter = pars;
+    while (iter->nodeType == OPERATION) {
+        parameters.push_front(((AbstractVariableNode *)(*(OperationNode *)iter)[1])->getName());
+        iter = (*(OperationNode *)iter)[0];
+    }
+    parameters.push_front(((AbstractVariableNode *)iter)->getName());
 }
 
 lab3::AbstractNode *lab3::FunctionNode::exec(lab3::AbstractNode *node) {
-    auto lst = getParametersList(node);
-    for (auto &i : lst)
-        varTable.insert({i->getName(), i});
-    kid->exec(nullptr);
-    return nullptr;
-}
-
-std::list<lab3::AbstractVariableNode *> lab3::FunctionNode::getParametersList(lab3::AbstractNode *root) {
-    AbstractNode *iter = root;
-    std::list<AbstractVariableNode *> result;
-    while (iter->nodeType == OPERATION) {
-        result.push_front((AbstractVariableNode *)((*(OperationNode *)iter)[1]));
+    auto iter = node;
+    auto i = parameters.rbegin();
+    while (iter->nodeType == OPERATION ) {
+        delete varTable.at(*i);
+        varTable.at(*i) = (AbstractVariableNode *)((*(OperationNode *)iter)[1]->exec(nullptr));
+        ++i;
         iter = (*(OperationNode *)iter)[0];
+        if (i == parameters.rend())
+            throw std::runtime_error("Invalid number of arguments");
     }
-    result.push_front((AbstractVariableNode *)((*(OperationNode *)iter)[0]));
-    if (result.size() != parCount)
+    varTable.at(*i) = (AbstractVariableNode *)(iter->exec(nullptr));
+    ++i;
+    if (i != parameters.rend())
         throw std::runtime_error("Invalid number of arguments");
-    return result;
-}
-
-lab3::FunctionNode::~FunctionNode() {
-
-}
-
-int lab3::FunctionNode::parametersCount(lab3::AbstractNode *node) {
-    int count = 0;
-    AbstractNode *iter = node;
-    while (iter->nodeType == OPERATION) {
-        ++count;
-    }
-    return ++count;
+    return kid->exec(nullptr);
 }
 
 std::ostream &lab3::FunctionNode::print(std::ostream &ostream) const {
     return ostream;
+}
+
+lab3::FunctionNode::FunctionNode(const std::string &name, std::list<std::string> pars, lab3::AbstractNode *kid) : name(name), parameters(pars), kid(kid){
+    nodeType = FUNCTION;
+}
+
+lab3::FunctionNode::~FunctionNode() {
+    for (auto &it: varTable) {
+        if (std::find(parameters.begin(), parameters.end(), it.second->getName()) == parameters.end())
+            delete it.second;
+    }
+    delete kid;
+}
+
+bool lab3::FunctionNode::addVar(const std::string &name, AbstractVariableNode *var) {
+    return varTable.insert({name, var}).second;
 }

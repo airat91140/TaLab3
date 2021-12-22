@@ -10,7 +10,7 @@ void lab3::BoolVariableNode::setVal(bool val) {
     BoolVariableNode::val = val;
 }
 
-lab3::BoolVariableNode::BoolVariableNode(const std::string &name, int val) : BoolConstNode(val) {
+lab3::BoolVariableNode::BoolVariableNode(const std::string &name, bool val) : BoolConstNode(val) {
     this->name = name;
     this->val = val;
     this->nodeType = BOOL_VAR;

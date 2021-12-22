@@ -1,9 +1,12 @@
 %{
-#include "parser.tab.c"
 #include "IntConstNode.h"
 #include "BoolConstNode.h"
-void yyerror(char *);
+#include "parser.tab.h"
+
+char buf[1024];
 %}
+
+%option yylineno
 
 %%
 [ \t]+ ;
@@ -53,11 +56,11 @@ TRUE|FALSE {yylval.boolVal = new lab3::BoolConstNode(yytext); return BOOL;}
 "MXFALSE" return MXFALSE;
 "MXTRUE" return MXTRUE;
 
-[a-zA-Z][a-zA-Z0-9]+ {yylval.name = yytext; return id;}
+[a-zA-Z][a-zA-Z0-9]* {yylval.name = new std::string(yytext); return id;}
 
-[-()+*/\n\[\]] return *yytext;
+[-\(\)+*/\n\[\]=] return *yytext;
 
-. yyerror("Unknown character");
+. yyerror(yytext);
 %%
 
 int yywrap(void) {

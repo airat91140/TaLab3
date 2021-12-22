@@ -8,6 +8,7 @@
 #include "AbstractNode.h"
 
 #include <string>
+#include <list>
 
 namespace lab3 {
     class AbstractVariableNode : public AbstractNode {
@@ -23,6 +24,8 @@ namespace lab3 {
         AbstractNode *exec(AbstractNode *node) override = 0;
 
         ~AbstractVariableNode() override = default;
+
+        static std::list<int> makeDims(AbstractNode *root);
     };
 }
 

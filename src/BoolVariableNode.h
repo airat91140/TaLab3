@@ -18,7 +18,7 @@ namespace lab3 {
     public:
         virtual void countBools(std::pair<int, int> &cnt);
 
-        BoolVariableNode(const std::string &name, int val);
+        BoolVariableNode(const std::string &name, bool val);
 
         void setVal(bool val);
 

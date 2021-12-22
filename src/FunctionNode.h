@@ -11,15 +11,16 @@
 
 #include "AbstractNode.h"
 #include "AbstractVariableNode.h"
-#include "OperationNode.h"
 
 namespace lab3 {
     class FunctionNode : public AbstractNode{
     private:
         std::string name;
-        int parCount;
         std::map<std::string, AbstractVariableNode *> varTable;
         AbstractNode *kid;
+        std::list<std::string> parameters; // contains ordered parameters
+        FunctionNode(const std::string &name, std::list<std::string> pars, AbstractNode *kid);
+
     public:
         int getParCount() const;
 
@@ -37,13 +38,11 @@ namespace lab3 {
 
         AbstractNode *exec(AbstractNode *node) override;
 
-        std::list<AbstractVariableNode *> getParametersList(AbstractNode *root);
-
-        int parametersCount(AbstractNode *);
-
         ~FunctionNode() override;
 
         std::ostream &print(std::ostream &ostream) const override;
+
+        bool addVar(const std::string &name, lab3::AbstractVariableNode *var);
     };
 }
 

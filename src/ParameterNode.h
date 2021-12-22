@@ -5,16 +5,18 @@
 #ifndef LAB3_PARAMETERNODE_H
 #define LAB3_PARAMETERNODE_H
 
-#include "AbstractNode.h"
+#include "AbstractVariableNode.h"
 
 #include <string>
 
 namespace lab3 {
-    class ParameterNode : public AbstractNode {
+    class ParameterNode : public AbstractVariableNode {
     private:
-        std::string name;
+        AbstractVariableNode *var;
     public:
-        ParameterNode(const std::string &name);
+        explicit ParameterNode(const std::string &name, AbstractVariableNode *kid = nullptr);
+
+        void setVar(AbstractVariableNode *var);
 
         AbstractNode *clone() override;
 
@@ -23,6 +25,10 @@ namespace lab3 {
         ~ParameterNode() override = default;
 
         std::ostream &print(std::ostream &ostream) const override;
+
+        AbstractVariableNode *getVar() const;
+
+        bool isArray() override;
     };
 }
 

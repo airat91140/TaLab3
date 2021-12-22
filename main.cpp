@@ -1,6 +1,15 @@
 #include <iostream>
+#include <Driver.h>
+#include "parser.tab.h"
+
+extern FILE *yyin;
+int yyparse (void);
+
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    yydebug = 1;
+    yyin = fopen ("./test.txt", "r");
+    yyparse();
+    fclose (yyin);
     return 0;
 }

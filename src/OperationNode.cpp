@@ -2,8 +2,18 @@
 // Created by airat on 08.12.2021.
 //
 
+#include <map>
+#include <stack>
+#include <iostream>
 #include "OperationNode.h"
-#include "parser.tab.c"
+#include "FunctionNode.h"
+#include "BoolConstNode.h"
+#include "IntVariableNode.h"
+
+extern std::map<std::string, lab3::AbstractNode *> functionsTable;
+extern std::map<std::string, lab3::AbstractNode *> lastCall;
+extern std::stack<lab3::FunctionNode *> functionStack;
+extern bool hasResult;
 
 lab3::OperationNode::OperationNode(int operTag, int operNum, ...) {
     this->nodeType = OPERATION;
@@ -68,7 +78,7 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
             } else throw std::runtime_error("Invalid number of arguments");
             return nullptr;
         case PRINT:
-            std::cout << *children.at(0);
+            std::cout << children.at(0);
             return nullptr;
         case MOVE:
             break;
@@ -79,17 +89,15 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
         case ENVIRONMENT:
             break;
         case RESULT:
-            dr.hasResult = true;
+            hasResult = true;
             return nullptr;
         case DO:
             children.at(0)->exec(children.at(1));
-            if (!dr.hasResult)
+            if (!hasResult)
                 throw std::runtime_error("No RESULT");
-            dr.hasResult = false;
+            hasResult = false;
         case PLEASE:
             break;
-        case VAR:
-
         case THANKS:
 
         case DIGITIZE:
@@ -217,7 +225,7 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
             return nullptr;
         case '\n':
             children.at(0)->exec(nullptr);
-            if (dr.hasResult)
+            if (hasResult)
                 return nullptr;
             return children.at(1)->exec(nullptr);
         case ',':
@@ -267,20 +275,17 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
                 throw std::runtime_error("Type mismatch");
             break;
         case '=':
-
+            break;
         case '[':
-
-        default:
-            throw std::runtime_error("Unknown operation");
+            break;
     }
-}
-
-lab3::OperationNode::~OperationNode() {
-    for (int i = 0; i < operNum; ++i) {
-        delete children.at(i);
-    }
+    return nullptr;
 }
 
 std::ostream &lab3::OperationNode::print(std::ostream &ostream) const {
     return ostream;
+}
+
+lab3::OperationNode::~OperationNode() {
+
 }

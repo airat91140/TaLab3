@@ -6,7 +6,7 @@
 #include "IntArrayVariableNode.h"
 
 
-lab3::BoolArrayVariableNode::BoolArrayVariableNode(const::std::string &name, bool val, std::list<int> &dims) : BoolVariableNode(name, val) {
+lab3::BoolArrayVariableNode::BoolArrayVariableNode(const::std::string &name, bool val, std::list<int> dims) : BoolVariableNode(name, val) {
     nodeType = BOOL_ARR;
     if (dims.size() == 1)
         for (int i = 0; i < dims.front(); ++i)

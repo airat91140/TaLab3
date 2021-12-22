@@ -9,21 +9,20 @@
 #include <map>
 #include <stack>
 #include <vector>
-#include "FunctionNode.h"
 
 namespace lab3 {
     class Driver {
     public:
-        Driver(FILE *in);
-        enum dir {U, L, R, D};
-        FILE *file;
-        std::map<std::string, lab3::AbstractNode *> functionsTable;
-        std::map<std::string, lab3::AbstractNode *> lastCall;
-        std::vector<std::vector<bool> > labyrinth;
-        std::pair<int, int> position;
-        dir curDir;
-        std::stack<lab3::FunctionNode *> functionStack;
-        bool hasResult = false;
+//        Driver(const char *str);
+//        Driver();
+//        enum dir {U, L, R, D};
+//        static std::map<std::string, lab3::AbstractNode *> functionsTable;
+//        static std::map<std::string, lab3::AbstractNode *> lastCall;
+//        static std::vector<std::vector<bool> > labyrinth;
+//        static std::pair<int, int> position;
+//        static dir curDir;
+//        static std::stack<FunctionNode *> functionStack;
+//        static bool hasResult;
     };
 }
 

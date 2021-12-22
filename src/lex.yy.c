@@ -162,8 +162,27 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
     
-    #define YY_LESS_LINENO(n)
-    #define YY_LINENO_REWIND_TO(ptr)
+    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
+     *       access to the local variable yy_act. Since yyless() is a macro, it would break
+     *       existing scanners that call yyless() from OUTSIDE yylex.
+     *       One obvious solution it to make yy_act a global. I tried that, and saw
+     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
+     *       normally declared as a register variable-- so it is not worth it.
+     */
+    #define  YY_LESS_LINENO(n) \
+            do { \
+                int yyl;\
+                for ( yyl = n; yyl < yyleng; ++yyl )\
+                    if ( yytext[yyl] == '\n' )\
+                        --yylineno;\
+            }while(0)
+    #define YY_LINENO_REWIND_TO(dst) \
+            do {\
+                const char *p;\
+                for ( p = yy_cp-1; p >= (dst); --p)\
+                    if ( *p == '\n' )\
+                        --yylineno;\
+            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -363,8 +382,8 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[177] =
     {   0,
         0,    0,   45,   43,    1,   42,   42,   42,    5,    4,
-        4,    5,    5,    5,    5,    5,   43,   43,   43,   43,
-       43,   43,   43,   43,   43,   43,    1,    5,    4,    4,
+        4,    5,    5,    5,    5,    5,   41,   41,   41,   41,
+       41,   41,   41,   41,   41,   41,    1,    5,    4,    4,
         5,    3,    4,    5,    4,    4,    4,    4,    5,   41,
        41,   41,   19,   41,   41,   41,    5,   41,   41,   41,
        41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
@@ -391,7 +410,7 @@ static const YY_CHAR yy_ec[256] =
         1,    2,    1,    1,    1,    1,    1,    1,    1,    4,
         4,    4,    4,    1,    5,    1,    4,    6,    7,    7,
         7,    7,    7,    7,    7,    8,    8,    1,    1,    1,
-        1,    1,    1,    1,    9,   10,   11,   12,   13,   14,
+        4,    1,    1,    1,    9,   10,   11,   12,   13,   14,
        15,   16,   17,   18,   19,   20,   21,   22,   23,   24,
        25,   26,   27,   28,   29,   30,   31,   32,   33,   34,
         4,    1,    4,    1,    1,    1,   18,   18,   18,   18,
@@ -533,6 +552,13 @@ static const flex_int16_t yy_chk[255] =
       176,  176,  176,  176
     } ;
 
+/* Table of booleans, true if rule could match eol. */
+static const flex_int32_t yy_rule_can_match_eol[45] =
+    {   0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 1, 0, 0,     };
+
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
 
@@ -549,12 +575,13 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "flex.l"
 #line 2 "flex.l"
-#include "parser.tab.c"
 #include "IntConstNode.h"
 #include "BoolConstNode.h"
-void yyerror(char *);
-#line 557 "lex.yy.c"
-#line 558 "lex.yy.c"
+#include "parser.tab.h"
+
+char buf[1024];
+#line 584 "lex.yy.c"
+#line 585 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -771,9 +798,9 @@ YY_DECL
 		}
 
 	{
-#line 8 "flex.l"
+#line 11 "flex.l"
 
-#line 777 "lex.yy.c"
+#line 804 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -819,6 +846,16 @@ yy_find_action:
 
 		YY_DO_BEFORE_ACTION;
 
+		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
+			{
+			int yyl;
+			for ( yyl = 0; yyl < yyleng; ++yyl )
+				if ( yytext[yyl] == '\n' )
+					
+    yylineno++;
+;
+			}
+
 do_action:	/* This label is used only to access EOF actions. */
 
 		switch ( yy_act )
@@ -832,226 +869,226 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 9 "flex.l"
+#line 12 "flex.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 11 "flex.l"
+#line 14 "flex.l"
 {yylval.boolVal = new lab3::BoolConstNode(yytext); return BOOL;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "flex.l"
+#line 16 "flex.l"
 {yylval.intVal = new lab3::IntConstNode(yytext, 8); return INTEGER;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 15 "flex.l"
+#line 18 "flex.l"
 {yylval.intVal = new lab3::IntConstNode(yytext, 10); return INTEGER;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 17 "flex.l"
+#line 20 "flex.l"
 {yylval.intVal = new lab3::IntConstNode(yytext, 16); return INTEGER;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 19 "flex.l"
+#line 22 "flex.l"
 return SWITCH;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 20 "flex.l"
+#line 23 "flex.l"
 return FOR;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 21 "flex.l"
+#line 24 "flex.l"
 return PRINT; 
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 22 "flex.l"
+#line 25 "flex.l"
 return BOUNDARY;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 23 "flex.l"
+#line 26 "flex.l"
 return STEP;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 24 "flex.l"
+#line 27 "flex.l"
 return MOVE;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 25 "flex.l"
+#line 28 "flex.l"
 return ROTATE;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 26 "flex.l"
+#line 29 "flex.l"
 return LEFT;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 27 "flex.l"
+#line 30 "flex.l"
 return RIGHT;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 28 "flex.l"
+#line 31 "flex.l"
 return GET;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 29 "flex.l"
+#line 32 "flex.l"
 return ENVIRONMENT;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 30 "flex.l"
+#line 33 "flex.l"
 return TASK;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 31 "flex.l"
+#line 34 "flex.l"
 return RESULT;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 32 "flex.l"
+#line 35 "flex.l"
 return DO;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 33 "flex.l"
+#line 36 "flex.l"
 return PLEASE;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 34 "flex.l"
-return VAR; return VAR;
+#line 37 "flex.l"
+return VAR;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 35 "flex.l"
+#line 38 "flex.l"
 return THANKS;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 37 "flex.l"
+#line 40 "flex.l"
 return DIGITIZE;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 38 "flex.l"
+#line 41 "flex.l"
 return REDUCE;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 39 "flex.l"
+#line 42 "flex.l"
 return EXTEND;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 40 "flex.l"
+#line 43 "flex.l"
 return SIZE;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 41 "flex.l"
+#line 44 "flex.l"
 return NOT;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 42 "flex.l"
+#line 45 "flex.l"
 return LOGITIZE;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 43 "flex.l"
+#line 46 "flex.l"
 return MXEQ;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 44 "flex.l"
+#line 47 "flex.l"
 return MXLT;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 45 "flex.l"
+#line 48 "flex.l"
 return MXGT;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 46 "flex.l"
+#line 49 "flex.l"
 return MXLTE;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 47 "flex.l"
+#line 50 "flex.l"
 return MXGTE;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 48 "flex.l"
+#line 51 "flex.l"
 return ELEQ;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 49 "flex.l"
+#line 52 "flex.l"
 return ELLT;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 50 "flex.l"
+#line 53 "flex.l"
 return ELGT;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 51 "flex.l"
+#line 54 "flex.l"
 return ELLTE;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 52 "flex.l"
+#line 55 "flex.l"
 return ELGTE;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 53 "flex.l"
+#line 56 "flex.l"
 return MXFALSE;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 54 "flex.l"
+#line 57 "flex.l"
 return MXTRUE;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 56 "flex.l"
-{yylval.name = yytext; return id;}
+#line 59 "flex.l"
+{yylval.name = new std::string(yytext); return id;}
 	YY_BREAK
 case 42:
 /* rule 42 can match eol */
 YY_RULE_SETUP
-#line 58 "flex.l"
+#line 61 "flex.l"
 return *yytext;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 60 "flex.l"
-yyerror("Unknown character");
+#line 63 "flex.l"
+yyerror(yytext);
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 61 "flex.l"
+#line 64 "flex.l"
 ECHO;
 	YY_BREAK
-#line 1055 "lex.yy.c"
+#line 1092 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1419,6 +1456,10 @@ static int yy_get_next_buffer (void)
 
 	*--yy_cp = (char) c;
 
+    if ( c == '\n' ){
+        --yylineno;
+    }
+
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
@@ -1495,6 +1536,11 @@ static int yy_get_next_buffer (void)
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
+
+	if ( c == '\n' )
+		
+    yylineno++;
+;
 
 	return c;
 }
@@ -1962,6 +2008,9 @@ static int yy_init_globals (void)
      * This function is called from yylex_destroy(), so don't allocate here.
      */
 
+    /* We do not touch yylineno unless the option is enabled. */
+    yylineno =  1;
+    
     (yy_buffer_stack) = NULL;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
@@ -2056,7 +2105,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 61 "flex.l"
+#line 64 "flex.l"
 
 
 int yywrap(void) {

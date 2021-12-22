@@ -6,7 +6,7 @@
 #include "BoolArrayVariableNode.h"
 
 
-lab3::IntArrayVariableNode::IntArrayVariableNode(const ::std::string &name, int val,  std::list<int> &dims)
+lab3::IntArrayVariableNode::IntArrayVariableNode(const ::std::string &name, int val,  std::list<int> dims)
         : IntVariableNode(name, val) {
     nodeType = INT_ARR;
     if (dims.size() == 1)
@@ -132,6 +132,7 @@ lab3::IntArrayVariableNode::recursiveCompareM(lab3::IntArrayVariableNode::Averag
         }
         return cnt;
     }
+    return cnt;
 }
 
 lab3::AbstractVariableNode *lab3::IntArrayVariableNode::eleq() {
