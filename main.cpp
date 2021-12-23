@@ -7,7 +7,7 @@ extern FILE *yyin;
 
 
 int main() {
-    yydebug = 0;
+    yydebug = 1;
     yyin = fopen ("./test.txt", "r");
     yyparse();
     fclose (yyin);

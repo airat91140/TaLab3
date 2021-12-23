@@ -47,12 +47,12 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
     switch (operTag) {
         case FOR: {
             bool adding;
-            if ((children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_VAR)
-                && (children.at(1)->nodeType == INT_ARR || children.at(1)->nodeType == INT_VAR)
-                && (children.at(2)->nodeType == INT_ARR || children.at(2)->nodeType == INT_VAR)) {
+            if ((children.at(0)->exec(nullptr)->nodeType == INT_ARR || children.at(0)->exec(nullptr)->nodeType == INT_VAR)
+                && (children.at(1)->exec(nullptr)->nodeType == INT_ARR || children.at(1)->exec(nullptr)->nodeType == INT_VAR)
+                && (children.at(2)->exec(nullptr)->nodeType == INT_ARR || children.at(2)->exec(nullptr)->nodeType == INT_VAR)) {
                 while (dynamic_cast<IntVariableNode *>(children.at(0))->addInCycle(
-                        dynamic_cast<IntVariableNode *>(children.at(1)),
-                        dynamic_cast<IntVariableNode *>(children.at(2)))) {
+                        dynamic_cast<IntVariableNode *>(children.at(1)->exec(nullptr)),
+                        dynamic_cast<IntVariableNode *>(children.at(2)->exec(nullptr)))) {
                     children.at(3)->exec(nullptr);
                 }
             } else throw std::runtime_error("Type mismatch");
@@ -99,7 +99,7 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
             hasResult = true;
             return nullptr;
         case DO:
-            children.at(0)->exec(children.at(1));
+            children.at(0)->clone()->exec(children.at(1));
             if (!hasResult)
                 throw std::runtime_error("No RESULT");
             hasResult = false;
@@ -351,16 +351,16 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
         }
         case '=': {
             if (operNum == 2)
-                ((AbstractVariableNode *)children.at(0))->assign(dynamic_cast<AbstractVariableNode *>(children.at(1)->exec(nullptr)));
+                ((AbstractVariableNode *)children.at(0)->exec(nullptr))->assign(dynamic_cast<AbstractVariableNode *>(children.at(1)->exec(nullptr)));
             else if (operNum == 3)
-                ((AbstractVariableNode *)children.at(0))->assignAt(dynamic_cast<AbstractVariableNode *>(children.at(2)->exec(nullptr)), AbstractVariableNode::makeDims(children.at(1)));
+                ((AbstractVariableNode *)children.at(0)->exec(nullptr))->assignAt(dynamic_cast<AbstractVariableNode *>(children.at(2)->exec(nullptr)), AbstractVariableNode::makeDims(children.at(1)));
             return nullptr;
         }
         case '[': {
             if (children.at(0)->nodeType == INT_ARR)
-                return ((IntArrayVariableNode *)children.at(0))->get(AbstractVariableNode::makeDims(children.at(1)));
+                return ((IntArrayVariableNode *)children.at(0)->exec(nullptr))->get(AbstractVariableNode::makeDims(children.at(1)));
             else if (children.at(0)->nodeType == BOOL_ARR)
-                return ((BoolArrayVariableNode *)children.at(0))->get(AbstractVariableNode::makeDims(children.at(1)));
+                return ((BoolArrayVariableNode *)children.at(0)->exec(nullptr))->get(AbstractVariableNode::makeDims(children.at(1)));
             else throw std::runtime_error("Type mismatch");
         }
     }

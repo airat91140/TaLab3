@@ -65,7 +65,7 @@ TRUE|FALSE {yylloc.last_line = yylloc.first_line = yylineno;
 
 [a-zA-Z][a-zA-Z0-9]* {yylval.name = new std::string(yytext); yylloc.last_line = yylloc.first_line = yylineno; return id;}
 
-[-\(\)+*/\n\[\]=,] {yylloc.last_line = yylloc.first_line = yylineno; return *yytext;}
+[\-\(\)+*/\n\[\]=,] {yylloc.last_line = yylloc.first_line = yylineno; return *yytext;}
 
 . yyerror(yytext);
 %%

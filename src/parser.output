@@ -11,15 +11,12 @@ Terminals unused in grammar
 
 Rules useless in grammar
 
-   78 value: INTEGER
-   79      | BOOL
+   73 value: INTEGER
+   74      | BOOL
 
 
-State 64 conflicts: 1 shift/reduce
-State 152 conflicts: 6 reduce/reduce
-State 167 conflicts: 6 reduce/reduce
-State 168 conflicts: 6 reduce/reduce
-State 179 conflicts: 1 shift/reduce
+State 61 conflicts: 1 shift/reduce
+State 148 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -28,152 +25,145 @@ Grammar
 
     1 program: functions
 
-    2 functions: functions function
-    3          | ε
+    2 functions: functions '\n' function
+    3          | function
+    4          | '\n'
 
-    4 function: TASK id ids '\n' stmtsGroup
+    5 function: TASK id ids '\n' stmtsGroup
 
-    5 ids: ids id
-    6    | id
+    6 ids: ids id
+    7    | id
 
-    7 indexes: inds
-    8        | ε
+    8 indexes: inds
+    9        | ε
 
-    9 inds: inds ',' expr
-   10     | expr
+   10 inds: inds ',' expr
+   11     | expr
 
-   11 stmtsGroup: '(' '\n' stmts '\n' ')'
+   12 stmtsGroup: '(' '\n' stmts '\n' ')'
 
-   12 stmts: stmts '\n' stmt
-   13      | stmt
-   14      | stmts '\n'
-   15      | stmts '\n' error
+   13 stmts: stmts '\n' stmt
+   14      | stmt
+   15      | stmts '\n'
+   16      | stmts error
 
-   16 stmt: id '=' expr
-   17     | id '[' indexes ']' '=' expr
-   18     | VAR id '=' BOOL
-   19     | VAR id '[' indexes ']' '=' BOOL
-   20     | VAR id '=' INTEGER
-   21     | VAR id '[' indexes ']' '=' INTEGER
-   22     | FOR id BOUNDARY id STEP id stmtsGroup
-   23     | FOR id BOUNDARY id STEP id stmt
-   24     | SWITCH logic '\n' BOOL stmt
-   25     | SWITCH logic '\n' BOOL stmt BOOL stmt
-   26     | SWITCH logic '\n' BOOL stmt BOOL stmtsGroup
-   27     | SWITCH logic '\n' BOOL stmtsGroup
-   28     | SWITCH logic '\n' BOOL stmtsGroup BOOL stmt
-   29     | SWITCH logic '\n' BOOL stmtsGroup BOOL stmtsGroup
-   30     | ROTATE LEFT
-   31     | ROTATE RIGHT
-   32     | MOVE
-   33     | DO id parameters
-   34     | PLEASE stmt
-   35     | stmt THANKS
-   36     | PRINT expr
-   37     | RESULT id
+   17 stmt: id '=' expr
+   18     | id '[' indexes ']' '=' expr
+   19     | VAR id '=' BOOL
+   20     | VAR id '[' indexes ']' '=' BOOL
+   21     | VAR id '=' INTEGER
+   22     | VAR id '[' indexes ']' '=' INTEGER
+   23     | FOR id BOUNDARY id STEP id stmtsGroup
+   24     | FOR id BOUNDARY id STEP id stmt
+   25     | SWITCH expr '\n' BOOL stmt
+   26     | SWITCH expr '\n' BOOL stmt BOOL stmt
+   27     | SWITCH expr '\n' BOOL stmt BOOL stmtsGroup
+   28     | SWITCH expr '\n' BOOL stmtsGroup
+   29     | SWITCH expr '\n' BOOL stmtsGroup BOOL stmt
+   30     | SWITCH expr '\n' BOOL stmtsGroup BOOL stmtsGroup
+   31     | ROTATE LEFT
+   32     | ROTATE RIGHT
+   33     | MOVE
+   34     | DO id parameters
+   35     | PLEASE stmt
+   36     | stmt THANKS
+   37     | PRINT expr
+   38     | RESULT id
 
-   38 parameters: parameters id
-   39           | parameters id '[' indexes ']'
-   40           | id
-   41           | id '[' indexes ']'
+   39 parameters: parameters id
+   40           | parameters id '[' indexes ']'
+   41           | id
+   42           | id '[' indexes ']'
 
-   42 expr: arith
-   43     | logic
-
-   44 arith: INTEGER
-   45      | '(' arith ')'
-   46      | id '[' indexes ']'
-   47      | REDUCE id '[' INTEGER ']'
-   48      | EXTEND id '[' INTEGER ']'
-   49      | DIGITIZE id
-   50      | SIZE id
-   51      | arith '+' arith
-   52      | arith '-' arith
-   53      | arith '*' arith
-   54      | arith '/' arith
-   55      | GET ENVIRONMENT
-   56      | GET id
-
-   57 logic: '(' logic ')'
-   58      | logic AND logic
-   59      | BOOL
-   60      | id
-   61      | id '[' indexes ']'
-   62      | NOT logic
-   63      | LOGITIZE id
-   64      | MXEQ arith
-   65      | MXLT arith
-   66      | MXGT arith
-   67      | MXLTE arith
-   68      | MXGTE arith
-   69      | ELEQ arith
-   70      | ELLT arith
-   71      | ELGT arith
-   72      | ELLTE arith
-   73      | ELGTE arith
-   74      | MXFALSE logic
-   75      | MXTRUE logic
-   76      | REDUCE id '[' INTEGER ']'
-   77      | EXTEND id '[' INTEGER ']'
+   43 expr: INTEGER
+   44     | '(' expr ')'
+   45     | id
+   46     | id '[' indexes ']'
+   47     | REDUCE id '[' INTEGER ']'
+   48     | EXTEND id '[' INTEGER ']'
+   49     | DIGITIZE id
+   50     | SIZE id
+   51     | expr '+' expr
+   52     | expr '-' expr
+   53     | expr '*' expr
+   54     | expr '/' expr
+   55     | GET ENVIRONMENT
+   56     | GET id
+   57     | expr AND expr
+   58     | BOOL
+   59     | NOT expr
+   60     | LOGITIZE id
+   61     | MXEQ expr
+   62     | MXLT expr
+   63     | MXGT expr
+   64     | MXLTE expr
+   65     | MXGTE expr
+   66     | ELEQ expr
+   67     | ELLT expr
+   68     | ELGT expr
+   69     | ELLTE expr
+   70     | ELGTE expr
+   71     | MXFALSE expr
+   72     | MXTRUE expr
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '\n' (10) 4 11 12 14 15 24 25 26 27 28 29
-    '(' (40) 11 45 57
-    ')' (41) 11 45 57
+    '\n' (10) 2 4 5 12 13 15 25 26 27 28 29 30
+    '(' (40) 12 44
+    ')' (41) 12 44
     '*' (42) 53
     '+' (43) 51
-    ',' (44) 9
+    ',' (44) 10
     '-' (45) 52
     '/' (47) 54
-    '=' (61) 16 17 18 19 20 21
-    '[' (91) 17 19 21 39 41 46 47 48 61 76 77
-    ']' (93) 17 19 21 39 41 46 47 48 61 76 77
-    error (256) 15
+    '=' (61) 17 18 19 20 21 22
+    '[' (91) 18 20 22 40 42 46 47 48
+    ']' (93) 18 20 22 40 42 46 47 48
+    error (256) 16
     END (258)
-    INTEGER <intVal> (259) 20 21 44 47 48 76 77
-    BOOL <boolVal> (260) 18 19 24 25 26 27 28 29 59
-    id <name> (261) 4 5 6 16 17 18 19 20 21 22 23 33 37 38 39 40 41 46 47 48 49 50 56 60 61 63 76 77
-    SWITCH (262) 24 25 26 27 28 29
-    FOR (263) 22 23
-    PRINT (264) 36
-    BOUNDARY (265) 22 23
-    STEP (266) 22 23
-    MOVE (267) 32
-    ROTATE (268) 30 31
-    LEFT (269) 30
-    RIGHT (270) 31
+    INTEGER <intVal> (259) 21 22 43 47 48
+    BOOL <boolVal> (260) 19 20 25 26 27 28 29 30 58
+    id <name> (261) 5 6 7 17 18 19 20 21 22 23 24 34 38 39 40 41 42 45 46 47 48 49 50 56 60
+    SWITCH (262) 25 26 27 28 29 30
+    FOR (263) 23 24
+    PRINT (264) 37
+    BOUNDARY (265) 23 24
+    STEP (266) 23 24
+    MOVE (267) 33
+    ROTATE (268) 31 32
+    LEFT (269) 31
+    RIGHT (270) 32
     GET (271) 55 56
     ENVIRONMENT (272) 55
-    TASK (273) 4
-    RESULT (274) 37
-    DO (275) 33
-    PLEASE (276) 34
-    VAR (277) 18 19 20 21
+    TASK (273) 5
+    RESULT (274) 38
+    DO (275) 34
+    PLEASE (276) 35
+    VAR (277) 19 20 21 22
     SWITCHX (278)
     PLSX (279)
-    THANKS (280) 35
-    AND (281) 58
+    THANKS (280) 36
+    AND (281) 57
     DIGITIZE (282) 49
-    REDUCE (283) 47 76
-    EXTEND (284) 48 77
+    REDUCE (283) 47
+    EXTEND (284) 48
     SIZE (285) 50
-    NOT (286) 62
-    LOGITIZE (287) 63
-    MXEQ (288) 64
-    MXLT (289) 65
-    MXGT (290) 66
-    MXLTE (291) 67
-    MXGTE (292) 68
-    ELEQ (293) 69
-    ELLT (294) 70
-    ELGT (295) 71
-    ELLTE (296) 72
-    ELGTE (297) 73
-    MXFALSE (298) 74
-    MXTRUE (299) 75
+    NOT (286) 59
+    LOGITIZE (287) 60
+    MXEQ (288) 61
+    MXLT (289) 62
+    MXGT (290) 63
+    MXLTE (291) 64
+    MXGTE (292) 65
+    ELEQ (293) 66
+    ELLT (294) 67
+    ELGT (295) 68
+    ELLTE (296) 69
+    ELGTE (297) 70
+    MXFALSE (298) 71
+    MXTRUE (299) 72
 
 
 Nonterminals, with rules where they appear
@@ -184,2386 +174,2223 @@ Nonterminals, with rules where they appear
         on left: 1
         on right: 0
     functions <nPtr> (58)
-        on left: 2 3
+        on left: 2 3 4
         on right: 1 2
     function <nPtr> (59)
-        on left: 4
-        on right: 2
+        on left: 5
+        on right: 2 3
     ids <nPtr> (60)
-        on left: 5 6
-        on right: 4 5
+        on left: 6 7
+        on right: 5 6
     indexes <nPtr> (61)
-        on left: 7 8
-        on right: 17 19 21 39 41 46 61
+        on left: 8 9
+        on right: 18 20 22 40 42 46
     inds <nPtr> (62)
-        on left: 9 10
-        on right: 7 9
+        on left: 10 11
+        on right: 8 10
     stmtsGroup <nPtr> (63)
-        on left: 11
-        on right: 4 22 26 27 28 29
+        on left: 12
+        on right: 5 23 27 28 29 30
     stmts <nPtr> (64)
-        on left: 12 13 14 15
-        on right: 11 12 14 15
+        on left: 13 14 15 16
+        on right: 12 13 15 16
     stmt <nPtr> (65)
-        on left: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37
-        on right: 12 13 23 24 25 26 28 34 35
+        on left: 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38
+        on right: 13 14 24 25 26 27 29 35 36
     parameters <nPtr> (66)
-        on left: 38 39 40 41
-        on right: 33 38 39
+        on left: 39 40 41 42
+        on right: 34 39 40
     expr <nPtr> (67)
-        on left: 42 43
-        on right: 9 10 16 17 36
-    arith <nPtr> (68)
-        on left: 44 45 46 47 48 49 50 51 52 53 54 55 56
-        on right: 42 45 51 52 53 54 64 65 66 67 68 69 70 71 72 73
-    logic <nPtr> (69)
-        on left: 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77
-        on right: 24 25 26 27 28 29 43 57 58 62 74 75
+        on left: 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72
+        on right: 10 11 17 18 25 26 27 28 29 30 37 44 51 52 53 54 57 59 61 62 63 64 65 66 67 68 69 70 71 72
 
 
 State 0
 
     0 $accept: • program $end
 
-    $default  reduce using rule 3 (functions)
+    TASK  shift, and go to state 1
+    '\n'  shift, and go to state 2
 
-    program    go to state 1
-    functions  go to state 2
+    program    go to state 3
+    functions  go to state 4
+    function   go to state 5
 
 
 State 1
 
-    0 $accept: program • $end
+    5 function: TASK • id ids '\n' stmtsGroup
 
-    $end  shift, and go to state 3
+    id  shift, and go to state 6
 
 
 State 2
 
-    1 program: functions •
-    2 functions: functions • function
+    4 functions: '\n' •
 
-    TASK  shift, and go to state 4
-
-    $default  reduce using rule 1 (program)
-
-    function  go to state 5
+    $default  reduce using rule 4 (functions)
 
 
 State 3
+
+    0 $accept: program • $end
+
+    $end  shift, and go to state 7
+
+
+State 4
+
+    1 program: functions •
+    2 functions: functions • '\n' function
+
+    '\n'  shift, and go to state 8
+
+    $default  reduce using rule 1 (program)
+
+
+State 5
+
+    3 functions: function •
+
+    $default  reduce using rule 3 (functions)
+
+
+State 6
+
+    5 function: TASK id • ids '\n' stmtsGroup
+
+    id  shift, and go to state 9
+
+    ids  go to state 10
+
+
+State 7
 
     0 $accept: program $end •
 
     $default  accept
 
 
-State 4
-
-    4 function: TASK • id ids '\n' stmtsGroup
-
-    id  shift, and go to state 6
-
-
-State 5
-
-    2 functions: functions function •
-
-    $default  reduce using rule 2 (functions)
-
-
-State 6
-
-    4 function: TASK id • ids '\n' stmtsGroup
-
-    id  shift, and go to state 7
-
-    ids  go to state 8
-
-
-State 7
-
-    6 ids: id •
-
-    $default  reduce using rule 6 (ids)
-
-
 State 8
 
-    4 function: TASK id ids • '\n' stmtsGroup
-    5 ids: ids • id
+    2 functions: functions '\n' • function
 
-    id    shift, and go to state 9
-    '\n'  shift, and go to state 10
+    TASK  shift, and go to state 1
+
+    function  go to state 11
 
 
 State 9
 
-    5 ids: ids id •
+    7 ids: id •
 
-    $default  reduce using rule 5 (ids)
+    $default  reduce using rule 7 (ids)
 
 
 State 10
 
-    4 function: TASK id ids '\n' • stmtsGroup
+    5 function: TASK id ids • '\n' stmtsGroup
+    6 ids: ids • id
 
-    '('  shift, and go to state 11
-
-    stmtsGroup  go to state 12
+    id    shift, and go to state 12
+    '\n'  shift, and go to state 13
 
 
 State 11
 
-   11 stmtsGroup: '(' • '\n' stmts '\n' ')'
+    2 functions: functions '\n' function •
 
-    '\n'  shift, and go to state 13
+    $default  reduce using rule 2 (functions)
 
 
 State 12
 
-    4 function: TASK id ids '\n' stmtsGroup •
+    6 ids: ids id •
 
-    $default  reduce using rule 4 (function)
+    $default  reduce using rule 6 (ids)
 
 
 State 13
 
-   11 stmtsGroup: '(' '\n' • stmts '\n' ')'
+    5 function: TASK id ids '\n' • stmtsGroup
 
-    id      shift, and go to state 14
-    SWITCH  shift, and go to state 15
-    FOR     shift, and go to state 16
-    PRINT   shift, and go to state 17
-    MOVE    shift, and go to state 18
-    ROTATE  shift, and go to state 19
-    RESULT  shift, and go to state 20
-    DO      shift, and go to state 21
-    PLEASE  shift, and go to state 22
-    VAR     shift, and go to state 23
+    '('  shift, and go to state 14
 
-    stmts  go to state 24
-    stmt   go to state 25
+    stmtsGroup  go to state 15
 
 
 State 14
 
-   16 stmt: id • '=' expr
-   17     | id • '[' indexes ']' '=' expr
+   12 stmtsGroup: '(' • '\n' stmts '\n' ')'
 
-    '='  shift, and go to state 26
-    '['  shift, and go to state 27
+    '\n'  shift, and go to state 16
 
 
 State 15
 
-   24 stmt: SWITCH • logic '\n' BOOL stmt
-   25     | SWITCH • logic '\n' BOOL stmt BOOL stmt
-   26     | SWITCH • logic '\n' BOOL stmt BOOL stmtsGroup
-   27     | SWITCH • logic '\n' BOOL stmtsGroup
-   28     | SWITCH • logic '\n' BOOL stmtsGroup BOOL stmt
-   29     | SWITCH • logic '\n' BOOL stmtsGroup BOOL stmtsGroup
+    5 function: TASK id ids '\n' stmtsGroup •
 
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 29
-    REDUCE    shift, and go to state 30
-    EXTEND    shift, and go to state 31
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 46
-
-    logic  go to state 47
+    $default  reduce using rule 5 (function)
 
 
 State 16
 
-   22 stmt: FOR • id BOUNDARY id STEP id stmtsGroup
-   23     | FOR • id BOUNDARY id STEP id stmt
+   12 stmtsGroup: '(' '\n' • stmts '\n' ')'
 
-    id  shift, and go to state 48
+    id      shift, and go to state 17
+    SWITCH  shift, and go to state 18
+    FOR     shift, and go to state 19
+    PRINT   shift, and go to state 20
+    MOVE    shift, and go to state 21
+    ROTATE  shift, and go to state 22
+    RESULT  shift, and go to state 23
+    DO      shift, and go to state 24
+    PLEASE  shift, and go to state 25
+    VAR     shift, and go to state 26
+
+    stmts  go to state 27
+    stmt   go to state 28
 
 
 State 17
 
-   36 stmt: PRINT • expr
+   17 stmt: id • '=' expr
+   18     | id • '[' indexes ']' '=' expr
 
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    expr   go to state 57
-    arith  go to state 58
-    logic  go to state 59
+    '='  shift, and go to state 29
+    '['  shift, and go to state 30
 
 
 State 18
 
-   32 stmt: MOVE •
+   25 stmt: SWITCH • expr '\n' BOOL stmt
+   26     | SWITCH • expr '\n' BOOL stmt BOOL stmt
+   27     | SWITCH • expr '\n' BOOL stmt BOOL stmtsGroup
+   28     | SWITCH • expr '\n' BOOL stmtsGroup
+   29     | SWITCH • expr '\n' BOOL stmtsGroup BOOL stmt
+   30     | SWITCH • expr '\n' BOOL stmtsGroup BOOL stmtsGroup
 
-    $default  reduce using rule 32 (stmt)
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 54
 
 
 State 19
 
-   30 stmt: ROTATE • LEFT
-   31     | ROTATE • RIGHT
+   23 stmt: FOR • id BOUNDARY id STEP id stmtsGroup
+   24     | FOR • id BOUNDARY id STEP id stmt
 
-    LEFT   shift, and go to state 60
-    RIGHT  shift, and go to state 61
+    id  shift, and go to state 55
 
 
 State 20
 
-   37 stmt: RESULT • id
+   37 stmt: PRINT • expr
 
-    id  shift, and go to state 62
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 56
 
 
 State 21
 
-   33 stmt: DO • id parameters
-
-    id  shift, and go to state 63
-
-
-State 22
-
-   34 stmt: PLEASE • stmt
-
-    id      shift, and go to state 14
-    SWITCH  shift, and go to state 15
-    FOR     shift, and go to state 16
-    PRINT   shift, and go to state 17
-    MOVE    shift, and go to state 18
-    ROTATE  shift, and go to state 19
-    RESULT  shift, and go to state 20
-    DO      shift, and go to state 21
-    PLEASE  shift, and go to state 22
-    VAR     shift, and go to state 23
-
-    stmt  go to state 64
-
-
-State 23
-
-   18 stmt: VAR • id '=' BOOL
-   19     | VAR • id '[' indexes ']' '=' BOOL
-   20     | VAR • id '=' INTEGER
-   21     | VAR • id '[' indexes ']' '=' INTEGER
-
-    id  shift, and go to state 65
-
-
-State 24
-
-   11 stmtsGroup: '(' '\n' stmts • '\n' ')'
-   12 stmts: stmts • '\n' stmt
-   14      | stmts • '\n'
-   15      | stmts • '\n' error
-
-    '\n'  shift, and go to state 66
-
-
-State 25
-
-   13 stmts: stmt •
-   35 stmt: stmt • THANKS
-
-    THANKS  shift, and go to state 67
-
-    $default  reduce using rule 13 (stmts)
-
-
-State 26
-
-   16 stmt: id '=' • expr
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    expr   go to state 68
-    arith  go to state 58
-    logic  go to state 59
-
-
-State 27
-
-   17 stmt: id '[' • indexes ']' '=' expr
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    $default  reduce using rule 8 (indexes)
-
-    indexes  go to state 69
-    inds     go to state 70
-    expr     go to state 71
-    arith    go to state 58
-    logic    go to state 59
-
-
-State 28
-
-   59 logic: BOOL •
-
-    $default  reduce using rule 59 (logic)
-
-
-State 29
-
-   60 logic: id •
-   61      | id • '[' indexes ']'
-
-    '['  shift, and go to state 72
-
-    $default  reduce using rule 60 (logic)
-
-
-State 30
-
-   76 logic: REDUCE • id '[' INTEGER ']'
-
-    id  shift, and go to state 73
-
-
-State 31
-
-   77 logic: EXTEND • id '[' INTEGER ']'
-
-    id  shift, and go to state 74
-
-
-State 32
-
-   62 logic: NOT • logic
-
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 29
-    REDUCE    shift, and go to state 30
-    EXTEND    shift, and go to state 31
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 46
-
-    logic  go to state 75
-
-
-State 33
-
-   63 logic: LOGITIZE • id
-
-    id  shift, and go to state 76
-
-
-State 34
-
-   64 logic: MXEQ • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 81
-
-
-State 35
-
-   65 logic: MXLT • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 82
-
-
-State 36
-
-   66 logic: MXGT • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 83
-
-
-State 37
-
-   67 logic: MXLTE • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 84
-
-
-State 38
-
-   68 logic: MXGTE • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 85
-
-
-State 39
-
-   69 logic: ELEQ • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 86
-
-
-State 40
-
-   70 logic: ELLT • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 87
-
-
-State 41
-
-   71 logic: ELGT • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 88
-
-
-State 42
-
-   72 logic: ELLTE • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 89
-
-
-State 43
-
-   73 logic: ELGTE • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 90
-
-
-State 44
-
-   74 logic: MXFALSE • logic
-
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 29
-    REDUCE    shift, and go to state 30
-    EXTEND    shift, and go to state 31
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 46
-
-    logic  go to state 91
-
-
-State 45
-
-   75 logic: MXTRUE • logic
-
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 29
-    REDUCE    shift, and go to state 30
-    EXTEND    shift, and go to state 31
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 46
-
-    logic  go to state 92
-
-
-State 46
-
-   57 logic: '(' • logic ')'
-
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 29
-    REDUCE    shift, and go to state 30
-    EXTEND    shift, and go to state 31
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 46
-
-    logic  go to state 93
-
-
-State 47
-
-   24 stmt: SWITCH logic • '\n' BOOL stmt
-   25     | SWITCH logic • '\n' BOOL stmt BOOL stmt
-   26     | SWITCH logic • '\n' BOOL stmt BOOL stmtsGroup
-   27     | SWITCH logic • '\n' BOOL stmtsGroup
-   28     | SWITCH logic • '\n' BOOL stmtsGroup BOOL stmt
-   29     | SWITCH logic • '\n' BOOL stmtsGroup BOOL stmtsGroup
-   58 logic: logic • AND logic
-
-    AND   shift, and go to state 94
-    '\n'  shift, and go to state 95
-
-
-State 48
-
-   22 stmt: FOR id • BOUNDARY id STEP id stmtsGroup
-   23     | FOR id • BOUNDARY id STEP id stmt
-
-    BOUNDARY  shift, and go to state 96
-
-
-State 49
-
-   44 arith: INTEGER •
-
-    $default  reduce using rule 44 (arith)
-
-
-State 50
-
-   46 arith: id • '[' indexes ']'
-   60 logic: id •
-   61      | id • '[' indexes ']'
-
-    '['  shift, and go to state 97
-
-    $default  reduce using rule 60 (logic)
-
-
-State 51
-
-   55 arith: GET • ENVIRONMENT
-   56      | GET • id
-
-    id           shift, and go to state 98
-    ENVIRONMENT  shift, and go to state 99
-
-
-State 52
-
-   49 arith: DIGITIZE • id
-
-    id  shift, and go to state 100
-
-
-State 53
-
-   47 arith: REDUCE • id '[' INTEGER ']'
-   76 logic: REDUCE • id '[' INTEGER ']'
-
-    id  shift, and go to state 101
-
-
-State 54
-
-   48 arith: EXTEND • id '[' INTEGER ']'
-   77 logic: EXTEND • id '[' INTEGER ']'
-
-    id  shift, and go to state 102
-
-
-State 55
-
-   50 arith: SIZE • id
-
-    id  shift, and go to state 103
-
-
-State 56
-
-   45 arith: '(' • arith ')'
-   57 logic: '(' • logic ')'
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    arith  go to state 104
-    logic  go to state 93
-
-
-State 57
-
-   36 stmt: PRINT expr •
-
-    $default  reduce using rule 36 (stmt)
-
-
-State 58
-
-   42 expr: arith •
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 42 (expr)
-
-
-State 59
-
-   43 expr: logic •
-   58 logic: logic • AND logic
-
-    AND  shift, and go to state 94
-
-    $default  reduce using rule 43 (expr)
-
-
-State 60
-
-   30 stmt: ROTATE LEFT •
-
-    $default  reduce using rule 30 (stmt)
-
-
-State 61
-
-   31 stmt: ROTATE RIGHT •
-
-    $default  reduce using rule 31 (stmt)
-
-
-State 62
-
-   37 stmt: RESULT id •
-
-    $default  reduce using rule 37 (stmt)
-
-
-State 63
-
-   33 stmt: DO id • parameters
-
-    id  shift, and go to state 109
-
-    parameters  go to state 110
-
-
-State 64
-
-   34 stmt: PLEASE stmt •
-   35     | stmt • THANKS
-
-    THANKS  shift, and go to state 67
-
-    THANKS    [reduce using rule 34 (stmt)]
-    $default  reduce using rule 34 (stmt)
-
-    shift/reduce conflict on token THANKS:
-       34 stmt: PLEASE stmt •
-       35 stmt: stmt • THANKS
-      Example: PLEASE stmt • THANKS
-      Shift derivation
-        stmt
-        ↳ 34: PLEASE stmt
-                     ↳ 35: stmt • THANKS
-      Reduce derivation
-        stmt
-        ↳ 35: stmt                THANKS
-              ↳ 34: PLEASE stmt •
-
-
-
-State 65
-
-   18 stmt: VAR id • '=' BOOL
-   19     | VAR id • '[' indexes ']' '=' BOOL
-   20     | VAR id • '=' INTEGER
-   21     | VAR id • '[' indexes ']' '=' INTEGER
-
-    '='  shift, and go to state 111
-    '['  shift, and go to state 112
-
-
-State 66
-
-   11 stmtsGroup: '(' '\n' stmts '\n' • ')'
-   12 stmts: stmts '\n' • stmt
-   14      | stmts '\n' •
-   15      | stmts '\n' • error
-
-    error   shift, and go to state 113
-    id      shift, and go to state 14
-    SWITCH  shift, and go to state 15
-    FOR     shift, and go to state 16
-    PRINT   shift, and go to state 17
-    MOVE    shift, and go to state 18
-    ROTATE  shift, and go to state 19
-    RESULT  shift, and go to state 20
-    DO      shift, and go to state 21
-    PLEASE  shift, and go to state 22
-    VAR     shift, and go to state 23
-    ')'     shift, and go to state 114
-
-    '\n'  reduce using rule 14 (stmts)
-
-    stmt  go to state 115
-
-
-State 67
-
-   35 stmt: stmt THANKS •
-
-    $default  reduce using rule 35 (stmt)
-
-
-State 68
-
-   16 stmt: id '=' expr •
-
-    $default  reduce using rule 16 (stmt)
-
-
-State 69
-
-   17 stmt: id '[' indexes • ']' '=' expr
-
-    ']'  shift, and go to state 116
-
-
-State 70
-
-    7 indexes: inds •
-    9 inds: inds • ',' expr
-
-    ','  shift, and go to state 117
-
-    $default  reduce using rule 7 (indexes)
-
-
-State 71
-
-   10 inds: expr •
-
-    $default  reduce using rule 10 (inds)
-
-
-State 72
-
-   61 logic: id '[' • indexes ']'
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    $default  reduce using rule 8 (indexes)
-
-    indexes  go to state 118
-    inds     go to state 70
-    expr     go to state 71
-    arith    go to state 58
-    logic    go to state 59
-
-
-State 73
-
-   76 logic: REDUCE id • '[' INTEGER ']'
-
-    '['  shift, and go to state 119
-
-
-State 74
-
-   77 logic: EXTEND id • '[' INTEGER ']'
-
-    '['  shift, and go to state 120
-
-
-State 75
-
-   58 logic: logic • AND logic
-   62      | NOT logic •
-
-    $default  reduce using rule 62 (logic)
-
-
-State 76
-
-   63 logic: LOGITIZE id •
-
-    $default  reduce using rule 63 (logic)
-
-
-State 77
-
-   46 arith: id • '[' indexes ']'
-
-    '['  shift, and go to state 121
-
-
-State 78
-
-   47 arith: REDUCE • id '[' INTEGER ']'
-
-    id  shift, and go to state 122
-
-
-State 79
-
-   48 arith: EXTEND • id '[' INTEGER ']'
-
-    id  shift, and go to state 123
-
-
-State 80
-
-   45 arith: '(' • arith ')'
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 104
-
-
-State 81
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   64 logic: MXEQ arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 64 (logic)
-
-
-State 82
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   65 logic: MXLT arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 65 (logic)
-
-
-State 83
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   66 logic: MXGT arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 66 (logic)
-
-
-State 84
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   67 logic: MXLTE arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 67 (logic)
-
-
-State 85
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   68 logic: MXGTE arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 68 (logic)
-
-
-State 86
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   69 logic: ELEQ arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 69 (logic)
-
-
-State 87
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   70 logic: ELLT arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 70 (logic)
-
-
-State 88
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   71 logic: ELGT arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 71 (logic)
-
-
-State 89
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   72 logic: ELLTE arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 72 (logic)
-
-
-State 90
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   73 logic: ELGTE arith •
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 73 (logic)
-
-
-State 91
-
-   58 logic: logic • AND logic
-   74      | MXFALSE logic •
-
-    $default  reduce using rule 74 (logic)
-
-
-State 92
-
-   58 logic: logic • AND logic
-   75      | MXTRUE logic •
-
-    $default  reduce using rule 75 (logic)
-
-
-State 93
-
-   57 logic: '(' logic • ')'
-   58      | logic • AND logic
-
-    AND  shift, and go to state 94
-    ')'  shift, and go to state 124
-
-
-State 94
-
-   58 logic: logic AND • logic
-
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 29
-    REDUCE    shift, and go to state 30
-    EXTEND    shift, and go to state 31
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 46
-
-    logic  go to state 125
-
-
-State 95
-
-   24 stmt: SWITCH logic '\n' • BOOL stmt
-   25     | SWITCH logic '\n' • BOOL stmt BOOL stmt
-   26     | SWITCH logic '\n' • BOOL stmt BOOL stmtsGroup
-   27     | SWITCH logic '\n' • BOOL stmtsGroup
-   28     | SWITCH logic '\n' • BOOL stmtsGroup BOOL stmt
-   29     | SWITCH logic '\n' • BOOL stmtsGroup BOOL stmtsGroup
-
-    BOOL  shift, and go to state 126
-
-
-State 96
-
-   22 stmt: FOR id BOUNDARY • id STEP id stmtsGroup
-   23     | FOR id BOUNDARY • id STEP id stmt
-
-    id  shift, and go to state 127
-
-
-State 97
-
-   46 arith: id '[' • indexes ']'
-   61 logic: id '[' • indexes ']'
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    $default  reduce using rule 8 (indexes)
-
-    indexes  go to state 128
-    inds     go to state 70
-    expr     go to state 71
-    arith    go to state 58
-    logic    go to state 59
-
-
-State 98
-
-   56 arith: GET id •
-
-    $default  reduce using rule 56 (arith)
-
-
-State 99
-
-   55 arith: GET ENVIRONMENT •
-
-    $default  reduce using rule 55 (arith)
-
-
-State 100
-
-   49 arith: DIGITIZE id •
-
-    $default  reduce using rule 49 (arith)
-
-
-State 101
-
-   47 arith: REDUCE id • '[' INTEGER ']'
-   76 logic: REDUCE id • '[' INTEGER ']'
-
-    '['  shift, and go to state 129
-
-
-State 102
-
-   48 arith: EXTEND id • '[' INTEGER ']'
-   77 logic: EXTEND id • '[' INTEGER ']'
-
-    '['  shift, and go to state 130
-
-
-State 103
-
-   50 arith: SIZE id •
-
-    $default  reduce using rule 50 (arith)
-
-
-State 104
-
-   45 arith: '(' arith • ')'
-   51      | arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-
-    '+'  shift, and go to state 105
-    '-'  shift, and go to state 106
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-    ')'  shift, and go to state 131
-
-
-State 105
-
-   51 arith: arith '+' • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 132
-
-
-State 106
-
-   52 arith: arith '-' • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 133
-
-
-State 107
-
-   53 arith: arith '*' • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 134
-
-
-State 108
-
-   54 arith: arith '/' • arith
-
-    INTEGER   shift, and go to state 49
-    id        shift, and go to state 77
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 78
-    EXTEND    shift, and go to state 79
-    SIZE      shift, and go to state 55
-    '('       shift, and go to state 80
-
-    arith  go to state 135
-
-
-State 109
-
-   40 parameters: id •
-   41           | id • '[' indexes ']'
-
-    '['  shift, and go to state 136
-
-    $default  reduce using rule 40 (parameters)
-
-
-State 110
-
-   33 stmt: DO id parameters •
-   38 parameters: parameters • id
-   39           | parameters • id '[' indexes ']'
-
-    id  shift, and go to state 137
+   33 stmt: MOVE •
 
     $default  reduce using rule 33 (stmt)
 
 
-State 111
+State 22
 
-   18 stmt: VAR id '=' • BOOL
-   20     | VAR id '=' • INTEGER
+   31 stmt: ROTATE • LEFT
+   32     | ROTATE • RIGHT
 
-    INTEGER  shift, and go to state 138
-    BOOL     shift, and go to state 139
-
-
-State 112
-
-   19 stmt: VAR id '[' • indexes ']' '=' BOOL
-   21     | VAR id '[' • indexes ']' '=' INTEGER
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    $default  reduce using rule 8 (indexes)
-
-    indexes  go to state 140
-    inds     go to state 70
-    expr     go to state 71
-    arith    go to state 58
-    logic    go to state 59
+    LEFT   shift, and go to state 57
+    RIGHT  shift, and go to state 58
 
 
-State 113
+State 23
 
-   15 stmts: stmts '\n' error •
+   38 stmt: RESULT • id
+
+    id  shift, and go to state 59
+
+
+State 24
+
+   34 stmt: DO • id parameters
+
+    id  shift, and go to state 60
+
+
+State 25
+
+   35 stmt: PLEASE • stmt
+
+    id      shift, and go to state 17
+    SWITCH  shift, and go to state 18
+    FOR     shift, and go to state 19
+    PRINT   shift, and go to state 20
+    MOVE    shift, and go to state 21
+    ROTATE  shift, and go to state 22
+    RESULT  shift, and go to state 23
+    DO      shift, and go to state 24
+    PLEASE  shift, and go to state 25
+    VAR     shift, and go to state 26
+
+    stmt  go to state 61
+
+
+State 26
+
+   19 stmt: VAR • id '=' BOOL
+   20     | VAR • id '[' indexes ']' '=' BOOL
+   21     | VAR • id '=' INTEGER
+   22     | VAR • id '[' indexes ']' '=' INTEGER
+
+    id  shift, and go to state 62
+
+
+State 27
+
+   12 stmtsGroup: '(' '\n' stmts • '\n' ')'
+   13 stmts: stmts • '\n' stmt
+   15      | stmts • '\n'
+   16      | stmts • error
+
+    error  shift, and go to state 63
+    '\n'   shift, and go to state 64
+
+
+State 28
+
+   14 stmts: stmt •
+   36 stmt: stmt • THANKS
+
+    THANKS  shift, and go to state 65
+
+    $default  reduce using rule 14 (stmts)
+
+
+State 29
+
+   17 stmt: id '=' • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 66
+
+
+State 30
+
+   18 stmt: id '[' • indexes ']' '=' expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    $default  reduce using rule 9 (indexes)
+
+    indexes  go to state 67
+    inds     go to state 68
+    expr     go to state 69
+
+
+State 31
+
+   43 expr: INTEGER •
+
+    $default  reduce using rule 43 (expr)
+
+
+State 32
+
+   58 expr: BOOL •
+
+    $default  reduce using rule 58 (expr)
+
+
+State 33
+
+   45 expr: id •
+   46     | id • '[' indexes ']'
+
+    '['  shift, and go to state 70
+
+    $default  reduce using rule 45 (expr)
+
+
+State 34
+
+   55 expr: GET • ENVIRONMENT
+   56     | GET • id
+
+    id           shift, and go to state 71
+    ENVIRONMENT  shift, and go to state 72
+
+
+State 35
+
+   49 expr: DIGITIZE • id
+
+    id  shift, and go to state 73
+
+
+State 36
+
+   47 expr: REDUCE • id '[' INTEGER ']'
+
+    id  shift, and go to state 74
+
+
+State 37
+
+   48 expr: EXTEND • id '[' INTEGER ']'
+
+    id  shift, and go to state 75
+
+
+State 38
+
+   50 expr: SIZE • id
+
+    id  shift, and go to state 76
+
+
+State 39
+
+   59 expr: NOT • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 77
+
+
+State 40
+
+   60 expr: LOGITIZE • id
+
+    id  shift, and go to state 78
+
+
+State 41
+
+   61 expr: MXEQ • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 79
+
+
+State 42
+
+   62 expr: MXLT • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 80
+
+
+State 43
+
+   63 expr: MXGT • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 81
+
+
+State 44
+
+   64 expr: MXLTE • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 82
+
+
+State 45
+
+   65 expr: MXGTE • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 83
+
+
+State 46
+
+   66 expr: ELEQ • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 84
+
+
+State 47
+
+   67 expr: ELLT • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 85
+
+
+State 48
+
+   68 expr: ELGT • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 86
+
+
+State 49
+
+   69 expr: ELLTE • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 87
+
+
+State 50
+
+   70 expr: ELGTE • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 88
+
+
+State 51
+
+   71 expr: MXFALSE • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 89
+
+
+State 52
+
+   72 expr: MXTRUE • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 90
+
+
+State 53
+
+   44 expr: '(' • expr ')'
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 91
+
+
+State 54
+
+   25 stmt: SWITCH expr • '\n' BOOL stmt
+   26     | SWITCH expr • '\n' BOOL stmt BOOL stmt
+   27     | SWITCH expr • '\n' BOOL stmt BOOL stmtsGroup
+   28     | SWITCH expr • '\n' BOOL stmtsGroup
+   29     | SWITCH expr • '\n' BOOL stmtsGroup BOOL stmt
+   30     | SWITCH expr • '\n' BOOL stmtsGroup BOOL stmtsGroup
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+
+    AND   shift, and go to state 92
+    '+'   shift, and go to state 93
+    '-'   shift, and go to state 94
+    '*'   shift, and go to state 95
+    '/'   shift, and go to state 96
+    '\n'  shift, and go to state 97
+
+
+State 55
+
+   23 stmt: FOR id • BOUNDARY id STEP id stmtsGroup
+   24     | FOR id • BOUNDARY id STEP id stmt
+
+    BOUNDARY  shift, and go to state 98
+
+
+State 56
+
+   37 stmt: PRINT expr •
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+
+    AND  shift, and go to state 92
+    '+'  shift, and go to state 93
+    '-'  shift, and go to state 94
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
+
+    $default  reduce using rule 37 (stmt)
+
+
+State 57
+
+   31 stmt: ROTATE LEFT •
+
+    $default  reduce using rule 31 (stmt)
+
+
+State 58
+
+   32 stmt: ROTATE RIGHT •
+
+    $default  reduce using rule 32 (stmt)
+
+
+State 59
+
+   38 stmt: RESULT id •
+
+    $default  reduce using rule 38 (stmt)
+
+
+State 60
+
+   34 stmt: DO id • parameters
+
+    id  shift, and go to state 99
+
+    parameters  go to state 100
+
+
+State 61
+
+   35 stmt: PLEASE stmt •
+   36     | stmt • THANKS
+
+    THANKS  shift, and go to state 65
+
+    THANKS    [reduce using rule 35 (stmt)]
+    $default  reduce using rule 35 (stmt)
+
+    shift/reduce conflict on token THANKS:
+       35 stmt: PLEASE stmt •
+       36 stmt: stmt • THANKS
+      Example: PLEASE stmt • THANKS
+      Shift derivation
+        stmt
+        ↳ 35: PLEASE stmt
+                     ↳ 36: stmt • THANKS
+      Reduce derivation
+        stmt
+        ↳ 36: stmt                THANKS
+              ↳ 35: PLEASE stmt •
+
+
+
+State 62
+
+   19 stmt: VAR id • '=' BOOL
+   20     | VAR id • '[' indexes ']' '=' BOOL
+   21     | VAR id • '=' INTEGER
+   22     | VAR id • '[' indexes ']' '=' INTEGER
+
+    '='  shift, and go to state 101
+    '['  shift, and go to state 102
+
+
+State 63
+
+   16 stmts: stmts error •
+
+    $default  reduce using rule 16 (stmts)
+
+
+State 64
+
+   12 stmtsGroup: '(' '\n' stmts '\n' • ')'
+   13 stmts: stmts '\n' • stmt
+   15      | stmts '\n' •
+
+    id      shift, and go to state 17
+    SWITCH  shift, and go to state 18
+    FOR     shift, and go to state 19
+    PRINT   shift, and go to state 20
+    MOVE    shift, and go to state 21
+    ROTATE  shift, and go to state 22
+    RESULT  shift, and go to state 23
+    DO      shift, and go to state 24
+    PLEASE  shift, and go to state 25
+    VAR     shift, and go to state 26
+    ')'     shift, and go to state 103
 
     $default  reduce using rule 15 (stmts)
 
+    stmt  go to state 104
 
-State 114
 
-   11 stmtsGroup: '(' '\n' stmts '\n' ')' •
+State 65
 
-    $default  reduce using rule 11 (stmtsGroup)
+   36 stmt: stmt THANKS •
 
+    $default  reduce using rule 36 (stmt)
 
-State 115
 
-   12 stmts: stmts '\n' stmt •
-   35 stmt: stmt • THANKS
+State 66
 
-    THANKS  shift, and go to state 67
+   17 stmt: id '=' expr •
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
 
-    $default  reduce using rule 12 (stmts)
-
-
-State 116
-
-   17 stmt: id '[' indexes ']' • '=' expr
-
-    '='  shift, and go to state 141
-
-
-State 117
-
-    9 inds: inds ',' • expr
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    expr   go to state 142
-    arith  go to state 58
-    logic  go to state 59
-
-
-State 118
-
-   61 logic: id '[' indexes • ']'
-
-    ']'  shift, and go to state 143
-
-
-State 119
-
-   76 logic: REDUCE id '[' • INTEGER ']'
-
-    INTEGER  shift, and go to state 144
-
-
-State 120
-
-   77 logic: EXTEND id '[' • INTEGER ']'
-
-    INTEGER  shift, and go to state 145
-
-
-State 121
-
-   46 arith: id '[' • indexes ']'
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    $default  reduce using rule 8 (indexes)
-
-    indexes  go to state 146
-    inds     go to state 70
-    expr     go to state 71
-    arith    go to state 58
-    logic    go to state 59
-
-
-State 122
-
-   47 arith: REDUCE id • '[' INTEGER ']'
-
-    '['  shift, and go to state 147
-
-
-State 123
-
-   48 arith: EXTEND id • '[' INTEGER ']'
-
-    '['  shift, and go to state 148
-
-
-State 124
-
-   57 logic: '(' logic ')' •
-
-    $default  reduce using rule 57 (logic)
-
-
-State 125
-
-   58 logic: logic • AND logic
-   58      | logic AND logic •
-
-    $default  reduce using rule 58 (logic)
-
-
-State 126
-
-   24 stmt: SWITCH logic '\n' BOOL • stmt
-   25     | SWITCH logic '\n' BOOL • stmt BOOL stmt
-   26     | SWITCH logic '\n' BOOL • stmt BOOL stmtsGroup
-   27     | SWITCH logic '\n' BOOL • stmtsGroup
-   28     | SWITCH logic '\n' BOOL • stmtsGroup BOOL stmt
-   29     | SWITCH logic '\n' BOOL • stmtsGroup BOOL stmtsGroup
-
-    id      shift, and go to state 14
-    SWITCH  shift, and go to state 15
-    FOR     shift, and go to state 16
-    PRINT   shift, and go to state 17
-    MOVE    shift, and go to state 18
-    ROTATE  shift, and go to state 19
-    RESULT  shift, and go to state 20
-    DO      shift, and go to state 21
-    PLEASE  shift, and go to state 22
-    VAR     shift, and go to state 23
-    '('     shift, and go to state 11
-
-    stmtsGroup  go to state 149
-    stmt        go to state 150
-
-
-State 127
-
-   22 stmt: FOR id BOUNDARY id • STEP id stmtsGroup
-   23     | FOR id BOUNDARY id • STEP id stmt
-
-    STEP  shift, and go to state 151
-
-
-State 128
-
-   46 arith: id '[' indexes • ']'
-   61 logic: id '[' indexes • ']'
-
-    ']'  shift, and go to state 152
-
-
-State 129
-
-   47 arith: REDUCE id '[' • INTEGER ']'
-   76 logic: REDUCE id '[' • INTEGER ']'
-
-    INTEGER  shift, and go to state 153
-
-
-State 130
-
-   48 arith: EXTEND id '[' • INTEGER ']'
-   77 logic: EXTEND id '[' • INTEGER ']'
-
-    INTEGER  shift, and go to state 154
-
-
-State 131
-
-   45 arith: '(' arith ')' •
-
-    $default  reduce using rule 45 (arith)
-
-
-State 132
-
-   51 arith: arith • '+' arith
-   51      | arith '+' arith •
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 51 (arith)
-
-
-State 133
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   52      | arith '-' arith •
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-
-    '*'  shift, and go to state 107
-    '/'  shift, and go to state 108
-
-    $default  reduce using rule 52 (arith)
-
-
-State 134
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   53      | arith '*' arith •
-   54      | arith • '/' arith
-
-    $default  reduce using rule 53 (arith)
-
-
-State 135
-
-   51 arith: arith • '+' arith
-   52      | arith • '-' arith
-   53      | arith • '*' arith
-   54      | arith • '/' arith
-   54      | arith '/' arith •
-
-    $default  reduce using rule 54 (arith)
-
-
-State 136
-
-   41 parameters: id '[' • indexes ']'
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    $default  reduce using rule 8 (indexes)
-
-    indexes  go to state 155
-    inds     go to state 70
-    expr     go to state 71
-    arith    go to state 58
-    logic    go to state 59
-
-
-State 137
-
-   38 parameters: parameters id •
-   39           | parameters id • '[' indexes ']'
-
-    '['  shift, and go to state 156
-
-    $default  reduce using rule 38 (parameters)
-
-
-State 138
-
-   20 stmt: VAR id '=' INTEGER •
-
-    $default  reduce using rule 20 (stmt)
-
-
-State 139
-
-   18 stmt: VAR id '=' BOOL •
-
-    $default  reduce using rule 18 (stmt)
-
-
-State 140
-
-   19 stmt: VAR id '[' indexes • ']' '=' BOOL
-   21     | VAR id '[' indexes • ']' '=' INTEGER
-
-    ']'  shift, and go to state 157
-
-
-State 141
-
-   17 stmt: id '[' indexes ']' '=' • expr
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    expr   go to state 158
-    arith  go to state 58
-    logic  go to state 59
-
-
-State 142
-
-    9 inds: inds ',' expr •
-
-    $default  reduce using rule 9 (inds)
-
-
-State 143
-
-   61 logic: id '[' indexes ']' •
-
-    $default  reduce using rule 61 (logic)
-
-
-State 144
-
-   76 logic: REDUCE id '[' INTEGER • ']'
-
-    ']'  shift, and go to state 159
-
-
-State 145
-
-   77 logic: EXTEND id '[' INTEGER • ']'
-
-    ']'  shift, and go to state 160
-
-
-State 146
-
-   46 arith: id '[' indexes • ']'
-
-    ']'  shift, and go to state 161
-
-
-State 147
-
-   47 arith: REDUCE id '[' • INTEGER ']'
-
-    INTEGER  shift, and go to state 162
-
-
-State 148
-
-   48 arith: EXTEND id '[' • INTEGER ']'
-
-    INTEGER  shift, and go to state 163
-
-
-State 149
-
-   27 stmt: SWITCH logic '\n' BOOL stmtsGroup •
-   28     | SWITCH logic '\n' BOOL stmtsGroup • BOOL stmt
-   29     | SWITCH logic '\n' BOOL stmtsGroup • BOOL stmtsGroup
-
-    BOOL  shift, and go to state 164
-
-    $default  reduce using rule 27 (stmt)
-
-
-State 150
-
-   24 stmt: SWITCH logic '\n' BOOL stmt •
-   25     | SWITCH logic '\n' BOOL stmt • BOOL stmt
-   26     | SWITCH logic '\n' BOOL stmt • BOOL stmtsGroup
-   35     | stmt • THANKS
-
-    BOOL    shift, and go to state 165
-    THANKS  shift, and go to state 67
-
-    $default  reduce using rule 24 (stmt)
-
-
-State 151
-
-   22 stmt: FOR id BOUNDARY id STEP • id stmtsGroup
-   23     | FOR id BOUNDARY id STEP • id stmt
-
-    id  shift, and go to state 166
-
-
-State 152
-
-   46 arith: id '[' indexes ']' •
-   61 logic: id '[' indexes ']' •
-
-    BOOL      reduce using rule 46 (arith)
-    BOOL      [reduce using rule 61 (logic)]
-    THANKS    reduce using rule 46 (arith)
-    THANKS    [reduce using rule 61 (logic)]
-    AND       reduce using rule 61 (logic)
-    '\n'      reduce using rule 46 (arith)
-    '\n'      [reduce using rule 61 (logic)]
-    ','       reduce using rule 46 (arith)
-    ','       [reduce using rule 61 (logic)]
-    ')'       reduce using rule 46 (arith)
-    ')'       [reduce using rule 61 (logic)]
-    ']'       reduce using rule 46 (arith)
-    ']'       [reduce using rule 61 (logic)]
-    $default  reduce using rule 46 (arith)
-
-    reduce/reduce conflict on tokens BOOL, THANKS, '\n', ',', ')', ']':
-       46 arith: id '[' indexes ']' •
-       61 logic: id '[' indexes ']' •
-      Example: id '[' indexes ']' •
-      First reduce derivation
-        expr
-        ↳ 42: arith
-              ↳ 46: id '[' indexes ']' •
-      Second reduce derivation
-        expr
-        ↳ 43: logic
-              ↳ 61: id '[' indexes ']' •
-
-
-
-State 153
-
-   47 arith: REDUCE id '[' INTEGER • ']'
-   76 logic: REDUCE id '[' INTEGER • ']'
-
-    ']'  shift, and go to state 167
-
-
-State 154
-
-   48 arith: EXTEND id '[' INTEGER • ']'
-   77 logic: EXTEND id '[' INTEGER • ']'
-
-    ']'  shift, and go to state 168
-
-
-State 155
-
-   41 parameters: id '[' indexes • ']'
-
-    ']'  shift, and go to state 169
-
-
-State 156
-
-   39 parameters: parameters id '[' • indexes ']'
-
-    INTEGER   shift, and go to state 49
-    BOOL      shift, and go to state 28
-    id        shift, and go to state 50
-    GET       shift, and go to state 51
-    DIGITIZE  shift, and go to state 52
-    REDUCE    shift, and go to state 53
-    EXTEND    shift, and go to state 54
-    SIZE      shift, and go to state 55
-    NOT       shift, and go to state 32
-    LOGITIZE  shift, and go to state 33
-    MXEQ      shift, and go to state 34
-    MXLT      shift, and go to state 35
-    MXGT      shift, and go to state 36
-    MXLTE     shift, and go to state 37
-    MXGTE     shift, and go to state 38
-    ELEQ      shift, and go to state 39
-    ELLT      shift, and go to state 40
-    ELGT      shift, and go to state 41
-    ELLTE     shift, and go to state 42
-    ELGTE     shift, and go to state 43
-    MXFALSE   shift, and go to state 44
-    MXTRUE    shift, and go to state 45
-    '('       shift, and go to state 56
-
-    $default  reduce using rule 8 (indexes)
-
-    indexes  go to state 170
-    inds     go to state 70
-    expr     go to state 71
-    arith    go to state 58
-    logic    go to state 59
-
-
-State 157
-
-   19 stmt: VAR id '[' indexes ']' • '=' BOOL
-   21     | VAR id '[' indexes ']' • '=' INTEGER
-
-    '='  shift, and go to state 171
-
-
-State 158
-
-   17 stmt: id '[' indexes ']' '=' expr •
+    AND  shift, and go to state 92
+    '+'  shift, and go to state 93
+    '-'  shift, and go to state 94
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
 
     $default  reduce using rule 17 (stmt)
 
 
-State 159
+State 67
 
-   76 logic: REDUCE id '[' INTEGER ']' •
+   18 stmt: id '[' indexes • ']' '=' expr
 
-    $default  reduce using rule 76 (logic)
-
-
-State 160
-
-   77 logic: EXTEND id '[' INTEGER ']' •
-
-    $default  reduce using rule 77 (logic)
+    ']'  shift, and go to state 105
 
 
-State 161
+State 68
 
-   46 arith: id '[' indexes ']' •
+    8 indexes: inds •
+   10 inds: inds • ',' expr
 
-    $default  reduce using rule 46 (arith)
+    ','  shift, and go to state 106
 
-
-State 162
-
-   47 arith: REDUCE id '[' INTEGER • ']'
-
-    ']'  shift, and go to state 172
+    $default  reduce using rule 8 (indexes)
 
 
-State 163
+State 69
 
-   48 arith: EXTEND id '[' INTEGER • ']'
+   11 inds: expr •
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
 
-    ']'  shift, and go to state 173
+    AND  shift, and go to state 92
+    '+'  shift, and go to state 93
+    '-'  shift, and go to state 94
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
 
-
-State 164
-
-   28 stmt: SWITCH logic '\n' BOOL stmtsGroup BOOL • stmt
-   29     | SWITCH logic '\n' BOOL stmtsGroup BOOL • stmtsGroup
-
-    id      shift, and go to state 14
-    SWITCH  shift, and go to state 15
-    FOR     shift, and go to state 16
-    PRINT   shift, and go to state 17
-    MOVE    shift, and go to state 18
-    ROTATE  shift, and go to state 19
-    RESULT  shift, and go to state 20
-    DO      shift, and go to state 21
-    PLEASE  shift, and go to state 22
-    VAR     shift, and go to state 23
-    '('     shift, and go to state 11
-
-    stmtsGroup  go to state 174
-    stmt        go to state 175
+    $default  reduce using rule 11 (inds)
 
 
-State 165
+State 70
 
-   25 stmt: SWITCH logic '\n' BOOL stmt BOOL • stmt
-   26     | SWITCH logic '\n' BOOL stmt BOOL • stmtsGroup
+   46 expr: id '[' • indexes ']'
 
-    id      shift, and go to state 14
-    SWITCH  shift, and go to state 15
-    FOR     shift, and go to state 16
-    PRINT   shift, and go to state 17
-    MOVE    shift, and go to state 18
-    ROTATE  shift, and go to state 19
-    RESULT  shift, and go to state 20
-    DO      shift, and go to state 21
-    PLEASE  shift, and go to state 22
-    VAR     shift, and go to state 23
-    '('     shift, and go to state 11
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
 
-    stmtsGroup  go to state 176
-    stmt        go to state 177
+    $default  reduce using rule 9 (indexes)
 
-
-State 166
-
-   22 stmt: FOR id BOUNDARY id STEP id • stmtsGroup
-   23     | FOR id BOUNDARY id STEP id • stmt
-
-    id      shift, and go to state 14
-    SWITCH  shift, and go to state 15
-    FOR     shift, and go to state 16
-    PRINT   shift, and go to state 17
-    MOVE    shift, and go to state 18
-    ROTATE  shift, and go to state 19
-    RESULT  shift, and go to state 20
-    DO      shift, and go to state 21
-    PLEASE  shift, and go to state 22
-    VAR     shift, and go to state 23
-    '('     shift, and go to state 11
-
-    stmtsGroup  go to state 178
-    stmt        go to state 179
+    indexes  go to state 107
+    inds     go to state 68
+    expr     go to state 69
 
 
-State 167
+State 71
 
-   47 arith: REDUCE id '[' INTEGER ']' •
-   76 logic: REDUCE id '[' INTEGER ']' •
+   56 expr: GET id •
 
-    BOOL      reduce using rule 47 (arith)
-    BOOL      [reduce using rule 76 (logic)]
-    THANKS    reduce using rule 47 (arith)
-    THANKS    [reduce using rule 76 (logic)]
-    AND       reduce using rule 76 (logic)
-    '\n'      reduce using rule 47 (arith)
-    '\n'      [reduce using rule 76 (logic)]
-    ','       reduce using rule 47 (arith)
-    ','       [reduce using rule 76 (logic)]
-    ')'       reduce using rule 47 (arith)
-    ')'       [reduce using rule 76 (logic)]
-    ']'       reduce using rule 47 (arith)
-    ']'       [reduce using rule 76 (logic)]
-    $default  reduce using rule 47 (arith)
-
-    reduce/reduce conflict on tokens BOOL, THANKS, '\n', ',', ')', ']':
-       47 arith: REDUCE id '[' INTEGER ']' •
-       76 logic: REDUCE id '[' INTEGER ']' •
-      Example: REDUCE id '[' INTEGER ']' •
-      First reduce derivation
-        expr
-        ↳ 42: arith
-              ↳ 47: REDUCE id '[' INTEGER ']' •
-      Second reduce derivation
-        expr
-        ↳ 43: logic
-              ↳ 76: REDUCE id '[' INTEGER ']' •
+    $default  reduce using rule 56 (expr)
 
 
+State 72
 
-State 168
+   55 expr: GET ENVIRONMENT •
 
-   48 arith: EXTEND id '[' INTEGER ']' •
-   77 logic: EXTEND id '[' INTEGER ']' •
-
-    BOOL      reduce using rule 48 (arith)
-    BOOL      [reduce using rule 77 (logic)]
-    THANKS    reduce using rule 48 (arith)
-    THANKS    [reduce using rule 77 (logic)]
-    AND       reduce using rule 77 (logic)
-    '\n'      reduce using rule 48 (arith)
-    '\n'      [reduce using rule 77 (logic)]
-    ','       reduce using rule 48 (arith)
-    ','       [reduce using rule 77 (logic)]
-    ')'       reduce using rule 48 (arith)
-    ')'       [reduce using rule 77 (logic)]
-    ']'       reduce using rule 48 (arith)
-    ']'       [reduce using rule 77 (logic)]
-    $default  reduce using rule 48 (arith)
-
-    reduce/reduce conflict on tokens BOOL, THANKS, '\n', ',', ')', ']':
-       48 arith: EXTEND id '[' INTEGER ']' •
-       77 logic: EXTEND id '[' INTEGER ']' •
-      Example: EXTEND id '[' INTEGER ']' •
-      First reduce derivation
-        expr
-        ↳ 42: arith
-              ↳ 48: EXTEND id '[' INTEGER ']' •
-      Second reduce derivation
-        expr
-        ↳ 43: logic
-              ↳ 77: EXTEND id '[' INTEGER ']' •
+    $default  reduce using rule 55 (expr)
 
 
+State 73
 
-State 169
+   49 expr: DIGITIZE id •
 
-   41 parameters: id '[' indexes ']' •
+    $default  reduce using rule 49 (expr)
+
+
+State 74
+
+   47 expr: REDUCE id • '[' INTEGER ']'
+
+    '['  shift, and go to state 108
+
+
+State 75
+
+   48 expr: EXTEND id • '[' INTEGER ']'
+
+    '['  shift, and go to state 109
+
+
+State 76
+
+   50 expr: SIZE id •
+
+    $default  reduce using rule 50 (expr)
+
+
+State 77
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   59     | NOT expr •
+
+    $default  reduce using rule 59 (expr)
+
+
+State 78
+
+   60 expr: LOGITIZE id •
+
+    $default  reduce using rule 60 (expr)
+
+
+State 79
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   61     | MXEQ expr •
+
+    $default  reduce using rule 61 (expr)
+
+
+State 80
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   62     | MXLT expr •
+
+    $default  reduce using rule 62 (expr)
+
+
+State 81
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   63     | MXGT expr •
+
+    $default  reduce using rule 63 (expr)
+
+
+State 82
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   64     | MXLTE expr •
+
+    $default  reduce using rule 64 (expr)
+
+
+State 83
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   65     | MXGTE expr •
+
+    $default  reduce using rule 65 (expr)
+
+
+State 84
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   66     | ELEQ expr •
+
+    $default  reduce using rule 66 (expr)
+
+
+State 85
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   67     | ELLT expr •
+
+    $default  reduce using rule 67 (expr)
+
+
+State 86
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   68     | ELGT expr •
+
+    $default  reduce using rule 68 (expr)
+
+
+State 87
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   69     | ELLTE expr •
+
+    $default  reduce using rule 69 (expr)
+
+
+State 88
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   70     | ELGTE expr •
+
+    $default  reduce using rule 70 (expr)
+
+
+State 89
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   71     | MXFALSE expr •
+
+    $default  reduce using rule 71 (expr)
+
+
+State 90
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   72     | MXTRUE expr •
+
+    $default  reduce using rule 72 (expr)
+
+
+State 91
+
+   44 expr: '(' expr • ')'
+   51     | expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+
+    AND  shift, and go to state 92
+    '+'  shift, and go to state 93
+    '-'  shift, and go to state 94
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
+    ')'  shift, and go to state 110
+
+
+State 92
+
+   57 expr: expr AND • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 111
+
+
+State 93
+
+   51 expr: expr '+' • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 112
+
+
+State 94
+
+   52 expr: expr '-' • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 113
+
+
+State 95
+
+   53 expr: expr '*' • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 114
+
+
+State 96
+
+   54 expr: expr '/' • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 115
+
+
+State 97
+
+   25 stmt: SWITCH expr '\n' • BOOL stmt
+   26     | SWITCH expr '\n' • BOOL stmt BOOL stmt
+   27     | SWITCH expr '\n' • BOOL stmt BOOL stmtsGroup
+   28     | SWITCH expr '\n' • BOOL stmtsGroup
+   29     | SWITCH expr '\n' • BOOL stmtsGroup BOOL stmt
+   30     | SWITCH expr '\n' • BOOL stmtsGroup BOOL stmtsGroup
+
+    BOOL  shift, and go to state 116
+
+
+State 98
+
+   23 stmt: FOR id BOUNDARY • id STEP id stmtsGroup
+   24     | FOR id BOUNDARY • id STEP id stmt
+
+    id  shift, and go to state 117
+
+
+State 99
+
+   41 parameters: id •
+   42           | id • '[' indexes ']'
+
+    '['  shift, and go to state 118
 
     $default  reduce using rule 41 (parameters)
 
 
-State 170
+State 100
 
-   39 parameters: parameters id '[' indexes • ']'
+   34 stmt: DO id parameters •
+   39 parameters: parameters • id
+   40           | parameters • id '[' indexes ']'
 
-    ']'  shift, and go to state 180
+    id  shift, and go to state 119
 
-
-State 171
-
-   19 stmt: VAR id '[' indexes ']' '=' • BOOL
-   21     | VAR id '[' indexes ']' '=' • INTEGER
-
-    INTEGER  shift, and go to state 181
-    BOOL     shift, and go to state 182
+    $default  reduce using rule 34 (stmt)
 
 
-State 172
+State 101
 
-   47 arith: REDUCE id '[' INTEGER ']' •
+   19 stmt: VAR id '=' • BOOL
+   21     | VAR id '=' • INTEGER
 
-    $default  reduce using rule 47 (arith)
-
-
-State 173
-
-   48 arith: EXTEND id '[' INTEGER ']' •
-
-    $default  reduce using rule 48 (arith)
+    INTEGER  shift, and go to state 120
+    BOOL     shift, and go to state 121
 
 
-State 174
+State 102
 
-   29 stmt: SWITCH logic '\n' BOOL stmtsGroup BOOL stmtsGroup •
+   20 stmt: VAR id '[' • indexes ']' '=' BOOL
+   22     | VAR id '[' • indexes ']' '=' INTEGER
 
-    $default  reduce using rule 29 (stmt)
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
 
+    $default  reduce using rule 9 (indexes)
 
-State 175
-
-   28 stmt: SWITCH logic '\n' BOOL stmtsGroup BOOL stmt •
-   35     | stmt • THANKS
-
-    THANKS  shift, and go to state 67
-
-    $default  reduce using rule 28 (stmt)
-
-
-State 176
-
-   26 stmt: SWITCH logic '\n' BOOL stmt BOOL stmtsGroup •
-
-    $default  reduce using rule 26 (stmt)
-
-
-State 177
-
-   25 stmt: SWITCH logic '\n' BOOL stmt BOOL stmt •
-   35     | stmt • THANKS
-
-    THANKS  shift, and go to state 67
-
-    $default  reduce using rule 25 (stmt)
-
-
-State 178
-
-   22 stmt: FOR id BOUNDARY id STEP id stmtsGroup •
-
-    $default  reduce using rule 22 (stmt)
+    indexes  go to state 122
+    inds     go to state 68
+    expr     go to state 69
 
 
-State 179
+State 103
 
-   23 stmt: FOR id BOUNDARY id STEP id stmt •
-   35     | stmt • THANKS
+   12 stmtsGroup: '(' '\n' stmts '\n' ')' •
 
-    THANKS  shift, and go to state 67
-
-    THANKS    [reduce using rule 23 (stmt)]
-    $default  reduce using rule 23 (stmt)
-
-    shift/reduce conflict on token THANKS:
-       23 stmt: FOR id BOUNDARY id STEP id stmt •
-       35 stmt: stmt • THANKS
-      Example: FOR id BOUNDARY id STEP id stmt • THANKS
-      Shift derivation
-        stmt
-        ↳ 23: FOR id BOUNDARY id STEP id stmt
-                                         ↳ 35: stmt • THANKS
-      Reduce derivation
-        stmt
-        ↳ 35: stmt                                    THANKS
-              ↳ 23: FOR id BOUNDARY id STEP id stmt •
+    $default  reduce using rule 12 (stmtsGroup)
 
 
+State 104
 
-State 180
+   13 stmts: stmts '\n' stmt •
+   36 stmt: stmt • THANKS
 
-   39 parameters: parameters id '[' indexes ']' •
+    THANKS  shift, and go to state 65
+
+    $default  reduce using rule 13 (stmts)
+
+
+State 105
+
+   18 stmt: id '[' indexes ']' • '=' expr
+
+    '='  shift, and go to state 123
+
+
+State 106
+
+   10 inds: inds ',' • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 124
+
+
+State 107
+
+   46 expr: id '[' indexes • ']'
+
+    ']'  shift, and go to state 125
+
+
+State 108
+
+   47 expr: REDUCE id '[' • INTEGER ']'
+
+    INTEGER  shift, and go to state 126
+
+
+State 109
+
+   48 expr: EXTEND id '[' • INTEGER ']'
+
+    INTEGER  shift, and go to state 127
+
+
+State 110
+
+   44 expr: '(' expr ')' •
+
+    $default  reduce using rule 44 (expr)
+
+
+State 111
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+   57     | expr AND expr •
+
+    '+'  shift, and go to state 93
+    '-'  shift, and go to state 94
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
+
+    $default  reduce using rule 57 (expr)
+
+
+State 112
+
+   51 expr: expr • '+' expr
+   51     | expr '+' expr •
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
+
+    $default  reduce using rule 51 (expr)
+
+
+State 113
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   52     | expr '-' expr •
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
+
+    $default  reduce using rule 52 (expr)
+
+
+State 114
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   53     | expr '*' expr •
+   54     | expr • '/' expr
+   57     | expr • AND expr
+
+    $default  reduce using rule 53 (expr)
+
+
+State 115
+
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   54     | expr '/' expr •
+   57     | expr • AND expr
+
+    $default  reduce using rule 54 (expr)
+
+
+State 116
+
+   25 stmt: SWITCH expr '\n' BOOL • stmt
+   26     | SWITCH expr '\n' BOOL • stmt BOOL stmt
+   27     | SWITCH expr '\n' BOOL • stmt BOOL stmtsGroup
+   28     | SWITCH expr '\n' BOOL • stmtsGroup
+   29     | SWITCH expr '\n' BOOL • stmtsGroup BOOL stmt
+   30     | SWITCH expr '\n' BOOL • stmtsGroup BOOL stmtsGroup
+
+    id      shift, and go to state 17
+    SWITCH  shift, and go to state 18
+    FOR     shift, and go to state 19
+    PRINT   shift, and go to state 20
+    MOVE    shift, and go to state 21
+    ROTATE  shift, and go to state 22
+    RESULT  shift, and go to state 23
+    DO      shift, and go to state 24
+    PLEASE  shift, and go to state 25
+    VAR     shift, and go to state 26
+    '('     shift, and go to state 14
+
+    stmtsGroup  go to state 128
+    stmt        go to state 129
+
+
+State 117
+
+   23 stmt: FOR id BOUNDARY id • STEP id stmtsGroup
+   24     | FOR id BOUNDARY id • STEP id stmt
+
+    STEP  shift, and go to state 130
+
+
+State 118
+
+   42 parameters: id '[' • indexes ']'
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    $default  reduce using rule 9 (indexes)
+
+    indexes  go to state 131
+    inds     go to state 68
+    expr     go to state 69
+
+
+State 119
+
+   39 parameters: parameters id •
+   40           | parameters id • '[' indexes ']'
+
+    '['  shift, and go to state 132
 
     $default  reduce using rule 39 (parameters)
 
 
-State 181
+State 120
 
-   21 stmt: VAR id '[' indexes ']' '=' INTEGER •
+   21 stmt: VAR id '=' INTEGER •
 
     $default  reduce using rule 21 (stmt)
 
 
-State 182
+State 121
 
-   19 stmt: VAR id '[' indexes ']' '=' BOOL •
+   19 stmt: VAR id '=' BOOL •
 
     $default  reduce using rule 19 (stmt)
+
+
+State 122
+
+   20 stmt: VAR id '[' indexes • ']' '=' BOOL
+   22     | VAR id '[' indexes • ']' '=' INTEGER
+
+    ']'  shift, and go to state 133
+
+
+State 123
+
+   18 stmt: id '[' indexes ']' '=' • expr
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    expr  go to state 134
+
+
+State 124
+
+   10 inds: inds ',' expr •
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+
+    AND  shift, and go to state 92
+    '+'  shift, and go to state 93
+    '-'  shift, and go to state 94
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
+
+    $default  reduce using rule 10 (inds)
+
+
+State 125
+
+   46 expr: id '[' indexes ']' •
+
+    $default  reduce using rule 46 (expr)
+
+
+State 126
+
+   47 expr: REDUCE id '[' INTEGER • ']'
+
+    ']'  shift, and go to state 135
+
+
+State 127
+
+   48 expr: EXTEND id '[' INTEGER • ']'
+
+    ']'  shift, and go to state 136
+
+
+State 128
+
+   28 stmt: SWITCH expr '\n' BOOL stmtsGroup •
+   29     | SWITCH expr '\n' BOOL stmtsGroup • BOOL stmt
+   30     | SWITCH expr '\n' BOOL stmtsGroup • BOOL stmtsGroup
+
+    BOOL  shift, and go to state 137
+
+    $default  reduce using rule 28 (stmt)
+
+
+State 129
+
+   25 stmt: SWITCH expr '\n' BOOL stmt •
+   26     | SWITCH expr '\n' BOOL stmt • BOOL stmt
+   27     | SWITCH expr '\n' BOOL stmt • BOOL stmtsGroup
+   36     | stmt • THANKS
+
+    BOOL    shift, and go to state 138
+    THANKS  shift, and go to state 65
+
+    $default  reduce using rule 25 (stmt)
+
+
+State 130
+
+   23 stmt: FOR id BOUNDARY id STEP • id stmtsGroup
+   24     | FOR id BOUNDARY id STEP • id stmt
+
+    id  shift, and go to state 139
+
+
+State 131
+
+   42 parameters: id '[' indexes • ']'
+
+    ']'  shift, and go to state 140
+
+
+State 132
+
+   40 parameters: parameters id '[' • indexes ']'
+
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    $default  reduce using rule 9 (indexes)
+
+    indexes  go to state 141
+    inds     go to state 68
+    expr     go to state 69
+
+
+State 133
+
+   20 stmt: VAR id '[' indexes ']' • '=' BOOL
+   22     | VAR id '[' indexes ']' • '=' INTEGER
+
+    '='  shift, and go to state 142
+
+
+State 134
+
+   18 stmt: id '[' indexes ']' '=' expr •
+   51 expr: expr • '+' expr
+   52     | expr • '-' expr
+   53     | expr • '*' expr
+   54     | expr • '/' expr
+   57     | expr • AND expr
+
+    AND  shift, and go to state 92
+    '+'  shift, and go to state 93
+    '-'  shift, and go to state 94
+    '*'  shift, and go to state 95
+    '/'  shift, and go to state 96
+
+    $default  reduce using rule 18 (stmt)
+
+
+State 135
+
+   47 expr: REDUCE id '[' INTEGER ']' •
+
+    $default  reduce using rule 47 (expr)
+
+
+State 136
+
+   48 expr: EXTEND id '[' INTEGER ']' •
+
+    $default  reduce using rule 48 (expr)
+
+
+State 137
+
+   29 stmt: SWITCH expr '\n' BOOL stmtsGroup BOOL • stmt
+   30     | SWITCH expr '\n' BOOL stmtsGroup BOOL • stmtsGroup
+
+    id      shift, and go to state 17
+    SWITCH  shift, and go to state 18
+    FOR     shift, and go to state 19
+    PRINT   shift, and go to state 20
+    MOVE    shift, and go to state 21
+    ROTATE  shift, and go to state 22
+    RESULT  shift, and go to state 23
+    DO      shift, and go to state 24
+    PLEASE  shift, and go to state 25
+    VAR     shift, and go to state 26
+    '('     shift, and go to state 14
+
+    stmtsGroup  go to state 143
+    stmt        go to state 144
+
+
+State 138
+
+   26 stmt: SWITCH expr '\n' BOOL stmt BOOL • stmt
+   27     | SWITCH expr '\n' BOOL stmt BOOL • stmtsGroup
+
+    id      shift, and go to state 17
+    SWITCH  shift, and go to state 18
+    FOR     shift, and go to state 19
+    PRINT   shift, and go to state 20
+    MOVE    shift, and go to state 21
+    ROTATE  shift, and go to state 22
+    RESULT  shift, and go to state 23
+    DO      shift, and go to state 24
+    PLEASE  shift, and go to state 25
+    VAR     shift, and go to state 26
+    '('     shift, and go to state 14
+
+    stmtsGroup  go to state 145
+    stmt        go to state 146
+
+
+State 139
+
+   23 stmt: FOR id BOUNDARY id STEP id • stmtsGroup
+   24     | FOR id BOUNDARY id STEP id • stmt
+
+    id      shift, and go to state 17
+    SWITCH  shift, and go to state 18
+    FOR     shift, and go to state 19
+    PRINT   shift, and go to state 20
+    MOVE    shift, and go to state 21
+    ROTATE  shift, and go to state 22
+    RESULT  shift, and go to state 23
+    DO      shift, and go to state 24
+    PLEASE  shift, and go to state 25
+    VAR     shift, and go to state 26
+    '('     shift, and go to state 14
+
+    stmtsGroup  go to state 147
+    stmt        go to state 148
+
+
+State 140
+
+   42 parameters: id '[' indexes ']' •
+
+    $default  reduce using rule 42 (parameters)
+
+
+State 141
+
+   40 parameters: parameters id '[' indexes • ']'
+
+    ']'  shift, and go to state 149
+
+
+State 142
+
+   20 stmt: VAR id '[' indexes ']' '=' • BOOL
+   22     | VAR id '[' indexes ']' '=' • INTEGER
+
+    INTEGER  shift, and go to state 150
+    BOOL     shift, and go to state 151
+
+
+State 143
+
+   30 stmt: SWITCH expr '\n' BOOL stmtsGroup BOOL stmtsGroup •
+
+    $default  reduce using rule 30 (stmt)
+
+
+State 144
+
+   29 stmt: SWITCH expr '\n' BOOL stmtsGroup BOOL stmt •
+   36     | stmt • THANKS
+
+    THANKS  shift, and go to state 65
+
+    $default  reduce using rule 29 (stmt)
+
+
+State 145
+
+   27 stmt: SWITCH expr '\n' BOOL stmt BOOL stmtsGroup •
+
+    $default  reduce using rule 27 (stmt)
+
+
+State 146
+
+   26 stmt: SWITCH expr '\n' BOOL stmt BOOL stmt •
+   36     | stmt • THANKS
+
+    THANKS  shift, and go to state 65
+
+    $default  reduce using rule 26 (stmt)
+
+
+State 147
+
+   23 stmt: FOR id BOUNDARY id STEP id stmtsGroup •
+
+    $default  reduce using rule 23 (stmt)
+
+
+State 148
+
+   24 stmt: FOR id BOUNDARY id STEP id stmt •
+   36     | stmt • THANKS
+
+    THANKS  shift, and go to state 65
+
+    THANKS    [reduce using rule 24 (stmt)]
+    $default  reduce using rule 24 (stmt)
+
+    shift/reduce conflict on token THANKS:
+       24 stmt: FOR id BOUNDARY id STEP id stmt •
+       36 stmt: stmt • THANKS
+      Example: FOR id BOUNDARY id STEP id stmt • THANKS
+      Shift derivation
+        stmt
+        ↳ 24: FOR id BOUNDARY id STEP id stmt
+                                         ↳ 36: stmt • THANKS
+      Reduce derivation
+        stmt
+        ↳ 36: stmt                                    THANKS
+              ↳ 24: FOR id BOUNDARY id STEP id stmt •
+
+
+
+State 149
+
+   40 parameters: parameters id '[' indexes ']' •
+
+    $default  reduce using rule 40 (parameters)
+
+
+State 150
+
+   22 stmt: VAR id '[' indexes ']' '=' INTEGER •
+
+    $default  reduce using rule 22 (stmt)
+
+
+State 151
+
+   20 stmt: VAR id '[' indexes ']' '=' BOOL •
+
+    $default  reduce using rule 20 (stmt)

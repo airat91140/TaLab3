@@ -1,18 +1,23 @@
-TASK fib n (
-SWITCH MXLTE n - 2
-TRUE RESULT 1
-VAR n1 = 0
-n1 = n - 1
-VAR n2 = 0
-n2 = n - 2
-DO fib n1
+TASK fib n
+(
+VAR eq = 0
+eq = n - 2
+VAR one = 1
+SWITCH MXLTE eq
+    TRUE RESULT one
+VAR nn = 0
+nn = n - 1
+VAR nnn = 0
+nnn = n - 2
+DO fib nn
 VAR tmp = 0
 tmp = GET fib
-DO fib n2
+DO fib nnn
 tmp = tmp + GET fib
 RESULT tmp
 )
-
-TASK FINDEXIT (
+TASK FINDEXIT a
+(
 DO fib 10
+RESULT a
 )

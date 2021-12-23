@@ -13,7 +13,7 @@ static std::map<std::string, lab3::AbstractNode *> functionsTable;
 static std::map<std::string, lab3::AbstractNode *> lastCall;
 static std::map<std::string, lab3::AbstractNode *> varTable;
 static bool hasResult;
-static lab3::AbstractVariableNode *lastResult;
+static lab3::AbstractVariableNode *lastResult = new lab3::ParameterNode("tmp");
 static int sadnessBorder = -(rand() % 30 + 60); //-30 to -59
 static int suspectnessBorder = (rand() % 30 + 60); // 30 to 59
 static int mood = 0;
@@ -47,7 +47,7 @@ void yyerror(char *s);
 %nonassoc DIGITIZE REDUCE EXTEND SIZE NOT LOGITIZE MXEQ MXLT MXGT MXLTE MXGTE ELEQ ELLT ELGT ELLTE ELGTE MXFALSE MXTRUE
 
 
-%type<nPtr>inds functions function stmts ids logic arith expr indexes value parameters stmtsGroup stmt
+%type<nPtr>inds functions function stmts ids expr indexes value parameters stmtsGroup stmt
 
 %%
 
@@ -62,26 +62,23 @@ program:
                }
 
 functions:
-    functions function {functionsTable.insert({((lab3::FunctionNode *)$2)->getName(), $2}); lastCall.insert({((lab3::FunctionNode *)$2)->getName(), nullptr});}
-    | %empty {$$ = nullptr;}
+    functions '\n' function
+    | function
+    | '\n' {$$ = nullptr;}
 
 function:
     TASK id ids '\n' stmtsGroup {auto tmp = new lab3::FunctionNode(*$2, $3, $5);
                                  for (const auto &it : varTable)
                                      tmp->addVar(it.first, (lab3::AbstractVariableNode *)it.second);
-                                 auto iter = $3;
-                                     while (iter->nodeType == lab3::OPERATION) {
-                                         tmp->addVar(((lab3::AbstractVariableNode *)(*(lab3::OperationNode *)iter)[1])->getName(), ((lab3::AbstractVariableNode *)(*(lab3::OperationNode *)iter)[1]));
-                                         iter = (*(lab3::OperationNode *)iter)[0];
-                                     }
-                                 tmp->addVar(((lab3::AbstractVariableNode *)iter)->getName(), ((lab3::AbstractVariableNode *)iter));
                                  varTable.clear();
                                  lastCall.insert({*$2, lastResult});
+                                 functionsTable.insert({*$2, tmp});
+                                 lastResult = new lab3::ParameterNode("tmp");
                                  $$ = tmp;
                                  }
 
-ids: ids id {$$ = new lab3::OperationNode(' ', 2, $1, new lab3::ParameterNode(*$2));}
-    | id {$$ = new lab3::ParameterNode(*$1);}
+ids: ids id {auto res = new lab3::ParameterNode(*$2); varTable.insert({*$2, res}); $$ = new lab3::OperationNode(' ', 2, $1, res);}
+    | id {auto res = new lab3::ParameterNode(*$1); varTable.insert({*$1, res}); $$ = res;}
 
 indexes: inds {$$ = $1;}
         | %empty {$$ = new lab3::OperationNode(',', 0);}
@@ -94,7 +91,7 @@ stmtsGroup: '(' '\n' stmts '\n' ')' {$$ = $3;}
 stmts: stmts '\n' stmt {$$ = new lab3::OperationNode('\n', 2, $1, $3);}
      | stmt {$$ = $1;}
      | stmts '\n' {$$ = new lab3::OperationNode('\n', 1, $1);}
-     | stmts '\n' error {std::cout << "Some error on line " << @3.first_line << std::endl; yyerrok;}
+     | stmts error {std::cout << "Some error on line " << @2.first_line << std::endl; yyerrok;}
 
 stmt:  id '=' expr {$$ = new lab3::OperationNode('=', 2, varTable.at(*$1), $3);}
      | id '[' indexes ']' '=' expr {$$ = new lab3::OperationNode('=', 3, varTable.at(*$1), $3, $6);}
@@ -116,12 +113,12 @@ stmt:  id '=' expr {$$ = new lab3::OperationNode('=', 2, varTable.at(*$1), $3);}
                                                 $$ = new lab3::OperationNode(VAR, 0);}
      | FOR id BOUNDARY id STEP id stmtsGroup {$$ = new lab3::OperationNode(FOR, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);}
      | FOR id BOUNDARY id STEP id stmt {$$ = new lab3::OperationNode(FOR, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);}
-     | SWITCH logic '\n' BOOL stmt %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
-     | SWITCH logic '\n' BOOL stmt BOOL stmt {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
-     | SWITCH logic '\n' BOOL stmt BOOL stmtsGroup {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
-     | SWITCH logic '\n' BOOL stmtsGroup %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
-     | SWITCH logic '\n' BOOL stmtsGroup BOOL stmt {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
-     | SWITCH logic '\n' BOOL stmtsGroup BOOL stmtsGroup {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
+     | SWITCH expr '\n' BOOL stmt %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
+     | SWITCH expr '\n' BOOL stmt BOOL stmt {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
+     | SWITCH expr '\n' BOOL stmt BOOL stmtsGroup {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
+     | SWITCH expr '\n' BOOL stmtsGroup %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
+     | SWITCH expr '\n' BOOL stmtsGroup BOOL stmt {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
+     | SWITCH expr '\n' BOOL stmtsGroup BOOL stmtsGroup {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
      | ROTATE LEFT {$$ = new lab3::OperationNode(LEFT, 0);}
      | ROTATE RIGHT {$$ = new lab3::OperationNode(RIGHT, 0);}
      | MOVE  {$$ = new lab3::OperationNode(MOVE, 0);}
@@ -130,7 +127,7 @@ stmt:  id '=' expr {$$ = new lab3::OperationNode('=', 2, varTable.at(*$1), $3);}
      | stmt THANKS {$$ = new lab3::OperationNode(THANKS, 1, $1);}
      | PRINT expr {$$ = new lab3::OperationNode(PRINT, 1, $2);}
      | RESULT id {$$ = new lab3::OperationNode(RESULT, 1, varTable.at(*$2));
-                        lastResult = (lab3::AbstractVariableNode *)varTable.at(*$2);
+                        ((lab3::ParameterNode *)lastResult)->setVar((lab3::AbstractVariableNode *)varTable.at(*$2));
                         }
 
 parameters: parameters id {$$ = new lab3::OperationNode(' ', 2, $1, varTable.at(*$2));}
@@ -141,41 +138,39 @@ parameters: parameters id {$$ = new lab3::OperationNode(' ', 2, $1, varTable.at(
 value: INTEGER {$$ = $1;}
      | BOOL {$$ = $1;}
 
-expr: arith {$$ = $1;}
-    | logic {$$ = $1;}
-
-arith: INTEGER
-     | '(' arith ')' {$$ = $2;}
+expr: INTEGER
+     | '(' expr ')' {$$ = $2;}
+     | id {$$ = varTable.at(*$1);}
      | id '[' indexes ']' {$$ = new lab3::OperationNode('[', 2, varTable.at(*$1), $3);}
      | REDUCE id '[' INTEGER ']' {$$ = new lab3::OperationNode(REDUCE, 2, varTable.at(*$2), $4);}
      | EXTEND id '[' INTEGER ']' {$$ = new lab3::OperationNode(EXTEND, 2, varTable.at(*$2), $4);}
      | DIGITIZE id {$$ = new lab3::OperationNode(DIGITIZE, 1, varTable.at(*$2));}
      | SIZE id {$$ = new lab3::OperationNode(SIZE, 1, varTable.at(*$2));}
-     | arith '+' arith {$$ = new lab3::OperationNode('+', 2, $1, $3);}
-     | arith '-' arith {$$ = new lab3::OperationNode('-', 2, $1, $3);}
-     | arith '*' arith {$$ = new lab3::OperationNode('*', 2, $1, $3);}
-     | arith '/' arith {$$ = new lab3::OperationNode('/', 2, $1, $3);}
+     | expr '+' expr {$$ = new lab3::OperationNode('+', 2, $1, $3);}
+     | expr '-' expr {$$ = new lab3::OperationNode('-', 2, $1, $3);}
+     | expr '*' expr {$$ = new lab3::OperationNode('*', 2, $1, $3);}
+     | expr '/' expr {$$ = new lab3::OperationNode('/', 2, $1, $3);}
      | GET ENVIRONMENT {$$ = new lab3::OperationNode(ENVIRONMENT, 0);}
-     | GET id {$$ = lastCall.at(*$2);}
-
-logic: '(' logic ')' {$$ = $2;}
-     | logic AND logic {$$ = new lab3::OperationNode(AND, 2, $1, $3);}
+     | GET id {try {$$ = lastCall.at(*$2);}
+                catch (std::exception &ex) {
+                if (((lab3::ParameterNode *)lastResult)->getVar() != nullptr)
+                    $$ = lastResult;
+                else throw std::runtime_error("No function called!");
+                }
+                }
+     | expr AND expr {$$ = new lab3::OperationNode(AND, 2, $1, $3);}
      | BOOL {$$ = $1;}
-     | id {$$ = varTable.at(*$1);}
-     | id '[' indexes ']' {$$ = new lab3::OperationNode('[', 1, varTable.at(*$1), $3);}
-     | NOT logic {$$ = new lab3::OperationNode(NOT, 1, $2);}
+     | NOT expr {$$ = new lab3::OperationNode(NOT, 1, $2);}
      | LOGITIZE id {$$ = new lab3::OperationNode(LOGITIZE, 1, varTable.at(*$2));}
-     | MXEQ arith {$$ = new lab3::OperationNode(MXEQ, 1, $2);}
-     | MXLT arith {$$ = new lab3::OperationNode(MXLT, 1, $2);}
-     | MXGT arith {$$ = new lab3::OperationNode(MXGT, 1, $2);}
-     | MXLTE arith {$$ = new lab3::OperationNode(MXLTE, 1, $2);}
-     | MXGTE arith {$$ = new lab3::OperationNode(MXGTE, 1, $2);}
-     | ELEQ arith {$$ = new lab3::OperationNode(ELEQ, 1, $2);}
-     | ELLT arith {$$ = new lab3::OperationNode(ELLT, 1, $2);}
-     | ELGT arith {$$ = new lab3::OperationNode(ELGT, 1, $2);}
-     | ELLTE arith {$$ = new lab3::OperationNode(ELLTE, 1, $2);}
-     | ELGTE arith {$$ = new lab3::OperationNode(ELGTE, 1, $2);}
-     | MXFALSE logic {$$ = new lab3::OperationNode(MXFALSE, 1, $2);}
-     | MXTRUE logic {$$ = new lab3::OperationNode(MXTRUE, 1, $2);}
-     | REDUCE id '[' INTEGER ']' {$$ = new lab3::OperationNode(REDUCE, 2, varTable.at(*$2), $4);}
-     | EXTEND id '[' INTEGER ']' {$$ = new lab3::OperationNode(EXTEND, 2, varTable.at(*$2), $4);}
+     | MXEQ expr {$$ = new lab3::OperationNode(MXEQ, 1, $2);}
+     | MXLT expr {$$ = new lab3::OperationNode(MXLT, 1, $2);}
+     | MXGT expr {$$ = new lab3::OperationNode(MXGT, 1, $2);}
+     | MXLTE expr {$$ = new lab3::OperationNode(MXLTE, 1, $2);}
+     | MXGTE expr {$$ = new lab3::OperationNode(MXGTE, 1, $2);}
+     | ELEQ expr {$$ = new lab3::OperationNode(ELEQ, 1, $2);}
+     | ELLT expr {$$ = new lab3::OperationNode(ELLT, 1, $2);}
+     | ELGT expr {$$ = new lab3::OperationNode(ELGT, 1, $2);}
+     | ELLTE expr {$$ = new lab3::OperationNode(ELLTE, 1, $2);}
+     | ELGTE expr {$$ = new lab3::OperationNode(ELGTE, 1, $2);}
+     | MXFALSE expr {$$ = new lab3::OperationNode(MXFALSE, 1, $2);}
+     | MXTRUE expr {$$ = new lab3::OperationNode(MXTRUE, 1, $2);}

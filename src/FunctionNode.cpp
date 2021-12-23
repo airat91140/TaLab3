@@ -50,14 +50,15 @@ lab3::AbstractNode *lab3::FunctionNode::exec(lab3::AbstractNode *node) {
     auto iter = node;
     auto i = parameters.rbegin();
     while (iter->nodeType == OPERATION ) {
-        delete varTable.at(*i);
-        varTable.at(*i) = (AbstractVariableNode *)((*(OperationNode *)iter)[1]->exec(nullptr));
+        auto tmp = (ParameterNode *)varTable.at(*i);
+        tmp->setVar((AbstractVariableNode *)((*(OperationNode *)iter)[1]->exec(nullptr)));
         ++i;
         iter = (*(OperationNode *)iter)[0];
         if (i == parameters.rend())
             throw std::runtime_error("Invalid number of arguments");
     }
-    varTable.at(*i) = (AbstractVariableNode *)(iter->exec(nullptr));
+    auto tmp = (ParameterNode *)varTable.at(*i);
+    tmp->setVar((AbstractVariableNode *)(iter->exec(nullptr)));
     ++i;
     if (i != parameters.rend())
         throw std::runtime_error("Invalid number of arguments");

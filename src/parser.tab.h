@@ -61,7 +61,7 @@ static std::map<std::string, lab3::AbstractNode *> functionsTable;
 static std::map<std::string, lab3::AbstractNode *> lastCall;
 static std::map<std::string, lab3::AbstractNode *> varTable;
 static bool hasResult;
-static lab3::AbstractVariableNode *lastResult;
+static lab3::AbstractVariableNode *lastResult = new lab3::ParameterNode("tmp");
 static int sadnessBorder = -(rand() % 30 + 60); //-30 to -59
 static int suspectnessBorder = (rand() % 30 + 60); // 30 to 59
 static int mood = 0;
