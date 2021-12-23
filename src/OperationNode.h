@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <cstdarg>
+#include <ostream>
 #include "AbstractNode.h"
 #include "parser.tab.h"
 
@@ -17,6 +18,7 @@ namespace lab3 {
         int operTag;
         int operNum;
         std::vector<AbstractNode *> children;
+
     public:
         OperationNode(int operTag, int operNum, ...);
 
@@ -31,6 +33,8 @@ namespace lab3 {
         AbstractNode *exec(AbstractNode *node) override;
 
         ~OperationNode() override;
+
+        friend std::ostream &operator<<(std::ostream &os, const OperationNode &node);
 
         std::ostream &print(std::ostream &ostream) const override;
     };

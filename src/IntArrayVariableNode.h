@@ -12,6 +12,7 @@
 #include <cstdarg>
 #include <algorithm>
 #include <list>
+#include <ostream>
 
 namespace lab3 {
     class IntArrayVariableNode : public IntVariableNode {
@@ -50,9 +51,15 @@ namespace lab3 {
 
         bool addInCycle(IntVariableNode *bound, IntVariableNode *step) override;
 
+        friend std::ostream &operator<<(std::ostream &os, const IntArrayVariableNode &node);
+
         std::ostream &print(std::ostream &ostream) const override;
 
         IntArrayVariableNode (lab3::AbstractVariableNode *other);
+
+        void assign(AbstractVariableNode *value) override;
+
+        void assignAt(AbstractVariableNode *value, std::list<int> indexes) override;
 
         int compareM() override;
 
@@ -77,6 +84,8 @@ namespace lab3 {
         AbstractVariableNode *elgte() override;
 
         IntArrayVariableNode();
+
+        IntVariableNode *get(std::list<int> indexes);
     };
 }
 

@@ -4,6 +4,8 @@
 
 #include "AbstractNode.h"
 
-std::ostream &operator<<(std::ostream &os, const lab3::AbstractNode &node) {
-    return node.print(os);
+namespace lab3 {
+    std::ostream &operator<<(std::ostream &os, const lab3::AbstractNode &node) {
+        return node.print(os);
+    }
 }

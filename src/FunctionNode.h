@@ -8,6 +8,7 @@
 #include <list>
 #include <string>
 #include <map>
+#include <ostream>
 
 #include "AbstractNode.h"
 #include "AbstractVariableNode.h"
@@ -43,6 +44,8 @@ namespace lab3 {
         std::ostream &print(std::ostream &ostream) const override;
 
         bool addVar(const std::string &name, lab3::AbstractVariableNode *var);
+
+        friend std::ostream &operator<<(std::ostream &os, const FunctionNode &node);
     };
 }
 

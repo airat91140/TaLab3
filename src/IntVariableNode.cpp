@@ -22,18 +22,33 @@ lab3::AbstractNode *lab3::IntVariableNode::exec(lab3::AbstractNode *node) {
 bool lab3::IntVariableNode::addInCycle(lab3::IntVariableNode *bound, lab3::IntVariableNode *step) {
     if (bound->isArray() || step->isArray())
         throw std::runtime_error("Type mismatch");
-    if (bound->val >= this->val)
+    if (bound->val <= this->val)
         return false;
     this->val += step->val;
     return true;
 }
 
 std::ostream &lab3::IntVariableNode::print(std::ostream &ostream) const {
-    ostream << val << std::endl;
+    ostream << val;
     return ostream;
 }
 
 lab3::AbstractVariableNode *lab3::IntVariableNode::logitize() {
     return dynamic_cast<AbstractVariableNode *>(new IntVariableNode("tmp", val));
+}
+
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::IntVariableNode &node) {
+    return node.print(os);
+}
+
+void lab3::IntVariableNode::assign(lab3::AbstractVariableNode *value) {
+    if (value->nodeType == INT_CONST || value->nodeType == INT_VAR) {
+        this->val = ((IntConstNode *)value)->getVal();
+    }
+    else throw std::runtime_error("Type mismatch");
+}
+
+void lab3::IntVariableNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
+    throw std::runtime_error("Array size mismatch");
 }
 

@@ -7,13 +7,14 @@
 
 #include "AbstractVariableNode.h"
 #include <string>
+#include <ostream>
 
 namespace lab3 {
     class BoolConstNode : public AbstractVariableNode {
     protected:
         bool val;
     public:
-        explicit BoolConstNode(const std::string &val);
+        explicit BoolConstNode(const char *val);
 
         explicit BoolConstNode(bool val);
 
@@ -27,6 +28,10 @@ namespace lab3 {
 
         bool isArray() override;
 
+        void assign(AbstractVariableNode *value) override;
+
+        void assignAt(AbstractVariableNode *value, std::list<int> indexes) override;
+
         std::ostream &print(std::ostream &ostream) const override;
 
         virtual AbstractVariableNode * and_(BoolConstNode *other);
@@ -36,6 +41,9 @@ namespace lab3 {
         virtual AbstractVariableNode *mxfalse();
 
         virtual AbstractVariableNode *mxtrue();
+
+        friend std::ostream &operator<<(std::ostream &os, const BoolConstNode &node);
+
     };
 }
 

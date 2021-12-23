@@ -13,6 +13,7 @@
 namespace lab3 {
     class Driver {
     public:
+        static void parseMap(std::istream &file);
 //        Driver(const char *str);
 //        Driver();
 //        enum dir {U, L, R, D};

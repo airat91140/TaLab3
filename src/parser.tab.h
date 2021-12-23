@@ -62,12 +62,17 @@ static std::map<std::string, lab3::AbstractNode *> lastCall;
 static std::map<std::string, lab3::AbstractNode *> varTable;
 static bool hasResult;
 static lab3::AbstractVariableNode *lastResult;
+static int sadnessBorder = -(rand() % 30 + 60); //-30 to -59
+static int suspectnessBorder = (rand() % 30 + 60); // 30 to 59
+static int mood = 0;
+static int probability = rand() % 41 + 30; //30 to 70;
+static bool errorFlag = false;
 /* prototypes */
 int yylex(void);
 
 void yyerror(char *s);
 
-#line 71 "parser.tab.h"
+#line 76 "parser.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -98,29 +103,28 @@ void yyerror(char *s);
     DO = 275,                      /* DO  */
     PLEASE = 276,                  /* PLEASE  */
     VAR = 277,                     /* VAR  */
-    PLSX = 278,                    /* PLSX  */
-    THANKS = 279,                  /* THANKS  */
-    SWITCHX = 280,                 /* SWITCHX  */
-    HIGHSWITCHX = 281,             /* HIGHSWITCHX  */
-    AND = 282,                     /* AND  */
-    DIGITIZE = 283,                /* DIGITIZE  */
-    REDUCE = 284,                  /* REDUCE  */
-    EXTEND = 285,                  /* EXTEND  */
-    SIZE = 286,                    /* SIZE  */
-    NOT = 287,                     /* NOT  */
-    LOGITIZE = 288,                /* LOGITIZE  */
-    MXEQ = 289,                    /* MXEQ  */
-    MXLT = 290,                    /* MXLT  */
-    MXGT = 291,                    /* MXGT  */
-    MXLTE = 292,                   /* MXLTE  */
-    MXGTE = 293,                   /* MXGTE  */
-    ELEQ = 294,                    /* ELEQ  */
-    ELLT = 295,                    /* ELLT  */
-    ELGT = 296,                    /* ELGT  */
-    ELLTE = 297,                   /* ELLTE  */
-    ELGTE = 298,                   /* ELGTE  */
-    MXFALSE = 299,                 /* MXFALSE  */
-    MXTRUE = 300                   /* MXTRUE  */
+    SWITCHX = 278,                 /* SWITCHX  */
+    PLSX = 279,                    /* PLSX  */
+    THANKS = 280,                  /* THANKS  */
+    AND = 281,                     /* AND  */
+    DIGITIZE = 282,                /* DIGITIZE  */
+    REDUCE = 283,                  /* REDUCE  */
+    EXTEND = 284,                  /* EXTEND  */
+    SIZE = 285,                    /* SIZE  */
+    NOT = 286,                     /* NOT  */
+    LOGITIZE = 287,                /* LOGITIZE  */
+    MXEQ = 288,                    /* MXEQ  */
+    MXLT = 289,                    /* MXLT  */
+    MXGT = 290,                    /* MXGT  */
+    MXLTE = 291,                   /* MXLTE  */
+    MXGTE = 292,                   /* MXGTE  */
+    ELEQ = 293,                    /* ELEQ  */
+    ELLT = 294,                    /* ELLT  */
+    ELGT = 295,                    /* ELGT  */
+    ELLTE = 296,                   /* ELLTE  */
+    ELGTE = 297,                   /* ELGTE  */
+    MXFALSE = 298,                 /* MXFALSE  */
+    MXTRUE = 299                   /* MXTRUE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -129,14 +133,14 @@ void yyerror(char *s);
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 23 "parser.y"
+#line 28 "parser.y"
 
     lab3::AbstractNode *nPtr;
     lab3::BoolConstNode *boolVal;
     lab3::IntConstNode *intVal;
     std::string *name;
 
-#line 140 "parser.tab.h"
+#line 144 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -144,9 +148,23 @@ typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+/* Location type.  */
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE YYLTYPE;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+};
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
+#endif
+
 
 extern YYSTYPE yylval;
-
+extern YYLTYPE yylloc;
 
 int yyparse (void);
 

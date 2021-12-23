@@ -35,6 +35,12 @@ namespace lab3 {
         virtual AbstractVariableNode *digitize();
 
         AbstractVariableNode * and_(BoolConstNode *other) override;
+
+        void assign(AbstractVariableNode *value) override;
+
+        void assignAt(AbstractVariableNode *value, std::list<int> indexes) override;
+
+        friend std::ostream &operator<<(std::ostream &os, const BoolVariableNode &node);
     };
 }
 

@@ -9,18 +9,25 @@
 lab3::IntArrayVariableNode::IntArrayVariableNode(const ::std::string &name, int val,  std::list<int> dims)
         : IntVariableNode(name, val) {
     nodeType = INT_ARR;
+    if (dims.empty() || dims.front() <= 0)
+        throw std::runtime_error("Invalid array size");
     if (dims.size() == 1)
         for (int i = 0; i < dims.front(); ++i)
             array.push_back(new IntVariableNode(name, val));
     else {
+        int len = dims.front();
         dims.pop_front();
-        for (int i = 0; i < dims.front(); ++i)
+        for (int i = 0; i < len; ++i)
             array.push_back(new IntArrayVariableNode(name, val, dims));
     }
 }
 
 lab3::IntVariableNode *lab3::IntArrayVariableNode::operator[](int index) {
-    return array.at(index - 1);
+    try {
+        return array.at(index - 1);
+    } catch (std::exception &e) {
+        throw std::runtime_error("Wrong index");
+    }
 }
 
 lab3::IntArrayVariableNode::~IntArrayVariableNode() {
@@ -81,7 +88,7 @@ std::ostream &lab3::IntArrayVariableNode::print(std::ostream &ostream) const {
     for (const auto &it : array) {
         it->print(ostream) << ",";
     }
-    ostream << "]" << std::endl;
+    ostream << "]";
     return ostream;
 }
 
@@ -95,7 +102,11 @@ lab3::IntArrayVariableNode::IntArrayVariableNode(lab3::AbstractVariableNode *oth
 }
 
 const lab3::IntVariableNode *lab3::IntArrayVariableNode::operator[](int index) const {
-    return array.at(index - 1);
+    try {
+        return array.at(index - 1);
+    } catch (std::exception &e) {
+        throw std::runtime_error("Wrong index");
+    }
 }
 
 lab3::AbstractVariableNode *lab3::IntArrayVariableNode::logitize() {
@@ -215,4 +226,55 @@ lab3::AbstractVariableNode *lab3::IntArrayVariableNode::div(lab3::IntConstNode *
 
 lab3::IntArrayVariableNode::IntArrayVariableNode() : IntVariableNode("tmp", 0) {
     nodeType = INT_ARR;
+}
+
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::IntArrayVariableNode &node) {
+    return node.print(os);
+}
+
+void lab3::IntArrayVariableNode::assign(lab3::AbstractVariableNode *value) {
+    if (value->nodeType != INT_ARR)
+        throw std::runtime_error("Type mismatch");
+    auto other = (IntArrayVariableNode *)value;
+    if (this->getSize() != other->getSize())
+        throw std::runtime_error("Type mismatch");
+    for (int i = 0; i < getSize(); ++i) {
+        this->array[i]->assign(other->array[i]);
+    }
+}
+
+void lab3::IntArrayVariableNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
+    if (value->nodeType != INT_CONST && value->nodeType != INT_VAR)
+        throw std::runtime_error("Type mismatch");
+    IntArrayVariableNode *iter = this;
+    while (indexes.size() > 1) {
+        if (!(*iter)[indexes.front()]->isArray())
+            throw std::runtime_error("Too much indexes");
+        iter = (IntArrayVariableNode *)(*iter)[indexes.front()];
+        indexes.pop_front();
+    }
+    if (indexes.size() == 1 && !(*iter)[indexes.front()]->isArray()) {
+        (*iter)[indexes.front()]->assign(value);
+        return;
+    }
+    IntVariableNode *it = iter;
+    while (it->isArray()) {
+        it = (*(IntArrayVariableNode *)it)[1];
+    }
+    it->assign(value);
+}
+
+lab3::IntVariableNode *lab3::IntArrayVariableNode::get(std::list<int> indexes) {
+    IntArrayVariableNode *iter = this;
+    while (indexes.size() > 1) {
+        if (!(*iter)[indexes.front()]->isArray())
+            throw std::runtime_error("Too much indexes");
+        iter = (IntArrayVariableNode *)(*iter)[indexes.front()];
+        indexes.pop_front();
+    }
+    IntVariableNode *it = iter;
+    while (it->isArray()) {
+        it = (*(IntArrayVariableNode *)it)[1];
+    }
+    return it;
 }

@@ -83,3 +83,7 @@ lab3::FunctionNode::~FunctionNode() {
 bool lab3::FunctionNode::addVar(const std::string &name, AbstractVariableNode *var) {
     return varTable.insert({name, var}).second;
 }
+
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::FunctionNode &node) {
+    return node.print(os);
+}

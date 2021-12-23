@@ -8,18 +8,26 @@
 
 lab3::BoolArrayVariableNode::BoolArrayVariableNode(const::std::string &name, bool val, std::list<int> dims) : BoolVariableNode(name, val) {
     nodeType = BOOL_ARR;
+    if (dims.empty() || dims.front() <= 0)
+        throw std::runtime_error("Invalid array size");
     if (dims.size() == 1)
-        for (int i = 0; i < dims.front(); ++i)
+        for (int i = 0; i < dims.front(); ++i) {
             array.push_back(new BoolVariableNode(name, val));
+        }
     else {
+        int len = dims.front();
         dims.pop_front();
-        for (int i = 0; i < dims.front(); ++i)
+        for (int i = 0; i < len; ++i)
             array.push_back(new BoolArrayVariableNode(name, val, dims));
     }
 }
 
 lab3::BoolVariableNode *&lab3::BoolArrayVariableNode::operator[](int index) {
-    return array.at(index - 1);
+    try {
+        return array.at(index - 1);
+    } catch (std::exception &e) {
+        throw std::runtime_error("Wrong index");
+    }
 }
 
 lab3::BoolArrayVariableNode::~BoolArrayVariableNode() {
@@ -73,7 +81,7 @@ std::ostream &lab3::BoolArrayVariableNode::print(std::ostream &ostream) const {
     for (const auto &it : array) {
         it->print(ostream) << ",";
     }
-    ostream << "]" << std::endl;
+    ostream << "]";
     return ostream;
 }
 
@@ -82,7 +90,11 @@ lab3::AbstractVariableNode * lab3::BoolArrayVariableNode::digitize(){
 }
 
 const lab3::BoolVariableNode *lab3::BoolArrayVariableNode::operator[](int index) const {
-    return array.at(index - 1);
+    try {
+        return array.at(index - 1);
+    } catch (std::exception &e) {
+        throw std::runtime_error("wrong index");
+    }
 }
 
 lab3::BoolArrayVariableNode::BoolArrayVariableNode(AbstractVariableNode *other) : BoolVariableNode("tmp", 0) {
@@ -134,6 +146,57 @@ lab3::BoolVariableNode *lab3::BoolArrayVariableNode::mxtrue() {
 void lab3::BoolArrayVariableNode::countBools(std::pair<int, int> &cnt) {
     for (const auto &i : array)
         i->countBools(cnt);
+}
+
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::BoolArrayVariableNode &node) {
+    return node.print(os);
+}
+
+void lab3::BoolArrayVariableNode::assign(lab3::AbstractVariableNode *value) {
+    if (value->nodeType != BOOL_ARR)
+        throw std::runtime_error("Type mismatch");
+    auto other = (BoolArrayVariableNode *)value;
+    if (this->getSize() != other->getSize())
+        throw std::runtime_error("Type mismatch");
+    for (int i = 0; i < getSize(); ++i) {
+        this->array[i]->assign(other->array[i]);
+    }
+}
+
+void lab3::BoolArrayVariableNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
+    if (value->nodeType != BOOL_CONST && value->nodeType != BOOL_VAR)
+        throw std::runtime_error("Type mismatch");
+    BoolArrayVariableNode *iter = this;
+    while (indexes.size() > 1) {
+        if (!(*iter)[indexes.front()]->isArray())
+            throw std::runtime_error("Too much indexes");
+        iter = (BoolArrayVariableNode *)(*iter)[indexes.front()];
+        indexes.pop_front();
+    }
+    if (indexes.size() == 1 && !(*iter)[indexes.front()]->isArray()) {
+        (*iter)[indexes.front()]->assign(value);
+        return;
+    }
+    BoolVariableNode *it = iter;
+    while (it->isArray()) {
+        it = (*(BoolArrayVariableNode *)it)[1];
+    }
+    it->assign(value);
+}
+
+lab3::BoolVariableNode *lab3::BoolArrayVariableNode::get(std::list<int> indexes) {
+    BoolArrayVariableNode *iter = this;
+    while (indexes.size() > 1) {
+        if (!(*iter)[indexes.front()]->isArray())
+            throw std::runtime_error("Too much indexes");
+        iter = (BoolArrayVariableNode *)(*iter)[indexes.front()];
+        indexes.pop_front();
+    }
+    BoolVariableNode *it = iter;
+    while (it->isArray()) {
+        it = (*(BoolArrayVariableNode *)it)[1];
+    }
+    return it;
 }
 
 

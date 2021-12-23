@@ -14,6 +14,11 @@ static std::map<std::string, lab3::AbstractNode *> lastCall;
 static std::map<std::string, lab3::AbstractNode *> varTable;
 static bool hasResult;
 static lab3::AbstractVariableNode *lastResult;
+static int sadnessBorder = -(rand() % 30 + 60); //-30 to -59
+static int suspectnessBorder = (rand() % 30 + 60); // 30 to 59
+static int mood = 0;
+static int probability = rand() % 41 + 30; //30 to 70;
+static bool errorFlag = false;
 /* prototypes */
 int yylex(void);
 
@@ -31,16 +36,18 @@ void yyerror(char *s);
 %token <boolVal> BOOL
 %token <name> id
 %token SWITCH FOR PRINT BOUNDARY STEP MOVE ROTATE LEFT RIGHT GET ENVIRONMENT TASK RESULT DO PLEASE VAR
+
+%precedence  SWITCHX
+%precedence  BOOL
 %left PLSX
-%left THANKS
-%nonassoc  SWITCHX
-%nonassoc  HIGHSWITCHX
+%right THANKS
 %left AND
 %left '+' '-'
 %left '*' '/'
 %nonassoc DIGITIZE REDUCE EXTEND SIZE NOT LOGITIZE MXEQ MXLT MXGT MXLTE MXGTE ELEQ ELLT ELGT ELLTE ELGTE MXFALSE MXTRUE
 
-%type<nPtr> functions function stmts ids logic arith expr indexes value parameters stmtsGroup stmt
+
+%type<nPtr>inds functions function stmts ids logic arith expr indexes value parameters stmtsGroup stmt
 
 %%
 
@@ -48,7 +55,7 @@ program:
     functions { if (!functionsTable.contains("FINDEXIT"))
                     throw std::runtime_error("Could not find FINDEXIT function");
 
-                functionsTable.at("FINDEXIT")->exec(new lab3::BoolConstNode(true));
+                functionsTable.at("FINDEXIT")->exec(new lab3::BoolVariableNode("tmp", true));
                 for (const auto &[key, value] : functionsTable)
                     delete value;
                 exit(0);
@@ -76,50 +83,53 @@ function:
 ids: ids id {$$ = new lab3::OperationNode(' ', 2, $1, new lab3::ParameterNode(*$2));}
     | id {$$ = new lab3::ParameterNode(*$1);}
 
-indexes: indexes ',' expr {$$ = new lab3::OperationNode(',', 2, $1, $3); }
-        | expr { $$ = new lab3::OperationNode(',', 1, $1); }
+indexes: inds {$$ = $1;}
         | %empty {$$ = new lab3::OperationNode(',', 0);}
 
-stmtsGroup: '(' stmts ')' {$$ = $2;}
+inds: inds ',' expr {$$ = new lab3::OperationNode(',', 2, $1, $3); }
+    | expr { $$ = new lab3::OperationNode(',', 1, $1); }
 
-stmts: stmts stmt {$$ = new lab3::OperationNode('\n', 2, $1, $2);}
-     | stmt {$1->print(std::cout); $$ = $1;}
+stmtsGroup: '(' '\n' stmts '\n' ')' {$$ = $3;}
 
-stmt:  '\n' {new lab3::OperationNode('e', 0);}
-     | id '=' expr '\n' {$$ = new lab3::OperationNode('=', 2, varTable.at(*$1), $3);}
-     | id '[' indexes ']' '=' expr '\n' {$$ = new lab3::OperationNode('=', 3, varTable.at(*$1), $3, $6);}
-     | VAR id '=' BOOL '\n' {if (!varTable.insert({*$2, new lab3::BoolVariableNode(*$2, $4->getVal())}).second)
+stmts: stmts '\n' stmt {$$ = new lab3::OperationNode('\n', 2, $1, $3);}
+     | stmt {$$ = $1;}
+     | stmts '\n' {$$ = new lab3::OperationNode('\n', 1, $1);}
+     | stmts '\n' error {std::cout << "Some error on line " << @3.first_line << std::endl; yyerrok;}
+
+stmt:  id '=' expr {$$ = new lab3::OperationNode('=', 2, varTable.at(*$1), $3);}
+     | id '[' indexes ']' '=' expr {$$ = new lab3::OperationNode('=', 3, varTable.at(*$1), $3, $6);}
+     | VAR id '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolVariableNode(*$2, $4->getVal())}).second)
                                 throw std::runtime_error("Variable already defined");
                              delete $4;
                              $$ = new lab3::OperationNode(VAR, 0);}
-     | VAR id '[' indexes ']' '=' BOOL '\n' {if (!varTable.insert({*$2, new lab3::BoolArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
+     | VAR id '[' indexes ']' '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
                                                 throw std::runtime_error("Variable already defined");
                                              delete $7;
                                              $$ = new lab3::OperationNode(VAR, 0);}
-     | VAR id '=' INTEGER '\n' {if (!varTable.insert({*$2, new lab3::IntVariableNode(*$2, $4->getVal())}).second)
+     | VAR id '=' INTEGER  {if (!varTable.insert({*$2, new lab3::IntVariableNode(*$2, $4->getVal())}).second)
                                     throw std::runtime_error("Variable already defined");
                                 delete $4;
                                 $$ = new lab3::OperationNode(VAR, 0);}
-     | VAR id '[' indexes ']' '=' INTEGER '\n' {if (!varTable.insert({*$2, new lab3::IntArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
+     | VAR id '[' indexes ']' '=' INTEGER {if (!varTable.insert({*$2, new lab3::IntArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
                                                     throw std::runtime_error("Variable already defined");
                                                 delete $7;
                                                 $$ = new lab3::OperationNode(VAR, 0);}
-     | FOR id BOUNDARY id STEP id stmtsGroup '\n' {$$ = new lab3::OperationNode(FOR, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);}
-     | FOR id BOUNDARY id STEP id stmt '\n' {$$ = new lab3::OperationNode(FOR, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);}
-     | SWITCH logic '\n' BOOL stmt '\n' %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
-     | SWITCH logic '\n' BOOL stmt '\n' BOOL stmt '\n' %prec HIGHSWITCHX {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $7, $8);}
-     | SWITCH logic '\n' BOOL stmt '\n' BOOL stmtsGroup %prec HIGHSWITCHX{$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $7, $8);}
-     | SWITCH logic '\n' BOOL stmtsGroup '\n' %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
-     | SWITCH logic '\n' BOOL stmtsGroup '\n' BOOL stmt '\n' %prec HIGHSWITCHX {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $7, $8);}
-     | SWITCH logic '\n' BOOL stmtsGroup '\n' BOOL stmtsGroup '\n' %prec HIGHSWITCHX{$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $7, $8);}
-     | ROTATE LEFT '\n' {$$ = new lab3::OperationNode(LEFT, 0);}
-     | ROTATE RIGHT '\n' {$$ = new lab3::OperationNode(RIGHT, 0);}
-     | MOVE '\n' {$$ = new lab3::OperationNode(MOVE, 0);}
-     | DO id parameters '\n' {$$ = new lab3::OperationNode('DO', 2, new lab3::ParameterNode(*$2), $3);}
-     | PLEASE stmt %prec PLSX '\n'
-     | stmt THANKS '\n'
-     | PRINT expr '\n' {$$ = new lab3::OperationNode(PRINT, 1, $2);}
-     | RESULT id '\n' {$$ = new lab3::OperationNode(RESULT, 1, varTable.at(*$2));
+     | FOR id BOUNDARY id STEP id stmtsGroup {$$ = new lab3::OperationNode(FOR, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);}
+     | FOR id BOUNDARY id STEP id stmt {$$ = new lab3::OperationNode(FOR, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);}
+     | SWITCH logic '\n' BOOL stmt %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
+     | SWITCH logic '\n' BOOL stmt BOOL stmt {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
+     | SWITCH logic '\n' BOOL stmt BOOL stmtsGroup {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
+     | SWITCH logic '\n' BOOL stmtsGroup %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, 3, $2, $4, $5);}
+     | SWITCH logic '\n' BOOL stmtsGroup BOOL stmt {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
+     | SWITCH logic '\n' BOOL stmtsGroup BOOL stmtsGroup {$$ = new lab3::OperationNode(SWITCH, 5, $2, $4, $5, $6, $7);}
+     | ROTATE LEFT {$$ = new lab3::OperationNode(LEFT, 0);}
+     | ROTATE RIGHT {$$ = new lab3::OperationNode(RIGHT, 0);}
+     | MOVE  {$$ = new lab3::OperationNode(MOVE, 0);}
+     | DO id parameters {$$ = new lab3::OperationNode('DO', 2, new lab3::ParameterNode(*$2), $3);}
+     | PLEASE stmt {$$ = new lab3::OperationNode(PLEASE, 1, $2);}
+     | stmt THANKS {$$ = new lab3::OperationNode(THANKS, 1, $1);}
+     | PRINT expr {$$ = new lab3::OperationNode(PRINT, 1, $2);}
+     | RESULT id {$$ = new lab3::OperationNode(RESULT, 1, varTable.at(*$2));
                         lastResult = (lab3::AbstractVariableNode *)varTable.at(*$2);
                         }
 
@@ -136,7 +146,7 @@ expr: arith {$$ = $1;}
 
 arith: INTEGER
      | '(' arith ')' {$$ = $2;}
-     | id '[' indexes ']' {$$ = new lab3::OperationNode('[', 1, varTable.at(*$1), $3);}
+     | id '[' indexes ']' {$$ = new lab3::OperationNode('[', 2, varTable.at(*$1), $3);}
      | REDUCE id '[' INTEGER ']' {$$ = new lab3::OperationNode(REDUCE, 2, varTable.at(*$2), $4);}
      | EXTEND id '[' INTEGER ']' {$$ = new lab3::OperationNode(EXTEND, 2, varTable.at(*$2), $4);}
      | DIGITIZE id {$$ = new lab3::OperationNode(DIGITIZE, 1, varTable.at(*$2));}

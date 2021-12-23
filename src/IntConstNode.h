@@ -6,6 +6,7 @@
 #define LAB3_INTCONSTNODE_H
 
 #include <string>
+#include <ostream>
 
 #include "AbstractVariableNode.h"
 
@@ -50,6 +51,11 @@ namespace lab3 {
 
         virtual AbstractVariableNode *div(IntConstNode *other);
 
+        friend std::ostream &operator<<(std::ostream &os, const IntConstNode &node);
+
+        void assign(AbstractVariableNode *value) override;
+
+        void assignAt(AbstractVariableNode *value, std::list<int> indexes) override;
     };
 }
 

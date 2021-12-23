@@ -3,11 +3,11 @@
 #include "parser.tab.h"
 
 extern FILE *yyin;
-int yyparse (void);
+
 
 
 int main() {
-    yydebug = 1;
+    yydebug = 0;
     yyin = fopen ("./test.txt", "r");
     yyparse();
     fclose (yyin);

@@ -19,6 +19,7 @@ lab3::OperationNode::OperationNode(int operTag, int operNum, ...) {
     this->nodeType = OPERATION;
     this->operTag = operTag;
     this->operNum = operNum;
+    srand(time(nullptr));
     va_list ap;
     va_start(ap, operNum);
     for (int i = 0; i < operNum; ++i)
@@ -39,22 +40,28 @@ lab3::AbstractNode *lab3::OperationNode::operator[](int i) {
 }
 
 lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
+    if (rand() % 100 > probability)
+        mood--;
+    if (mood < sadnessBorder)
+        throw std::runtime_error("You are impolite!");
     switch (operTag) {
-        case FOR:
+        case FOR: {
+            bool adding;
             if ((children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_VAR)
                 && (children.at(1)->nodeType == INT_ARR || children.at(1)->nodeType == INT_VAR)
                 && (children.at(2)->nodeType == INT_ARR || children.at(2)->nodeType == INT_VAR)) {
-                while (!dynamic_cast<IntVariableNode *>(children.at(0))->addInCycle(
+                while (dynamic_cast<IntVariableNode *>(children.at(0))->addInCycle(
                         dynamic_cast<IntVariableNode *>(children.at(1)),
                         dynamic_cast<IntVariableNode *>(children.at(2)))) {
                     children.at(3)->exec(nullptr);
                 }
             } else throw std::runtime_error("Type mismatch");
             return nullptr;
+        }
         case SWITCH:
             if (operNum == 3) { //without else
                 AbstractNode *tmpLogic = children.at(0)->exec(nullptr);
-                if (tmpLogic->nodeType == BOOL_VAR) {
+                if (tmpLogic->nodeType == BOOL_VAR || tmpLogic->nodeType == BOOL_CONST) {
                     if (((BoolConstNode *) tmpLogic)->getVal() == ((BoolConstNode *) children.at(1))->getVal()) {
                         children.at(2)->exec(nullptr);
                     }
@@ -65,7 +72,7 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
                 AbstractNode *tmpLogic = children.at(0)->exec(nullptr);
                 auto *tmpConstFirst = (BoolConstNode *) children.at(1);
                 auto *tmpConstSecond = (BoolConstNode *) children.at(3);
-                if (tmpLogic->nodeType == BOOL_VAR && tmpConstFirst->getVal() != tmpConstSecond->getVal()) {
+                if ((tmpLogic->nodeType == BOOL_VAR || tmpLogic->nodeType == BOOL_CONST) && tmpConstFirst->getVal() != tmpConstSecond->getVal()) {
                     if (((BoolConstNode *) tmpLogic)->getVal() == tmpConstFirst->getVal()) {
                         children.at(2)->exec(nullptr);
                     } else {
@@ -78,7 +85,7 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
             } else throw std::runtime_error("Invalid number of arguments");
             return nullptr;
         case PRINT:
-            std::cout << children.at(0);
+            std::cout << *children.at(0)->exec(nullptr) << std::endl;
             return nullptr;
         case MOVE:
             break;
@@ -97,9 +104,12 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
                 throw std::runtime_error("No RESULT");
             hasResult = false;
         case PLEASE:
-            break;
         case THANKS:
-
+            mood += 3;
+            if (mood > suspectnessBorder)
+                throw std::runtime_error("You are suspected");
+            children.at(0)->exec(nullptr);
+            break;
         case DIGITIZE:
             if (children.at(0)->nodeType == BOOL_VAR || children.at(0)->nodeType == BOOL_ARR)
                 return ((BoolVariableNode *) children.at(0))->digitize();
@@ -120,164 +130,239 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case NOT:
-            if (children.at(0)->nodeType == BOOL_VAR
-            || children.at(0)->nodeType == BOOL_ARR
-            || children.at(0)->nodeType == BOOL_CONST)
-                return  ((BoolConstNode *) children.at(0))->not_();
+        case NOT: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == BOOL_VAR
+            || first->nodeType == BOOL_ARR
+            || first->nodeType == BOOL_CONST)
+                return ((BoolConstNode *) first)->not_();
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case AND:
-            if ((children.at(0)->nodeType == BOOL_VAR
-            || children.at(0)->nodeType == BOOL_ARR
-            || children.at(0)->nodeType == BOOL_CONST)
-            && (children.at(1)->nodeType == BOOL_VAR
-            || children.at(1)->nodeType == BOOL_ARR
-            || children.at(0)->nodeType == BOOL_CONST))
-                return ((BoolVariableNode *) children.at(0))->and_((BoolConstNode *) children.at(1));
+        }
+        case AND: {
+            auto first = children.at(0)->exec(nullptr);
+            auto second = children.at(1)->exec(nullptr);
+            if ((first->nodeType == BOOL_VAR
+                || first->nodeType == BOOL_ARR
+                || first->nodeType == BOOL_CONST)
+                && (second->nodeType == BOOL_VAR
+                || second->nodeType == BOOL_ARR
+                || second->nodeType == BOOL_CONST))
+                return ((BoolConstNode *) first)->and_((BoolConstNode *) second);
             else
                 throw std::runtime_error("Type mismatch");
             break;
+        }
         case LOGITIZE:
             if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR)
                 return ((IntVariableNode *) children.at(0))->logitize();
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case MXEQ:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR)
-                return new BoolVariableNode("tmp", ((IntConstNode *) children.at(0))->compareM() == 0);
+        case MXEQ: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST)
+                return new BoolVariableNode("tmp", ((IntConstNode *) first)->compareM() == 0);
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case MXLT:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST)
-                return new BoolVariableNode("tmp", ((IntConstNode *) children.at(0))->compareM() == -1);
+        }
+        case MXLT: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST)
+                return new BoolVariableNode("tmp", ((IntConstNode *) first)->compareM() == -1);
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case MXGT:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST)
-                return new BoolVariableNode("tmp", ((IntConstNode *) children.at(0))->compareM() == 1);
+        }
+        case MXGT: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST)
+                return new BoolVariableNode("tmp", ((IntConstNode *) first)->compareM() == 1);
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case MXLTE:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST) {
-                int tmp = ((IntConstNode *) children.at(0))->compareM();
+        }
+        case MXLTE: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST) {
+                int tmp = ((IntConstNode *) first)->compareM();
                 return new BoolVariableNode("tmp", tmp == 0 || tmp == -1);
             } else
                 throw std::runtime_error("Type mismatch");
             break;
-        case MXGTE:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST) {
-                int tmp = ((IntConstNode *) children.at(0))->compareM();
+        }
+        case MXGTE: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST) {
+                int tmp = ((IntConstNode *) first)->compareM();
                 return new BoolVariableNode("tmp", tmp == 0 || tmp == 1);
             } else
                 throw std::runtime_error("Type mismatch");
             break;
-        case ELEQ:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST)
-                return ((IntConstNode *) children.at(0))->eleq();
+        }
+        case ELEQ: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST)
+                return ((IntConstNode *) first)->eleq();
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case ELLT:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST)
-                return ((IntConstNode *) children.at(0))->ellt();
+        }
+        case ELLT: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST)
+                return ((IntConstNode *) first)->ellt();
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case ELGT:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST)
-                return ((IntConstNode *) children.at(0))->elgt();
+        }
+        case ELGT: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST)
+                return ((IntConstNode *) first)->elgt();
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case ELLTE:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST)
-                return ((IntConstNode *) children.at(0))->ellte();
+        }
+        case ELLTE: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST)
+                return ((IntConstNode *) first)->ellte();
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case ELGTE:
-            if (children.at(0)->nodeType == INT_VAR || children.at(0)->nodeType == INT_ARR || children.at(0)->nodeType == INT_CONST)
-                return ((IntConstNode *) children.at(0))->elgte();
+        }
+        case ELGTE: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == INT_VAR
+            || first->nodeType == INT_ARR
+            || first->nodeType == INT_CONST)
+                return ((IntConstNode *) first)->elgte();
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case MXFALSE:
-            if (children.at(0)->nodeType == BOOL_VAR || children.at(0)->nodeType == BOOL_ARR ||
-                children.at(0)->nodeType == BOOL_CONST)
-                return ((BoolConstNode *) children.at(0))->mxfalse();
+        }
+        case MXFALSE: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == BOOL_VAR
+            || first->nodeType == BOOL_ARR
+            || first->nodeType == BOOL_CONST)
+                return ((BoolConstNode *) first)->mxfalse();
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case MXTRUE:
-            if (children.at(0)->nodeType == BOOL_VAR || children.at(0)->nodeType == BOOL_ARR ||
-                children.at(0)->nodeType == BOOL_CONST)
-                return ((BoolConstNode *) children.at(0))->mxtrue();
+        }
+        case MXTRUE: {
+            auto first = children.at(0)->exec(nullptr);
+            if (first->nodeType == BOOL_VAR
+            || first->nodeType == BOOL_ARR
+            || first->nodeType == BOOL_CONST)
+                return ((BoolConstNode *) first)->mxtrue();
             else
                 throw std::runtime_error("Type mismatch");
             break;
+        }
         case ' ':
             return nullptr;
         case '\n':
+            if (children.size() == 1)
+                return children.at(0)->exec(nullptr);
             children.at(0)->exec(nullptr);
             if (hasResult)
                 return nullptr;
             return children.at(1)->exec(nullptr);
         case ',':
             return nullptr;
-        case '+':
-            if ((children.at(0)->nodeType == INT_ARR
-            || children.at(0)->nodeType == INT_VAR
-            || children.at(0)->nodeType == INT_CONST)
-            && (children.at(1)->nodeType == INT_ARR
-            || children.at(1)->nodeType == INT_VAR
-            || children.at(1)->nodeType == INT_CONST))
-                return ((IntConstNode *)children.at(0))->add(dynamic_cast<IntConstNode *>(children.at(1)));
+        case '+': {
+            auto first = children.at(0)->exec(nullptr);
+            auto second = children.at(1)->exec(nullptr);
+            if ((first->nodeType == INT_ARR
+            || first->nodeType == INT_VAR
+            || first->nodeType == INT_CONST)
+            && (second->nodeType == INT_ARR
+            || second->nodeType == INT_VAR
+            || second->nodeType == INT_CONST))
+                return ((IntConstNode *) first)->add(dynamic_cast<IntConstNode *>(second));
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case '-':
-            if ((children.at(0)->nodeType == INT_ARR
-            || children.at(0)->nodeType == INT_VAR
-            || children.at(0)->nodeType == INT_CONST)
-            && (children.at(1)->nodeType == INT_ARR
-            || children.at(1)->nodeType == INT_VAR
-            || children.at(1)->nodeType == INT_CONST))
-                return ((IntConstNode *)children.at(0))->sub(dynamic_cast<IntConstNode *>(children.at(1)));
+        }
+        case '-': {
+            auto first = children.at(0)->exec(nullptr);
+            auto second = children.at(1)->exec(nullptr);
+            if ((first->nodeType == INT_ARR
+            || first->nodeType == INT_VAR
+            || first->nodeType == INT_CONST)
+            && (second->nodeType == INT_ARR
+            || second->nodeType == INT_VAR
+            || second->nodeType == INT_CONST))
+                return ((IntConstNode *) first)->sub(dynamic_cast<IntConstNode *>(second));
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case '*':
-            if ((children.at(0)->nodeType == INT_ARR
-            || children.at(0)->nodeType == INT_VAR
-            || children.at(0)->nodeType == INT_CONST)
-            && (children.at(1)->nodeType == INT_ARR
-            || children.at(1)->nodeType == INT_VAR
-            || children.at(1)->nodeType == INT_CONST))
-                return ((IntConstNode *)children.at(0))->mul(dynamic_cast<IntConstNode *>(children.at(1)));
+        }
+        case '*': {
+            auto first = children.at(0)->exec(nullptr);
+            auto second = children.at(1)->exec(nullptr);
+            if ((first->nodeType == INT_ARR
+            || first->nodeType == INT_VAR
+            || first->nodeType == INT_CONST)
+            && (second->nodeType == INT_ARR
+            || second->nodeType == INT_VAR
+            || second->nodeType == INT_CONST))
+                return ((IntConstNode *) first)->mul(dynamic_cast<IntConstNode *>(second));
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case '/':
-            if ((children.at(0)->nodeType == INT_ARR
-            || children.at(0)->nodeType == INT_VAR
-            || children.at(0)->nodeType == INT_CONST)
-            && (children.at(1)->nodeType == INT_ARR
-            || children.at(1)->nodeType == INT_VAR
-            || children.at(1)->nodeType == INT_CONST))
-                return ((IntConstNode *)children.at(0))->div(dynamic_cast<IntConstNode *>(children.at(1)));
+        }
+        case '/': {
+            auto first = children.at(0)->exec(nullptr);
+            auto second = children.at(1)->exec(nullptr);
+            if ((first->nodeType == INT_ARR
+            || first->nodeType == INT_VAR
+            || first->nodeType == INT_CONST)
+            && (second->nodeType == INT_ARR
+            || second->nodeType == INT_VAR
+            || second->nodeType == INT_CONST))
+                return ((IntConstNode *) first)->div(dynamic_cast<IntConstNode *>(second));
             else
                 throw std::runtime_error("Type mismatch");
             break;
-        case '=':
-            break;
-        case '[':
-            break;
+        }
+        case '=': {
+            if (operNum == 2)
+                ((AbstractVariableNode *)children.at(0))->assign(dynamic_cast<AbstractVariableNode *>(children.at(1)->exec(nullptr)));
+            else if (operNum == 3)
+                ((AbstractVariableNode *)children.at(0))->assignAt(dynamic_cast<AbstractVariableNode *>(children.at(2)->exec(nullptr)), AbstractVariableNode::makeDims(children.at(1)));
+            return nullptr;
+        }
+        case '[': {
+            if (children.at(0)->nodeType == INT_ARR)
+                return ((IntArrayVariableNode *)children.at(0))->get(AbstractVariableNode::makeDims(children.at(1)));
+            else if (children.at(0)->nodeType == BOOL_ARR)
+                return ((BoolArrayVariableNode *)children.at(0))->get(AbstractVariableNode::makeDims(children.at(1)));
+            else throw std::runtime_error("Type mismatch");
+        }
     }
     return nullptr;
 }
@@ -288,4 +373,8 @@ std::ostream &lab3::OperationNode::print(std::ostream &ostream) const {
 
 lab3::OperationNode::~OperationNode() {
 
+}
+
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::OperationNode &node) {
+    return node.print(os);
 }

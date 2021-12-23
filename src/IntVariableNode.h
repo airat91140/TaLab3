@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <ostream>
 
 namespace lab3 {
     class IntVariableNode : public IntConstNode {
@@ -34,8 +35,13 @@ namespace lab3 {
 
         virtual bool addInCycle(IntVariableNode *bound, IntVariableNode *step); //returns if it was added or not
 
+        void assign(AbstractVariableNode *value) override;
+
+        void assignAt(AbstractVariableNode *value, std::list<int> indexes) override;
+
         virtual AbstractVariableNode *logitize();
 
+        friend std::ostream &operator<<(std::ostream &os, const IntVariableNode &node);
     };
 }
 

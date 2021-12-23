@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <list>
+#include <ostream>
 
 namespace lab3 {
     class BoolArrayVariableNode : public BoolVariableNode {
@@ -27,6 +28,8 @@ namespace lab3 {
 
         const BoolVariableNode *operator[](int index) const;
 
+        friend std::ostream &operator<<(std::ostream &os, const BoolArrayVariableNode &node);
+
         ~BoolArrayVariableNode() override;
 
         BoolArrayVariableNode(const BoolArrayVariableNode &other);
@@ -38,6 +41,10 @@ namespace lab3 {
         BoolArrayVariableNode &operator=(BoolArrayVariableNode &&other);
 
         AbstractNode *clone() override;
+
+        void assign(AbstractVariableNode *value) override;
+
+        void assignAt(AbstractVariableNode *value, std::list<int> indexes) override;
 
         std::ostream &print(std::ostream &ostream) const override;
 
@@ -60,6 +67,8 @@ namespace lab3 {
         AbstractVariableNode *not_() override;
 
         AbstractVariableNode * and_(BoolConstNode *other) override;
+
+        BoolVariableNode *get(std::list<int> indexes);
     };
 }
 

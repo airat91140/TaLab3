@@ -8,6 +8,7 @@
 #include "AbstractVariableNode.h"
 
 #include <string>
+#include <ostream>
 
 namespace lab3 {
     class ParameterNode : public AbstractVariableNode {
@@ -20,6 +21,10 @@ namespace lab3 {
 
         AbstractNode *clone() override;
 
+        void assign(AbstractVariableNode *value) override;
+
+        void assignAt(AbstractVariableNode *value, std::list<int> indexes) override;
+
         AbstractNode *exec(AbstractNode *node) override;
 
         ~ParameterNode() override = default;
@@ -27,6 +32,8 @@ namespace lab3 {
         std::ostream &print(std::ostream &ostream) const override;
 
         AbstractVariableNode *getVar() const;
+
+        friend std::ostream &operator<<(std::ostream &os, const ParameterNode &node);
 
         bool isArray() override;
     };

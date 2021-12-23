@@ -27,7 +27,7 @@ lab3::AbstractNode *lab3::IntConstNode::exec(lab3::AbstractNode *node) {
 }
 
 std::ostream &lab3::IntConstNode::print(std::ostream &ostream) const {
-    ostream << val << std::endl;
+    ostream << val;
     return ostream;
 }
 
@@ -86,4 +86,16 @@ lab3::AbstractVariableNode *lab3::IntConstNode::div(lab3::IntConstNode *other) {
     if (other->isArray())
         throw std::runtime_error("Array sizes mismatch");
     return new IntVariableNode("tmp", this->val / other->val);
+}
+
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::IntConstNode &node) {
+    return node.print(os);
+}
+
+void lab3::IntConstNode::assign(lab3::AbstractVariableNode *value) {
+    throw std::runtime_error("Can\'t assign value to constant");
+}
+
+void lab3::IntConstNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
+    throw std::runtime_error("Can\'t assign value to constant");
 }

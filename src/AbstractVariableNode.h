@@ -26,6 +26,11 @@ namespace lab3 {
         ~AbstractVariableNode() override = default;
 
         static std::list<int> makeDims(AbstractNode *root);
+
+        virtual void assign(AbstractVariableNode *value) = 0;
+
+        virtual void assignAt(AbstractVariableNode *value, std::list<int> indexes) = 0;
+
     };
 }
 

@@ -35,3 +35,13 @@ void lab3::ParameterNode::setVar(lab3::AbstractVariableNode *var) {
     ParameterNode::var = var;
 }
 
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::ParameterNode &node) {
+    return node.print(os);
+}
+
+void lab3::ParameterNode::assign(lab3::AbstractVariableNode *value) {
+}
+
+void lab3::ParameterNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
+}
+

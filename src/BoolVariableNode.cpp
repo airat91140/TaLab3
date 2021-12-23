@@ -21,7 +21,7 @@ lab3::AbstractNode *lab3::BoolVariableNode::exec(lab3::AbstractNode *node) {
 }
 
 std::ostream &lab3::BoolVariableNode::print(std::ostream &ostream) const {
-    ostream << val << std::endl;
+    ostream << (val ? "TRUE" : "FALSE");
     return ostream;
 }
 
@@ -39,4 +39,19 @@ lab3::AbstractVariableNode *lab3::BoolVariableNode::and_(BoolConstNode *other) {
 void lab3::BoolVariableNode::countBools(std::pair<int, int> &cnt) {
     if (val) cnt.first++;
     else cnt.second++;
+}
+
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::BoolVariableNode &node) {
+    return node.print(os);
+}
+
+void lab3::BoolVariableNode::assign(lab3::AbstractVariableNode *value) {
+    if (value->nodeType == BOOL_CONST || value->nodeType == BOOL_VAR) {
+        this->val = ((BoolConstNode *)value)->getVal();
+    }
+    else throw std::runtime_error("Type mismatch");
+}
+
+void lab3::BoolVariableNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
+    throw std::runtime_error("Array size mismatch");
 }

@@ -4,10 +4,11 @@
 
 #include "BoolConstNode.h"
 #include "BoolVariableNode.h"
+#include <cstring>
 
-lab3::BoolConstNode::BoolConstNode(const std::string &val) {
+lab3::BoolConstNode::BoolConstNode(const char *val) {
     nodeType = BOOL_CONST;
-    this->val = val == "TRUE";
+    this->val = std::strcmp(val, "TRUE") == 0;
 }
 
 bool lab3::BoolConstNode::getVal() const {
@@ -19,7 +20,7 @@ lab3::AbstractNode *lab3::BoolConstNode::exec(lab3::AbstractNode *node) {
 }
 
 std::ostream &lab3::BoolConstNode::print(std::ostream &ostream) const {
-    ostream << val << std::endl;
+    ostream << (val ? "TRUE" : "FALSE");
     return ostream;
 }
 
@@ -47,4 +48,16 @@ lab3::AbstractVariableNode *lab3::BoolConstNode::mxfalse() {
 
 lab3::AbstractVariableNode *lab3::BoolConstNode::mxtrue() {
     return new BoolVariableNode("tmp", val);
+}
+
+std::ostream &lab3::operator<<(std::ostream &os, const lab3::BoolConstNode &node) {
+    return node.print(os);
+}
+
+void lab3::BoolConstNode::assign(lab3::AbstractVariableNode *value) {
+    throw std::runtime_error("Can\'t assign value to constant");
+}
+
+void lab3::BoolConstNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
+    throw std::runtime_error("Can\'t assign value to constant");
 }

@@ -12,15 +12,17 @@ const std::string &lab3::AbstractVariableNode::getName() const {
 
 std::list<int> lab3::AbstractVariableNode::makeDims(lab3::AbstractNode *root) {
     std::list<int> res;
-    auto iter = root;
-    while (iter->nodeType == OPERATION) {
-        auto tmp = (*(OperationNode *)iter)[1]->exec(nullptr);
+    OperationNode *op = (OperationNode *)root;
+    if (op->getOperNum() == 0)
+        return res;
+    while (op->getOperNum() == 2) {
+        auto tmp = (*op)[1]->exec(nullptr);
         if (tmp->nodeType != INT_VAR && tmp->nodeType != INT_CONST)
             throw std::runtime_error("Index type error");
         res.push_front(((IntConstNode *)tmp)->getVal());
-        iter = (*(OperationNode *)iter)[0];
+        op = (OperationNode *)(*op)[0];
     }
-    auto tmp = iter->exec(nullptr);
+    auto tmp = (*op)[0]->exec(nullptr);
     if (tmp->nodeType != INT_VAR && tmp->nodeType != INT_CONST)
         throw std::runtime_error("Index type error");
     res.push_front(((IntConstNode *)tmp)->getVal());
