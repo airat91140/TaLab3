@@ -119,7 +119,7 @@ int lab3::IntArrayVariableNode::compareM() { // 2 не выполняется д
     float average = (cnt.x + cnt.y + cnt.z) / 3.0;
     if (cnt.x > average)
         return -1;
-    if (cnt.z > average)
+    if (cnt.y > average)
         return 0;
     if (cnt.z > average)
         return 1;
@@ -135,8 +135,8 @@ lab3::IntArrayVariableNode::recursiveCompareM(lab3::IntArrayVariableNode::Averag
                 case 0: cnt.y++; break;
                 case -1: cnt.x++; break;
             }
-            return cnt;
         }
+        return cnt;
     } else {
         for (const auto &it : array) {
             ((IntArrayVariableNode *)it)->recursiveCompareM(cnt);

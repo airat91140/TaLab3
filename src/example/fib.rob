@@ -18,6 +18,8 @@ RESULT tmp
 )
 TASK FINDEXIT a
 (
-DO fib 10
+VAR ten = 10
+DO fib ten
+PRINT GET fib
 RESULT a
 )

@@ -46,10 +46,9 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
         throw std::runtime_error("You are impolite!");
     switch (operTag) {
         case FOR: {
-            bool adding;
             if ((children.at(0)->exec(nullptr)->nodeType == INT_ARR || children.at(0)->exec(nullptr)->nodeType == INT_VAR)
-                && (children.at(1)->exec(nullptr)->nodeType == INT_ARR || children.at(1)->exec(nullptr)->nodeType == INT_VAR)
-                && (children.at(2)->exec(nullptr)->nodeType == INT_ARR || children.at(2)->exec(nullptr)->nodeType == INT_VAR)) {
+            && (children.at(1)->exec(nullptr)->nodeType == INT_ARR || children.at(1)->exec(nullptr)->nodeType == INT_VAR)
+            && (children.at(2)->exec(nullptr)->nodeType == INT_ARR || children.at(2)->exec(nullptr)->nodeType == INT_VAR)) {
                 while (dynamic_cast<IntVariableNode *>(children.at(0))->addInCycle(
                         dynamic_cast<IntVariableNode *>(children.at(1)->exec(nullptr)),
                         dynamic_cast<IntVariableNode *>(children.at(2)->exec(nullptr)))) {
@@ -96,6 +95,7 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
         case ENVIRONMENT:
             break;
         case RESULT:
+            ((ParameterNode *)children.at(1))->setVar((AbstractVariableNode *)children.at(0));
             hasResult = true;
             return nullptr;
         case DO:

@@ -126,9 +126,7 @@ stmt:  id '=' expr {$$ = new lab3::OperationNode('=', 2, varTable.at(*$1), $3);}
      | PLEASE stmt {$$ = new lab3::OperationNode(PLEASE, 1, $2);}
      | stmt THANKS {$$ = new lab3::OperationNode(THANKS, 1, $1);}
      | PRINT expr {$$ = new lab3::OperationNode(PRINT, 1, $2);}
-     | RESULT id {$$ = new lab3::OperationNode(RESULT, 1, varTable.at(*$2));
-                        ((lab3::ParameterNode *)lastResult)->setVar((lab3::AbstractVariableNode *)varTable.at(*$2));
-                        }
+     | RESULT id {$$ = new lab3::OperationNode(RESULT, 2, varTable.at(*$2), lastResult);}
 
 parameters: parameters id {$$ = new lab3::OperationNode(' ', 2, $1, varTable.at(*$2));}
          | parameters id '[' indexes ']' {$$ = new lab3::OperationNode(' ', 3, $1, varTable.at(*$2), $4);}
@@ -153,11 +151,9 @@ expr: INTEGER
      | GET ENVIRONMENT {$$ = new lab3::OperationNode(ENVIRONMENT, 0);}
      | GET id {try {$$ = lastCall.at(*$2);}
                 catch (std::exception &ex) {
-                if (((lab3::ParameterNode *)lastResult)->getVar() != nullptr)
                     $$ = lastResult;
-                else throw std::runtime_error("No function called!");
                 }
-                }
+               }
      | expr AND expr {$$ = new lab3::OperationNode(AND, 2, $1, $3);}
      | BOOL {$$ = $1;}
      | NOT expr {$$ = new lab3::OperationNode(NOT, 1, $2);}
