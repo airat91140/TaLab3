@@ -42,6 +42,8 @@ std::ostream &lab3::operator<<(std::ostream &os, const lab3::IntVariableNode &no
 }
 
 void lab3::IntVariableNode::assign(lab3::AbstractVariableNode *value) {
+    if (value == nullptr)
+        throw std::exception();
     if (value->nodeType == INT_CONST || value->nodeType == INT_VAR) {
         this->val = ((IntConstNode *)value)->getVal();
     }

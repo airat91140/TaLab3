@@ -16,17 +16,21 @@ namespace lab3 {
     class OperationNode : public AbstractNode {
     private:
         int operTag;
-        int operNum;
+        int operNum{};
         std::vector<AbstractNode *> children;
 
     public:
-        OperationNode(int operTag, int operNum, ...);
+        OperationNode(int operTag, int line, int operNum, ...);
+
+        OperationNode(const OperationNode &other);
 
         int getOperTag() const;
 
         int getOperNum() const;
 
-        AbstractNode *operator[](int i);
+        AbstractNode *&operator[](int i);
+
+        const AbstractNode *operator[](int i) const;
 
         AbstractNode *clone() override {return new OperationNode(*this);}
 

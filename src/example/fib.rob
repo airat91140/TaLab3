@@ -1,9 +1,7 @@
 TASK fib n
 (
-VAR eq = 0
-eq = n - 2
 VAR one = 1
-SWITCH MXLTE eq
+SWITCH MXLTE (n - 2)
     TRUE RESULT one
 VAR nn = 0
 nn = n - 1

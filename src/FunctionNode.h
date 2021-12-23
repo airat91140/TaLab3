@@ -46,6 +46,10 @@ namespace lab3 {
         bool addVar(const std::string &name, lab3::AbstractVariableNode *var);
 
         friend std::ostream &operator<<(std::ostream &os, const FunctionNode &node);
+
+        FunctionNode(const FunctionNode &other);
+
+        void changeVars(AbstractNode *root);
     };
 }
 

@@ -57,16 +57,16 @@ extern int yydebug;
 #include "FunctionNode.h"
 #include "ParameterNode.h"
 
-static std::map<std::string, lab3::AbstractNode *> functionsTable;
-static std::map<std::string, lab3::AbstractNode *> lastCall;
-static std::map<std::string, lab3::AbstractNode *> varTable;
-static bool hasResult;
-static lab3::AbstractVariableNode *lastResult = new lab3::ParameterNode("tmp");
-static int sadnessBorder = -(rand() % 30 + 60); //-30 to -59
-static int suspectnessBorder = (rand() % 30 + 60); // 30 to 59
-static int mood = 0;
-static int probability = rand() % 41 + 30; //30 to 70;
-static bool errorFlag = false;
+inline std::map<std::string, lab3::AbstractNode *> functionsTable;
+inline std::map<std::string, lab3::AbstractNode *> lastCall;
+inline std::map<std::string, lab3::AbstractNode *> varTable;
+inline bool hasResult;
+inline lab3::AbstractVariableNode *lastResult = new lab3::ParameterNode("");
+inline int sadnessBorder = -(rand() % 30 + 120);
+inline int suspectnessBorder = (rand() % 30 + 120);
+inline int mood = 0;
+inline int probability = rand() % 41 + 10;
+inline bool errorFlag = false;
 /* prototypes */
 int yylex(void);
 

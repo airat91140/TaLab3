@@ -24,6 +24,7 @@ namespace lab3 {
     class AbstractNode {
     public:
         type nodeType = ABSTRACT;
+        int line = 0;
         virtual AbstractNode *clone() = 0;
         virtual AbstractNode *exec(AbstractNode *node) = 0;
         virtual std::ostream &print(std::ostream &) const = 0;

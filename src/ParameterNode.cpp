@@ -11,7 +11,7 @@ lab3::ParameterNode::ParameterNode(const std::string &name, AbstractVariableNode
 }
 
 lab3::AbstractNode *lab3::ParameterNode::clone() {
-    return new ParameterNode(this->name, (AbstractVariableNode *)var->clone());
+    return new ParameterNode(this->name, var);
 }
 
 lab3::AbstractNode *lab3::ParameterNode::exec(lab3::AbstractNode *node) {

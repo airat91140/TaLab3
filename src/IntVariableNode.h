@@ -16,8 +16,6 @@
 
 namespace lab3 {
     class IntVariableNode : public IntConstNode {
-    protected:
-        std::string name;
     public:
         IntVariableNode(const std::string &name, int val);
 
