@@ -86,7 +86,7 @@ functions:
     | functions '\n' error {hasError = true; std::cout << "Some error on line " << @3.first_line << std::endl; yyerrok;}
     | function
     | '\n' {$$ = nullptr;}
-    | error  {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
+    | error  {hasError = true; std::cout << "Function declaration error " << @1.first_line << std::endl; yyerrok;}
 
 function:
     TASK id ids '\n' stmtsGroup {auto tmp = new lab3::FunctionNode(*$2, $3, $5);
@@ -118,37 +118,37 @@ stmts: stmts stmt '\n' {$$ = new lab3::OperationNode('\n', @1.first_line, 2, $1,
 stmt:  id '=' expr { try {
      $$ = new lab3::OperationNode('=', @1.first_line, 2, varTable.at(*$1), $3);
      } catch(std::exception & ex) {
-         hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+         hasError = true; std::cout << "Variable " << *$1 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
      }
      }
      | id '[' indexes ']' '=' expr { try {
      $$ = new lab3::OperationNode('=', @1.first_line, 3, varTable.at(*$1), $3, $6);
      } catch (std::exception &ex) {
-        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+        hasError = true; std::cout <<  "Variable " << *$1 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
      }
      }
      | VAR id '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolVariableNode(*$2, $4->getVal())}).second)
-                        {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
+                        {hasError = true; std::cout << "Problem with declaration of variable " << *$2 << " Line: " << @1.first_line << std::endl; yyerrok;}
                         $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
      | VAR id '[' indexes ']' '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
-                                                {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
+                                                {hasError = true; std::cout <<"Problem with declaration of variable " << *$2 << " Line: "  << @1.first_line << std::endl; yyerrok;}
                                              $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
      | VAR id '=' INTEGER  {if (!varTable.insert({*$2, new lab3::IntVariableNode(*$2, $4->getVal())}).second)
-                                    {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
+                                    {hasError = true; std::cout << "Problem with declaration of variable " << *$2 << " Line: "  << @1.first_line << std::endl; yyerrok;}
                                 $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
      | VAR id '[' indexes ']' '=' INTEGER {if (!varTable.insert({*$2, new lab3::IntArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
-                                                    {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
+                                                    {hasError = true; std::cout << "Problem with declaration of variable " << *$2 << " Line: "  << @1.first_line << std::endl; yyerrok;}
                                                 $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
      | FOR id BOUNDARY id STEP id stmtsGroup {try {
      $$ = new lab3::OperationNode(FOR, @1.first_line, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);
      } catch (std::exception &ex) {
-        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+        hasError = true; std::cout << "Some of FOR variables was not declare in this scope. Line: " << @1.first_line << std::endl; yyerrok;
      }
      }
      | FOR id BOUNDARY id STEP id stmt {try {
      $$ = new lab3::OperationNode(FOR, @1.first_line, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);
      } catch (std::exception &ex) {
-        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+        hasError = true; std::cout << "Some of FOR variables was not declare in this scope. Line: " << @1.first_line << std::endl; yyerrok;
      }
      }
      | SWITCH expr '\n' BOOL stmt %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, @1.first_line, 3, $2, $4, $5);}
@@ -167,32 +167,32 @@ stmt:  id '=' expr { try {
      | RESULT id {try {
      $$ = new lab3::OperationNode(RESULT, @1.first_line, 2, varTable.at(*$2), lastResult);
      }catch(std::exception &ex) {
-        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+        hasError = true; std::cout << "Variable " << *$2 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
      }
      }
 
 parameters: parameters id { try {
          $$ = new lab3::OperationNode(' ', @1.first_line, 2, $1, varTable.at(*$2));
          } catch(std::exception &ex) {
-         hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+         hasError = true; std::cout << "Variable " << *$2 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
          }
          }
          | parameters id '[' indexes ']' { try {
          $$ = new lab3::OperationNode(' ', @1.first_line, 3, $1, varTable.at(*$2), $4);
          }catch (std::exception) {
-         hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+         hasError = true; std::cout << "Variable " << *$2 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
          }
          }
          | id { try {
          $$ = varTable.at(*$1);
          }catch (std::exception &ex) {
-            hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+            hasError = true; std::cout << "Variable " << *$1 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
          }
          }
          | id '[' indexes ']' {try {
          $$ = new lab3::OperationNode('[', @1.first_line, 2, varTable.at(*$1), $3);
          } catch (std::exception &ex) {
-         hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+         hasError = true; std::cout << "Variable " << *$1 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
          }
          }
 
@@ -204,37 +204,37 @@ expr: INTEGER
      | id { try {
                 $$ = varTable.at(*$1);
             }catch (std::exception &ex) {
-                hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+                hasError = true; std::cout << "Variable " << *$1 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
             }
      }
      | id '[' indexes ']' { try {
                             $$ = new lab3::OperationNode('[', @1.first_line, 2, varTable.at(*$1), $3);
                             }catch (std::exception &ex) {
-                                hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+                                hasError = true; std::cout << "Variable " << *$1 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
                             }
      }
      | REDUCE id '[' indexes ']' { try {
                                     $$ = new lab3::OperationNode(REDUCE, @1.first_line, 2, varTable.at(*$2), $4);
                                   }catch (std::exception &ex) {
-                                        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+                                        hasError = true; std::cout << "Variable " << *$2 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
                             }
      }
      | EXTEND id '[' indexes ']' { try {
                                      $$ = new lab3::OperationNode(EXTEND, @1.first_line, 2, varTable.at(*$2), $4);
                                    }catch (std::exception &ex) {
-                                      hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+                                      hasError = true; std::cout << "Variable " << *$2 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
                                    }
      }
      | DIGITIZE id { try {
      $$ = new lab3::OperationNode(DIGITIZE, @1.first_line, 1, varTable.at(*$2));
      } catch (std::exception &ex) {
-     hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     hasError = true; std::cout << "Variable " << *$2 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
      }
      }
      | SIZE id { try {
      $$ = new lab3::OperationNode(SIZE, @1.first_line, 1, varTable.at(*$2));
      } catch (std::exception &ex) {
-     hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     hasError = true; std::cout << "Variable " << *$2 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
      }
      }
      | expr '+' expr {$$ = new lab3::OperationNode('+', @1.first_line, 2, $1, $3);}
@@ -249,7 +249,7 @@ expr: INTEGER
      | LOGITIZE id { try {
      $$ = new lab3::OperationNode(LOGITIZE, @1.first_line, 1, varTable.at(*$2));
      } catch (std::exception &ex) {
-     hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     hasError = true; std::cout << "Variable " << *$2 << " was not declared in this scope. Line: " << @1.first_line << std::endl; yyerrok;
      }
      }
      | MXEQ expr {$$ = new lab3::OperationNode(MXEQ, @1.first_line, 1, $2);}

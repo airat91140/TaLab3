@@ -1453,7 +1453,7 @@ yyreduce:
 
   case 7: /* functions: error  */
 #line 89 "parser.y"
-             {hasError = true; std::cout << "Some error on line " << (yylsp[0]).first_line << std::endl; yyerrok;}
+             {hasError = true; std::cout << "Function declaration error " << (yylsp[0]).first_line << std::endl; yyerrok;}
 #line 1458 "parser.tab.c"
     break;
 
@@ -1542,7 +1542,7 @@ yyreduce:
                    { try {
      (yyval.nPtr) = new lab3::OperationNode('=', (yylsp[-2]).first_line, 2, varTable.at(*(yyvsp[-2].name)), (yyvsp[0].nPtr));
      } catch(std::exception & ex) {
-         hasError = true; std::cout << "Some error on line " << (yylsp[-2]).first_line << std::endl; yyerrok;
+         hasError = true; std::cout << "Variable " << *(yyvsp[-2].name) << " was not declared in this scope. Line: " << (yylsp[-2]).first_line << std::endl; yyerrok;
      }
      }
 #line 1549 "parser.tab.c"
@@ -1553,7 +1553,7 @@ yyreduce:
                                    { try {
      (yyval.nPtr) = new lab3::OperationNode('=', (yylsp[-5]).first_line, 3, varTable.at(*(yyvsp[-5].name)), (yyvsp[-3].nPtr), (yyvsp[0].nPtr));
      } catch (std::exception &ex) {
-        hasError = true; std::cout << "Some error on line " << (yylsp[-5]).first_line << std::endl; yyerrok;
+        hasError = true; std::cout <<  "Variable " << *(yyvsp[-5].name) << " was not declared in this scope. Line: " << (yylsp[-5]).first_line << std::endl; yyerrok;
      }
      }
 #line 1560 "parser.tab.c"
@@ -1562,7 +1562,7 @@ yyreduce:
   case 22: /* stmt: VAR id '=' BOOL  */
 #line 130 "parser.y"
                        {if (!varTable.insert({*(yyvsp[-2].name), new lab3::BoolVariableNode(*(yyvsp[-2].name), (yyvsp[0].boolVal)->getVal())}).second)
-                        {hasError = true; std::cout << "Some error on line " << (yylsp[-3]).first_line << std::endl; yyerrok;}
+                        {hasError = true; std::cout << "Problem with declaration of variable " << *(yyvsp[-2].name) << " Line: " << (yylsp[-3]).first_line << std::endl; yyerrok;}
                         (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-3]).first_line, 0);}
 #line 1568 "parser.tab.c"
     break;
@@ -1570,7 +1570,7 @@ yyreduce:
   case 23: /* stmt: VAR id '[' indexes ']' '=' BOOL  */
 #line 133 "parser.y"
                                        {if (!varTable.insert({*(yyvsp[-5].name), new lab3::BoolArrayVariableNode(*(yyvsp[-5].name), (yyvsp[0].boolVal)->getVal(), lab3::AbstractVariableNode::makeDims((yyvsp[-3].nPtr)))}).second)
-                                                {hasError = true; std::cout << "Some error on line " << (yylsp[-6]).first_line << std::endl; yyerrok;}
+                                                {hasError = true; std::cout <<"Problem with declaration of variable " << *(yyvsp[-5].name) << " Line: "  << (yylsp[-6]).first_line << std::endl; yyerrok;}
                                              (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-6]).first_line, 0);}
 #line 1576 "parser.tab.c"
     break;
@@ -1578,7 +1578,7 @@ yyreduce:
   case 24: /* stmt: VAR id '=' INTEGER  */
 #line 136 "parser.y"
                            {if (!varTable.insert({*(yyvsp[-2].name), new lab3::IntVariableNode(*(yyvsp[-2].name), (yyvsp[0].intVal)->getVal())}).second)
-                                    {hasError = true; std::cout << "Some error on line " << (yylsp[-3]).first_line << std::endl; yyerrok;}
+                                    {hasError = true; std::cout << "Problem with declaration of variable " << *(yyvsp[-2].name) << " Line: "  << (yylsp[-3]).first_line << std::endl; yyerrok;}
                                 (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-3]).first_line, 0);}
 #line 1584 "parser.tab.c"
     break;
@@ -1586,7 +1586,7 @@ yyreduce:
   case 25: /* stmt: VAR id '[' indexes ']' '=' INTEGER  */
 #line 139 "parser.y"
                                           {if (!varTable.insert({*(yyvsp[-5].name), new lab3::IntArrayVariableNode(*(yyvsp[-5].name), (yyvsp[0].intVal)->getVal(), lab3::AbstractVariableNode::makeDims((yyvsp[-3].nPtr)))}).second)
-                                                    {hasError = true; std::cout << "Some error on line " << (yylsp[-6]).first_line << std::endl; yyerrok;}
+                                                    {hasError = true; std::cout << "Problem with declaration of variable " << *(yyvsp[-5].name) << " Line: "  << (yylsp[-6]).first_line << std::endl; yyerrok;}
                                                 (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-6]).first_line, 0);}
 #line 1592 "parser.tab.c"
     break;
@@ -1596,7 +1596,7 @@ yyreduce:
                                              {try {
      (yyval.nPtr) = new lab3::OperationNode(FOR, (yylsp[-6]).first_line, 4, varTable.at(*(yyvsp[-5].name)), varTable.at(*(yyvsp[-3].name)), varTable.at(*(yyvsp[-1].name)), (yyvsp[0].nPtr));
      } catch (std::exception &ex) {
-        hasError = true; std::cout << "Some error on line " << (yylsp[-6]).first_line << std::endl; yyerrok;
+        hasError = true; std::cout << "Some of FOR variables was not declare in this scope. Line: " << (yylsp[-6]).first_line << std::endl; yyerrok;
      }
      }
 #line 1603 "parser.tab.c"
@@ -1607,7 +1607,7 @@ yyreduce:
                                        {try {
      (yyval.nPtr) = new lab3::OperationNode(FOR, (yylsp[-6]).first_line, 4, varTable.at(*(yyvsp[-5].name)), varTable.at(*(yyvsp[-3].name)), varTable.at(*(yyvsp[-1].name)), (yyvsp[0].nPtr));
      } catch (std::exception &ex) {
-        hasError = true; std::cout << "Some error on line " << (yylsp[-6]).first_line << std::endl; yyerrok;
+        hasError = true; std::cout << "Some of FOR variables was not declare in this scope. Line: " << (yylsp[-6]).first_line << std::endl; yyerrok;
      }
      }
 #line 1614 "parser.tab.c"
@@ -1696,7 +1696,7 @@ yyreduce:
                  {try {
      (yyval.nPtr) = new lab3::OperationNode(RESULT, (yylsp[-1]).first_line, 2, varTable.at(*(yyvsp[0].name)), lastResult);
      }catch(std::exception &ex) {
-        hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+        hasError = true; std::cout << "Variable " << *(yyvsp[0].name) << " was not declared in this scope. Line: " << (yylsp[-1]).first_line << std::endl; yyerrok;
      }
      }
 #line 1703 "parser.tab.c"
@@ -1707,7 +1707,7 @@ yyreduce:
                           { try {
          (yyval.nPtr) = new lab3::OperationNode(' ', (yylsp[-1]).first_line, 2, (yyvsp[-1].nPtr), varTable.at(*(yyvsp[0].name)));
          } catch(std::exception &ex) {
-         hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+         hasError = true; std::cout << "Variable " << *(yyvsp[0].name) << " was not declared in this scope. Line: " << (yylsp[-1]).first_line << std::endl; yyerrok;
          }
          }
 #line 1714 "parser.tab.c"
@@ -1718,7 +1718,7 @@ yyreduce:
                                          { try {
          (yyval.nPtr) = new lab3::OperationNode(' ', (yylsp[-4]).first_line, 3, (yyvsp[-4].nPtr), varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
          }catch (std::exception) {
-         hasError = true; std::cout << "Some error on line " << (yylsp[-4]).first_line << std::endl; yyerrok;
+         hasError = true; std::cout << "Variable " << *(yyvsp[-3].name) << " was not declared in this scope. Line: " << (yylsp[-4]).first_line << std::endl; yyerrok;
          }
          }
 #line 1725 "parser.tab.c"
@@ -1729,7 +1729,7 @@ yyreduce:
               { try {
          (yyval.nPtr) = varTable.at(*(yyvsp[0].name));
          }catch (std::exception &ex) {
-            hasError = true; std::cout << "Some error on line " << (yylsp[0]).first_line << std::endl; yyerrok;
+            hasError = true; std::cout << "Variable " << *(yyvsp[0].name) << " was not declared in this scope. Line: " << (yylsp[0]).first_line << std::endl; yyerrok;
          }
          }
 #line 1736 "parser.tab.c"
@@ -1740,7 +1740,7 @@ yyreduce:
                               {try {
          (yyval.nPtr) = new lab3::OperationNode('[', (yylsp[-3]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
          } catch (std::exception &ex) {
-         hasError = true; std::cout << "Some error on line " << (yylsp[-3]).first_line << std::endl; yyerrok;
+         hasError = true; std::cout << "Variable " << *(yyvsp[-3].name) << " was not declared in this scope. Line: " << (yylsp[-3]).first_line << std::endl; yyerrok;
          }
          }
 #line 1747 "parser.tab.c"
@@ -1757,7 +1757,7 @@ yyreduce:
           { try {
                 (yyval.nPtr) = varTable.at(*(yyvsp[0].name));
             }catch (std::exception &ex) {
-                hasError = true; std::cout << "Some error on line " << (yylsp[0]).first_line << std::endl; yyerrok;
+                hasError = true; std::cout << "Variable " << *(yyvsp[0].name) << " was not declared in this scope. Line: " << (yylsp[0]).first_line << std::endl; yyerrok;
             }
      }
 #line 1764 "parser.tab.c"
@@ -1768,7 +1768,7 @@ yyreduce:
                           { try {
                             (yyval.nPtr) = new lab3::OperationNode('[', (yylsp[-3]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
                             }catch (std::exception &ex) {
-                                hasError = true; std::cout << "Some error on line " << (yylsp[-3]).first_line << std::endl; yyerrok;
+                                hasError = true; std::cout << "Variable " << *(yyvsp[-3].name) << " was not declared in this scope. Line: " << (yylsp[-3]).first_line << std::endl; yyerrok;
                             }
      }
 #line 1775 "parser.tab.c"
@@ -1779,7 +1779,7 @@ yyreduce:
                                  { try {
                                     (yyval.nPtr) = new lab3::OperationNode(REDUCE, (yylsp[-4]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
                                   }catch (std::exception &ex) {
-                                        hasError = true; std::cout << "Some error on line " << (yylsp[-4]).first_line << std::endl; yyerrok;
+                                        hasError = true; std::cout << "Variable " << *(yyvsp[-3].name) << " was not declared in this scope. Line: " << (yylsp[-4]).first_line << std::endl; yyerrok;
                             }
      }
 #line 1786 "parser.tab.c"
@@ -1790,7 +1790,7 @@ yyreduce:
                                  { try {
                                      (yyval.nPtr) = new lab3::OperationNode(EXTEND, (yylsp[-4]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
                                    }catch (std::exception &ex) {
-                                      hasError = true; std::cout << "Some error on line " << (yylsp[-4]).first_line << std::endl; yyerrok;
+                                      hasError = true; std::cout << "Variable " << *(yyvsp[-3].name) << " was not declared in this scope. Line: " << (yylsp[-4]).first_line << std::endl; yyerrok;
                                    }
      }
 #line 1797 "parser.tab.c"
@@ -1801,7 +1801,7 @@ yyreduce:
                    { try {
      (yyval.nPtr) = new lab3::OperationNode(DIGITIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));
      } catch (std::exception &ex) {
-     hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+     hasError = true; std::cout << "Variable " << *(yyvsp[0].name) << " was not declared in this scope. Line: " << (yylsp[-1]).first_line << std::endl; yyerrok;
      }
      }
 #line 1808 "parser.tab.c"
@@ -1812,7 +1812,7 @@ yyreduce:
                { try {
      (yyval.nPtr) = new lab3::OperationNode(SIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));
      } catch (std::exception &ex) {
-     hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+     hasError = true; std::cout << "Variable " << *(yyvsp[0].name) << " was not declared in this scope. Line: " << (yylsp[-1]).first_line << std::endl; yyerrok;
      }
      }
 #line 1819 "parser.tab.c"
@@ -1877,7 +1877,7 @@ yyreduce:
                    { try {
      (yyval.nPtr) = new lab3::OperationNode(LOGITIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));
      } catch (std::exception &ex) {
-     hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+     hasError = true; std::cout << "Variable " << *(yyvsp[0].name) << " was not declared in this scope. Line: " << (yylsp[-1]).first_line << std::endl; yyerrok;
      }
      }
 #line 1884 "parser.tab.c"
