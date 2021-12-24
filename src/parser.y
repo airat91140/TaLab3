@@ -55,6 +55,11 @@ void yyerror(char *s);
 
 %type<nPtr>inds functions function stmts ids expr indexes value parameters stmtsGroup stmt
 
+%destructor { delete $$; } <nPtr>
+%destructor { delete $$; } <boolVal>
+%destructor { delete $$; } <intVal>
+%destructor { delete $$; } <name>
+
 %%
 
 program:
@@ -109,26 +114,43 @@ stmts: stmts stmt '\n' {$$ = new lab3::OperationNode('\n', @1.first_line, 2, $1,
      | stmt '\n' {$$ = $1;}
      | stmts error '\n' {hasError = true; std::cout << "Some error on line " << @2.first_line << std::endl; yyerrok;}
      | error '\n' {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
-stmt:  id '=' expr {$$ = new lab3::OperationNode('=', @1.first_line, 2, varTable.at(*$1), $3);}
-     | id '[' indexes ']' '=' expr {$$ = new lab3::OperationNode('=', @1.first_line, 3, varTable.at(*$1), $3, $6);}
+
+stmt:  id '=' expr { try {
+     $$ = new lab3::OperationNode('=', @1.first_line, 2, varTable.at(*$1), $3);
+     } catch(std::exception & ex) {
+         hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     }
+     }
+     | id '[' indexes ']' '=' expr { try {
+     $$ = new lab3::OperationNode('=', @1.first_line, 3, varTable.at(*$1), $3, $6);
+     } catch (std::exception &ex) {
+        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     }
+     }
      | VAR id '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolVariableNode(*$2, $4->getVal())}).second)
-                                throw std::runtime_error("Variable already defined");
-                             delete $4;
-                             $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
+                        {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
+                        $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
      | VAR id '[' indexes ']' '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
-                                                throw std::runtime_error("Variable already defined");
-                                             delete $7;
+                                                {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
                                              $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
      | VAR id '=' INTEGER  {if (!varTable.insert({*$2, new lab3::IntVariableNode(*$2, $4->getVal())}).second)
-                                    throw std::runtime_error("Variable already defined");
-                                delete $4;
+                                    {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
                                 $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
      | VAR id '[' indexes ']' '=' INTEGER {if (!varTable.insert({*$2, new lab3::IntArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
-                                                    throw std::runtime_error("Variable already defined");
-                                                delete $7;
+                                                    {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
                                                 $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
-     | FOR id BOUNDARY id STEP id stmtsGroup {$$ = new lab3::OperationNode(FOR, @1.first_line, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);}
-     | FOR id BOUNDARY id STEP id stmt {$$ = new lab3::OperationNode(FOR, @1.first_line, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);}
+     | FOR id BOUNDARY id STEP id stmtsGroup {try {
+     $$ = new lab3::OperationNode(FOR, @1.first_line, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);
+     } catch (std::exception &ex) {
+        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     }
+     }
+     | FOR id BOUNDARY id STEP id stmt {try {
+     $$ = new lab3::OperationNode(FOR, @1.first_line, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);
+     } catch (std::exception &ex) {
+        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     }
+     }
      | SWITCH expr '\n' BOOL stmt %prec SWITCHX {$$ = new lab3::OperationNode(SWITCH, @1.first_line, 3, $2, $4, $5);}
      | SWITCH expr '\n' BOOL stmt BOOL stmt {$$ = new lab3::OperationNode(SWITCH, @1.first_line, 5, $2, $4, $5, $6, $7);}
      | SWITCH expr '\n' BOOL stmt BOOL stmtsGroup {$$ = new lab3::OperationNode(SWITCH, @1.first_line, 5, $2, $4, $5, $6, $7);}
@@ -142,24 +164,79 @@ stmt:  id '=' expr {$$ = new lab3::OperationNode('=', @1.first_line, 2, varTable
      | PLEASE stmt {$$ = new lab3::OperationNode(PLEASE, @1.first_line, 1, $2);}
      | stmt THANKS {$$ = new lab3::OperationNode(THANKS, @1.first_line, 1, $1);}
      | PRINT expr {$$ = new lab3::OperationNode(PRINT, @1.first_line, 1, $2);}
-     | RESULT id {$$ = new lab3::OperationNode(RESULT, @1.first_line, 2, varTable.at(*$2), lastResult);}
+     | RESULT id {try {
+     $$ = new lab3::OperationNode(RESULT, @1.first_line, 2, varTable.at(*$2), lastResult);
+     }catch(std::exception &ex) {
+        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     }
+     }
 
-parameters: parameters id {$$ = new lab3::OperationNode(' ', @1.first_line, 2, $1, varTable.at(*$2));}
-         | parameters id '[' indexes ']' {$$ = new lab3::OperationNode(' ', @1.first_line, 3, $1, varTable.at(*$2), $4);}
-         | id { $$ = varTable.at(*$1); }
-         | id '[' indexes ']' {$$ = new lab3::OperationNode('[', @1.first_line, 2, varTable.at(*$1), $3);}
+parameters: parameters id { try {
+         $$ = new lab3::OperationNode(' ', @1.first_line, 2, $1, varTable.at(*$2));
+         } catch(std::exception &ex) {
+         hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+         }
+         }
+         | parameters id '[' indexes ']' { try {
+         $$ = new lab3::OperationNode(' ', @1.first_line, 3, $1, varTable.at(*$2), $4);
+         }catch (std::exception) {
+         hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+         }
+         }
+         | id { try {
+         $$ = varTable.at(*$1);
+         }catch (std::exception &ex) {
+            hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+         }
+         }
+         | id '[' indexes ']' {try {
+         $$ = new lab3::OperationNode('[', @1.first_line, 2, varTable.at(*$1), $3);
+         } catch (std::exception &ex) {
+         hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+         }
+         }
 
 value: INTEGER {$$ = $1;}
      | BOOL {$$ = $1;}
 
 expr: INTEGER
      | '(' expr ')' {$$ = $2;}
-     | id {$$ = varTable.at(*$1);}
-     | id '[' indexes ']' {$$ = new lab3::OperationNode('[', @1.first_line, 2, varTable.at(*$1), $3);}
-     | REDUCE id '[' indexes ']' {$$ = new lab3::OperationNode(REDUCE, @1.first_line, 2, varTable.at(*$2), $4);}
-     | EXTEND id '[' indexes ']' {$$ = new lab3::OperationNode(EXTEND, @1.first_line, 2, varTable.at(*$2), $4);}
-     | DIGITIZE id {$$ = new lab3::OperationNode(DIGITIZE, @1.first_line, 1, varTable.at(*$2));}
-     | SIZE id {$$ = new lab3::OperationNode(SIZE, @1.first_line, 1, varTable.at(*$2));}
+     | id { try {
+                $$ = varTable.at(*$1);
+            }catch (std::exception &ex) {
+                hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+            }
+     }
+     | id '[' indexes ']' { try {
+                            $$ = new lab3::OperationNode('[', @1.first_line, 2, varTable.at(*$1), $3);
+                            }catch (std::exception &ex) {
+                                hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+                            }
+     }
+     | REDUCE id '[' indexes ']' { try {
+                                    $$ = new lab3::OperationNode(REDUCE, @1.first_line, 2, varTable.at(*$2), $4);
+                                  }catch (std::exception &ex) {
+                                        hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+                            }
+     }
+     | EXTEND id '[' indexes ']' { try {
+                                     $$ = new lab3::OperationNode(EXTEND, @1.first_line, 2, varTable.at(*$2), $4);
+                                   }catch (std::exception &ex) {
+                                      hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+                                   }
+     }
+     | DIGITIZE id { try {
+     $$ = new lab3::OperationNode(DIGITIZE, @1.first_line, 1, varTable.at(*$2));
+     } catch (std::exception &ex) {
+     hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     }
+     }
+     | SIZE id { try {
+     $$ = new lab3::OperationNode(SIZE, @1.first_line, 1, varTable.at(*$2));
+     } catch (std::exception &ex) {
+     hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     }
+     }
      | expr '+' expr {$$ = new lab3::OperationNode('+', @1.first_line, 2, $1, $3);}
      | expr '-' expr {$$ = new lab3::OperationNode('-', @1.first_line, 2, $1, $3);}
      | expr '*' expr {$$ = new lab3::OperationNode('*', @1.first_line, 2, $1, $3);}
@@ -169,7 +246,12 @@ expr: INTEGER
      | expr AND expr {$$ = new lab3::OperationNode(AND, @1.first_line, 2, $1, $3);}
      | BOOL {$$ = $1;}
      | NOT expr {$$ = new lab3::OperationNode(NOT, @1.first_line, 1, $2);}
-     | LOGITIZE id {$$ = new lab3::OperationNode(LOGITIZE, @1.first_line, 1, varTable.at(*$2));}
+     | LOGITIZE id { try {
+     $$ = new lab3::OperationNode(LOGITIZE, @1.first_line, 1, varTable.at(*$2));
+     } catch (std::exception &ex) {
+     hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;
+     }
+     }
      | MXEQ expr {$$ = new lab3::OperationNode(MXEQ, @1.first_line, 1, $2);}
      | MXLT expr {$$ = new lab3::OperationNode(MXLT, @1.first_line, 1, $2);}
      | MXGT expr {$$ = new lab3::OperationNode(MXGT, @1.first_line, 1, $2);}

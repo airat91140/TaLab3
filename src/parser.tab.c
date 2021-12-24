@@ -551,16 +551,16 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
-       0,    61,    61,    80,    81,    82,    83,    84,    87,    97,
-      98,   100,   101,   103,   104,   106,   108,   109,   110,   111,
-     112,   113,   114,   118,   122,   126,   130,   131,   132,   133,
-     134,   135,   136,   137,   138,   139,   140,   141,   142,   143,
-     144,   145,   147,   148,   149,   150,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184
+       0,    66,    66,    85,    86,    87,    88,    89,    92,   102,
+     103,   105,   106,   108,   109,   111,   113,   114,   115,   116,
+     118,   124,   130,   133,   136,   139,   142,   148,   154,   155,
+     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
+     166,   167,   174,   180,   186,   192,   202,   203,   204,   210,
+     216,   222,   228,   234,   240,   241,   242,   243,   244,   245,
+     246,   247,   248,   249,   255,   256,   257,   258,   259,   260,
+     261,   262,   263,   264,   265,   266
 };
 #endif
 
@@ -1048,7 +1048,89 @@ yydestruct (const char *yymsg,
   YY_SYMBOL_PRINT (yymsg, yykind, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YY_USE (yykind);
+  switch (yykind)
+    {
+    case YYSYMBOL_INTEGER: /* INTEGER  */
+#line 60 "parser.y"
+            { delete ((*yyvaluep).intVal); }
+#line 1057 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_BOOL: /* BOOL  */
+#line 59 "parser.y"
+            { delete ((*yyvaluep).boolVal); }
+#line 1063 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_id: /* id  */
+#line 61 "parser.y"
+            { delete ((*yyvaluep).name); }
+#line 1069 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_functions: /* functions  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1075 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_function: /* function  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1081 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_ids: /* ids  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1087 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_indexes: /* indexes  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1093 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_inds: /* inds  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1099 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_stmtsGroup: /* stmtsGroup  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1105 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_stmts: /* stmts  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1111 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_stmt: /* stmt  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1117 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_parameters: /* parameters  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1123 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_expr: /* expr  */
+#line 58 "parser.y"
+            { delete ((*yyvaluep).nPtr); }
+#line 1129 "parser.tab.c"
+        break;
+
+      default:
+        break;
+    }
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1336,7 +1418,7 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: functions  */
-#line 61 "parser.y"
+#line 66 "parser.y"
               { try {
                     if (!functionsTable.contains("FINDEXIT")) {
                         hasError = true;
@@ -1354,29 +1436,29 @@ yyreduce:
                     std::cout << "Your robot died in labyrinth(((" << std::endl;
                 return 0;
                }
-#line 1358 "parser.tab.c"
+#line 1440 "parser.tab.c"
     break;
 
   case 4: /* functions: functions '\n' error  */
-#line 81 "parser.y"
+#line 86 "parser.y"
                            {hasError = true; std::cout << "Some error on line " << (yylsp[0]).first_line << std::endl; yyerrok;}
-#line 1364 "parser.tab.c"
+#line 1446 "parser.tab.c"
     break;
 
   case 6: /* functions: '\n'  */
-#line 83 "parser.y"
+#line 88 "parser.y"
            {(yyval.nPtr) = nullptr;}
-#line 1370 "parser.tab.c"
+#line 1452 "parser.tab.c"
     break;
 
   case 7: /* functions: error  */
-#line 84 "parser.y"
+#line 89 "parser.y"
              {hasError = true; std::cout << "Some error on line " << (yylsp[0]).first_line << std::endl; yyerrok;}
-#line 1376 "parser.tab.c"
+#line 1458 "parser.tab.c"
     break;
 
   case 8: /* function: TASK id ids '\n' stmtsGroup  */
-#line 87 "parser.y"
+#line 92 "parser.y"
                                 {auto tmp = new lab3::FunctionNode(*(yyvsp[-3].name), (yyvsp[-2].nPtr), (yyvsp[0].nPtr));
                                  for (const auto &it : varTable)
                                      tmp->addVar(it.first, (lab3::AbstractVariableNode *)it.second);
@@ -1386,419 +1468,495 @@ yyreduce:
                                  lastResult = new lab3::ParameterNode("");
                                  (yyval.nPtr) = tmp;
                                  }
-#line 1390 "parser.tab.c"
+#line 1472 "parser.tab.c"
     break;
 
   case 9: /* ids: ids id  */
-#line 97 "parser.y"
+#line 102 "parser.y"
             {auto res = new lab3::ParameterNode(*(yyvsp[0].name)); varTable.insert({*(yyvsp[0].name), res}); (yyval.nPtr) = new lab3::OperationNode(' ', (yylsp[-1]).first_line, 2, (yyvsp[-1].nPtr), res);}
-#line 1396 "parser.tab.c"
+#line 1478 "parser.tab.c"
     break;
 
   case 10: /* ids: id  */
-#line 98 "parser.y"
+#line 103 "parser.y"
          {auto res = new lab3::ParameterNode(*(yyvsp[0].name)); varTable.insert({*(yyvsp[0].name), res}); (yyval.nPtr) = res;}
-#line 1402 "parser.tab.c"
+#line 1484 "parser.tab.c"
     break;
 
   case 11: /* indexes: inds  */
-#line 100 "parser.y"
+#line 105 "parser.y"
               {(yyval.nPtr) = (yyvsp[0].nPtr);}
-#line 1408 "parser.tab.c"
+#line 1490 "parser.tab.c"
     break;
 
   case 12: /* indexes: %empty  */
-#line 101 "parser.y"
+#line 106 "parser.y"
                  {(yyval.nPtr) = new lab3::OperationNode(',', 0, 0);}
-#line 1414 "parser.tab.c"
+#line 1496 "parser.tab.c"
     break;
 
   case 13: /* inds: inds ',' expr  */
-#line 103 "parser.y"
+#line 108 "parser.y"
                     {(yyval.nPtr) = new lab3::OperationNode(',', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr)); }
-#line 1420 "parser.tab.c"
+#line 1502 "parser.tab.c"
     break;
 
   case 14: /* inds: expr  */
-#line 104 "parser.y"
+#line 109 "parser.y"
            { (yyval.nPtr) = new lab3::OperationNode(',', (yylsp[0]).first_line, 1, (yyvsp[0].nPtr)); }
-#line 1426 "parser.tab.c"
+#line 1508 "parser.tab.c"
     break;
 
   case 15: /* stmtsGroup: '(' '\n' stmts ')'  */
-#line 106 "parser.y"
+#line 111 "parser.y"
                                {(yyval.nPtr) = (yyvsp[-1].nPtr);}
-#line 1432 "parser.tab.c"
+#line 1514 "parser.tab.c"
     break;
 
   case 16: /* stmts: stmts stmt '\n'  */
-#line 108 "parser.y"
+#line 113 "parser.y"
                        {(yyval.nPtr) = new lab3::OperationNode('\n', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[-1].nPtr));}
-#line 1438 "parser.tab.c"
+#line 1520 "parser.tab.c"
     break;
 
   case 17: /* stmts: stmt '\n'  */
-#line 109 "parser.y"
+#line 114 "parser.y"
                  {(yyval.nPtr) = (yyvsp[-1].nPtr);}
-#line 1444 "parser.tab.c"
+#line 1526 "parser.tab.c"
     break;
 
   case 18: /* stmts: stmts error '\n'  */
-#line 110 "parser.y"
+#line 115 "parser.y"
                         {hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;}
-#line 1450 "parser.tab.c"
+#line 1532 "parser.tab.c"
     break;
 
   case 19: /* stmts: error '\n'  */
-#line 111 "parser.y"
+#line 116 "parser.y"
                   {hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;}
-#line 1456 "parser.tab.c"
+#line 1538 "parser.tab.c"
     break;
 
   case 20: /* stmt: id '=' expr  */
-#line 112 "parser.y"
-                   {(yyval.nPtr) = new lab3::OperationNode('=', (yylsp[-2]).first_line, 2, varTable.at(*(yyvsp[-2].name)), (yyvsp[0].nPtr));}
-#line 1462 "parser.tab.c"
+#line 118 "parser.y"
+                   { try {
+     (yyval.nPtr) = new lab3::OperationNode('=', (yylsp[-2]).first_line, 2, varTable.at(*(yyvsp[-2].name)), (yyvsp[0].nPtr));
+     } catch(std::exception & ex) {
+         hasError = true; std::cout << "Some error on line " << (yylsp[-2]).first_line << std::endl; yyerrok;
+     }
+     }
+#line 1549 "parser.tab.c"
     break;
 
   case 21: /* stmt: id '[' indexes ']' '=' expr  */
-#line 113 "parser.y"
-                                   {(yyval.nPtr) = new lab3::OperationNode('=', (yylsp[-5]).first_line, 3, varTable.at(*(yyvsp[-5].name)), (yyvsp[-3].nPtr), (yyvsp[0].nPtr));}
-#line 1468 "parser.tab.c"
+#line 124 "parser.y"
+                                   { try {
+     (yyval.nPtr) = new lab3::OperationNode('=', (yylsp[-5]).first_line, 3, varTable.at(*(yyvsp[-5].name)), (yyvsp[-3].nPtr), (yyvsp[0].nPtr));
+     } catch (std::exception &ex) {
+        hasError = true; std::cout << "Some error on line " << (yylsp[-5]).first_line << std::endl; yyerrok;
+     }
+     }
+#line 1560 "parser.tab.c"
     break;
 
   case 22: /* stmt: VAR id '=' BOOL  */
-#line 114 "parser.y"
+#line 130 "parser.y"
                        {if (!varTable.insert({*(yyvsp[-2].name), new lab3::BoolVariableNode(*(yyvsp[-2].name), (yyvsp[0].boolVal)->getVal())}).second)
-                                throw std::runtime_error("Variable already defined");
-                             delete (yyvsp[0].boolVal);
-                             (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-3]).first_line, 0);}
-#line 1477 "parser.tab.c"
+                        {hasError = true; std::cout << "Some error on line " << (yylsp[-3]).first_line << std::endl; yyerrok;}
+                        (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-3]).first_line, 0);}
+#line 1568 "parser.tab.c"
     break;
 
   case 23: /* stmt: VAR id '[' indexes ']' '=' BOOL  */
-#line 118 "parser.y"
-                                       {if (!varTable.insert({*(yyvsp[-5].name), new lab3::BoolArrayVariableNode(*(yyvsp[-5].name), (yyvsp[0].boolVal)->getVal(), lab3::AbstractVariableNode::makeDims((yyvsp[-3].nPtr)))}).second)
-                                                throw std::runtime_error("Variable already defined");
-                                             delete (yyvsp[0].boolVal);
-                                             (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-6]).first_line, 0);}
-#line 1486 "parser.tab.c"
-    break;
-
-  case 24: /* stmt: VAR id '=' INTEGER  */
-#line 122 "parser.y"
-                           {if (!varTable.insert({*(yyvsp[-2].name), new lab3::IntVariableNode(*(yyvsp[-2].name), (yyvsp[0].intVal)->getVal())}).second)
-                                    throw std::runtime_error("Variable already defined");
-                                delete (yyvsp[0].intVal);
-                                (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-3]).first_line, 0);}
-#line 1495 "parser.tab.c"
-    break;
-
-  case 25: /* stmt: VAR id '[' indexes ']' '=' INTEGER  */
-#line 126 "parser.y"
-                                          {if (!varTable.insert({*(yyvsp[-5].name), new lab3::IntArrayVariableNode(*(yyvsp[-5].name), (yyvsp[0].intVal)->getVal(), lab3::AbstractVariableNode::makeDims((yyvsp[-3].nPtr)))}).second)
-                                                    throw std::runtime_error("Variable already defined");
-                                                delete (yyvsp[0].intVal);
-                                                (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-6]).first_line, 0);}
-#line 1504 "parser.tab.c"
-    break;
-
-  case 26: /* stmt: FOR id BOUNDARY id STEP id stmtsGroup  */
-#line 130 "parser.y"
-                                             {(yyval.nPtr) = new lab3::OperationNode(FOR, (yylsp[-6]).first_line, 4, varTable.at(*(yyvsp[-5].name)), varTable.at(*(yyvsp[-3].name)), varTable.at(*(yyvsp[-1].name)), (yyvsp[0].nPtr));}
-#line 1510 "parser.tab.c"
-    break;
-
-  case 27: /* stmt: FOR id BOUNDARY id STEP id stmt  */
-#line 131 "parser.y"
-                                       {(yyval.nPtr) = new lab3::OperationNode(FOR, (yylsp[-6]).first_line, 4, varTable.at(*(yyvsp[-5].name)), varTable.at(*(yyvsp[-3].name)), varTable.at(*(yyvsp[-1].name)), (yyvsp[0].nPtr));}
-#line 1516 "parser.tab.c"
-    break;
-
-  case 28: /* stmt: SWITCH expr '\n' BOOL stmt  */
-#line 132 "parser.y"
-                                                {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-4]).first_line, 3, (yyvsp[-3].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
-#line 1522 "parser.tab.c"
-    break;
-
-  case 29: /* stmt: SWITCH expr '\n' BOOL stmt BOOL stmt  */
 #line 133 "parser.y"
-                                            {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-6]).first_line, 5, (yyvsp[-5].nPtr), (yyvsp[-3].boolVal), (yyvsp[-2].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
-#line 1528 "parser.tab.c"
-    break;
-
-  case 30: /* stmt: SWITCH expr '\n' BOOL stmt BOOL stmtsGroup  */
-#line 134 "parser.y"
-                                                  {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-6]).first_line, 5, (yyvsp[-5].nPtr), (yyvsp[-3].boolVal), (yyvsp[-2].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
-#line 1534 "parser.tab.c"
-    break;
-
-  case 31: /* stmt: SWITCH expr '\n' BOOL stmtsGroup  */
-#line 135 "parser.y"
-                                                      {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-4]).first_line, 3, (yyvsp[-3].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
-#line 1540 "parser.tab.c"
-    break;
-
-  case 32: /* stmt: SWITCH expr '\n' BOOL stmtsGroup BOOL stmt  */
-#line 136 "parser.y"
-                                                  {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-6]).first_line, 5, (yyvsp[-5].nPtr), (yyvsp[-3].boolVal), (yyvsp[-2].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
-#line 1546 "parser.tab.c"
-    break;
-
-  case 33: /* stmt: SWITCH expr '\n' BOOL stmtsGroup BOOL stmtsGroup  */
-#line 137 "parser.y"
-                                                        {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-6]).first_line, 5, (yyvsp[-5].nPtr), (yyvsp[-3].boolVal), (yyvsp[-2].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
-#line 1552 "parser.tab.c"
-    break;
-
-  case 34: /* stmt: ROTATE LEFT  */
-#line 138 "parser.y"
-                   {(yyval.nPtr) = new lab3::OperationNode(LEFT, (yylsp[-1]).first_line, 0);}
-#line 1558 "parser.tab.c"
-    break;
-
-  case 35: /* stmt: ROTATE RIGHT  */
-#line 139 "parser.y"
-                    {(yyval.nPtr) = new lab3::OperationNode(RIGHT, (yylsp[-1]).first_line, 0);}
-#line 1564 "parser.tab.c"
-    break;
-
-  case 36: /* stmt: MOVE  */
-#line 140 "parser.y"
-             {(yyval.nPtr) = new lab3::OperationNode(MOVE, (yylsp[0]).first_line, 0);}
-#line 1570 "parser.tab.c"
-    break;
-
-  case 37: /* stmt: DO id parameters  */
-#line 141 "parser.y"
-                        {(yyval.nPtr) = new lab3::OperationNode(DO, (yylsp[-2]).first_line, 2, new lab3::ParameterNode(*(yyvsp[-1].name)), (yyvsp[0].nPtr));}
+                                       {if (!varTable.insert({*(yyvsp[-5].name), new lab3::BoolArrayVariableNode(*(yyvsp[-5].name), (yyvsp[0].boolVal)->getVal(), lab3::AbstractVariableNode::makeDims((yyvsp[-3].nPtr)))}).second)
+                                                {hasError = true; std::cout << "Some error on line " << (yylsp[-6]).first_line << std::endl; yyerrok;}
+                                             (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-6]).first_line, 0);}
 #line 1576 "parser.tab.c"
     break;
 
-  case 38: /* stmt: PLEASE stmt  */
+  case 24: /* stmt: VAR id '=' INTEGER  */
+#line 136 "parser.y"
+                           {if (!varTable.insert({*(yyvsp[-2].name), new lab3::IntVariableNode(*(yyvsp[-2].name), (yyvsp[0].intVal)->getVal())}).second)
+                                    {hasError = true; std::cout << "Some error on line " << (yylsp[-3]).first_line << std::endl; yyerrok;}
+                                (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-3]).first_line, 0);}
+#line 1584 "parser.tab.c"
+    break;
+
+  case 25: /* stmt: VAR id '[' indexes ']' '=' INTEGER  */
+#line 139 "parser.y"
+                                          {if (!varTable.insert({*(yyvsp[-5].name), new lab3::IntArrayVariableNode(*(yyvsp[-5].name), (yyvsp[0].intVal)->getVal(), lab3::AbstractVariableNode::makeDims((yyvsp[-3].nPtr)))}).second)
+                                                    {hasError = true; std::cout << "Some error on line " << (yylsp[-6]).first_line << std::endl; yyerrok;}
+                                                (yyval.nPtr) = new lab3::OperationNode(VAR, (yylsp[-6]).first_line, 0);}
+#line 1592 "parser.tab.c"
+    break;
+
+  case 26: /* stmt: FOR id BOUNDARY id STEP id stmtsGroup  */
 #line 142 "parser.y"
+                                             {try {
+     (yyval.nPtr) = new lab3::OperationNode(FOR, (yylsp[-6]).first_line, 4, varTable.at(*(yyvsp[-5].name)), varTable.at(*(yyvsp[-3].name)), varTable.at(*(yyvsp[-1].name)), (yyvsp[0].nPtr));
+     } catch (std::exception &ex) {
+        hasError = true; std::cout << "Some error on line " << (yylsp[-6]).first_line << std::endl; yyerrok;
+     }
+     }
+#line 1603 "parser.tab.c"
+    break;
+
+  case 27: /* stmt: FOR id BOUNDARY id STEP id stmt  */
+#line 148 "parser.y"
+                                       {try {
+     (yyval.nPtr) = new lab3::OperationNode(FOR, (yylsp[-6]).first_line, 4, varTable.at(*(yyvsp[-5].name)), varTable.at(*(yyvsp[-3].name)), varTable.at(*(yyvsp[-1].name)), (yyvsp[0].nPtr));
+     } catch (std::exception &ex) {
+        hasError = true; std::cout << "Some error on line " << (yylsp[-6]).first_line << std::endl; yyerrok;
+     }
+     }
+#line 1614 "parser.tab.c"
+    break;
+
+  case 28: /* stmt: SWITCH expr '\n' BOOL stmt  */
+#line 154 "parser.y"
+                                                {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-4]).first_line, 3, (yyvsp[-3].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
+#line 1620 "parser.tab.c"
+    break;
+
+  case 29: /* stmt: SWITCH expr '\n' BOOL stmt BOOL stmt  */
+#line 155 "parser.y"
+                                            {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-6]).first_line, 5, (yyvsp[-5].nPtr), (yyvsp[-3].boolVal), (yyvsp[-2].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
+#line 1626 "parser.tab.c"
+    break;
+
+  case 30: /* stmt: SWITCH expr '\n' BOOL stmt BOOL stmtsGroup  */
+#line 156 "parser.y"
+                                                  {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-6]).first_line, 5, (yyvsp[-5].nPtr), (yyvsp[-3].boolVal), (yyvsp[-2].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
+#line 1632 "parser.tab.c"
+    break;
+
+  case 31: /* stmt: SWITCH expr '\n' BOOL stmtsGroup  */
+#line 157 "parser.y"
+                                                      {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-4]).first_line, 3, (yyvsp[-3].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
+#line 1638 "parser.tab.c"
+    break;
+
+  case 32: /* stmt: SWITCH expr '\n' BOOL stmtsGroup BOOL stmt  */
+#line 158 "parser.y"
+                                                  {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-6]).first_line, 5, (yyvsp[-5].nPtr), (yyvsp[-3].boolVal), (yyvsp[-2].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
+#line 1644 "parser.tab.c"
+    break;
+
+  case 33: /* stmt: SWITCH expr '\n' BOOL stmtsGroup BOOL stmtsGroup  */
+#line 159 "parser.y"
+                                                        {(yyval.nPtr) = new lab3::OperationNode(SWITCH, (yylsp[-6]).first_line, 5, (yyvsp[-5].nPtr), (yyvsp[-3].boolVal), (yyvsp[-2].nPtr), (yyvsp[-1].boolVal), (yyvsp[0].nPtr));}
+#line 1650 "parser.tab.c"
+    break;
+
+  case 34: /* stmt: ROTATE LEFT  */
+#line 160 "parser.y"
+                   {(yyval.nPtr) = new lab3::OperationNode(LEFT, (yylsp[-1]).first_line, 0);}
+#line 1656 "parser.tab.c"
+    break;
+
+  case 35: /* stmt: ROTATE RIGHT  */
+#line 161 "parser.y"
+                    {(yyval.nPtr) = new lab3::OperationNode(RIGHT, (yylsp[-1]).first_line, 0);}
+#line 1662 "parser.tab.c"
+    break;
+
+  case 36: /* stmt: MOVE  */
+#line 162 "parser.y"
+             {(yyval.nPtr) = new lab3::OperationNode(MOVE, (yylsp[0]).first_line, 0);}
+#line 1668 "parser.tab.c"
+    break;
+
+  case 37: /* stmt: DO id parameters  */
+#line 163 "parser.y"
+                        {(yyval.nPtr) = new lab3::OperationNode(DO, (yylsp[-2]).first_line, 2, new lab3::ParameterNode(*(yyvsp[-1].name)), (yyvsp[0].nPtr));}
+#line 1674 "parser.tab.c"
+    break;
+
+  case 38: /* stmt: PLEASE stmt  */
+#line 164 "parser.y"
                    {(yyval.nPtr) = new lab3::OperationNode(PLEASE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1582 "parser.tab.c"
+#line 1680 "parser.tab.c"
     break;
 
   case 39: /* stmt: stmt THANKS  */
-#line 143 "parser.y"
+#line 165 "parser.y"
                    {(yyval.nPtr) = new lab3::OperationNode(THANKS, (yylsp[-1]).first_line, 1, (yyvsp[-1].nPtr));}
-#line 1588 "parser.tab.c"
+#line 1686 "parser.tab.c"
     break;
 
   case 40: /* stmt: PRINT expr  */
-#line 144 "parser.y"
+#line 166 "parser.y"
                   {(yyval.nPtr) = new lab3::OperationNode(PRINT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1594 "parser.tab.c"
+#line 1692 "parser.tab.c"
     break;
 
   case 41: /* stmt: RESULT id  */
-#line 145 "parser.y"
-                 {(yyval.nPtr) = new lab3::OperationNode(RESULT, (yylsp[-1]).first_line, 2, varTable.at(*(yyvsp[0].name)), lastResult);}
-#line 1600 "parser.tab.c"
+#line 167 "parser.y"
+                 {try {
+     (yyval.nPtr) = new lab3::OperationNode(RESULT, (yylsp[-1]).first_line, 2, varTable.at(*(yyvsp[0].name)), lastResult);
+     }catch(std::exception &ex) {
+        hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+     }
+     }
+#line 1703 "parser.tab.c"
     break;
 
   case 42: /* parameters: parameters id  */
-#line 147 "parser.y"
-                          {(yyval.nPtr) = new lab3::OperationNode(' ', (yylsp[-1]).first_line, 2, (yyvsp[-1].nPtr), varTable.at(*(yyvsp[0].name)));}
-#line 1606 "parser.tab.c"
-    break;
-
-  case 43: /* parameters: parameters id '[' indexes ']'  */
-#line 148 "parser.y"
-                                         {(yyval.nPtr) = new lab3::OperationNode(' ', (yylsp[-4]).first_line, 3, (yyvsp[-4].nPtr), varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));}
-#line 1612 "parser.tab.c"
-    break;
-
-  case 44: /* parameters: id  */
-#line 149 "parser.y"
-              { (yyval.nPtr) = varTable.at(*(yyvsp[0].name)); }
-#line 1618 "parser.tab.c"
-    break;
-
-  case 45: /* parameters: id '[' indexes ']'  */
-#line 150 "parser.y"
-                              {(yyval.nPtr) = new lab3::OperationNode('[', (yylsp[-3]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));}
-#line 1624 "parser.tab.c"
-    break;
-
-  case 47: /* expr: '(' expr ')'  */
-#line 156 "parser.y"
-                    {(yyval.nPtr) = (yyvsp[-1].nPtr);}
-#line 1630 "parser.tab.c"
-    break;
-
-  case 48: /* expr: id  */
-#line 157 "parser.y"
-          {(yyval.nPtr) = varTable.at(*(yyvsp[0].name));}
-#line 1636 "parser.tab.c"
-    break;
-
-  case 49: /* expr: id '[' indexes ']'  */
-#line 158 "parser.y"
-                          {(yyval.nPtr) = new lab3::OperationNode('[', (yylsp[-3]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));}
-#line 1642 "parser.tab.c"
-    break;
-
-  case 50: /* expr: REDUCE id '[' indexes ']'  */
-#line 159 "parser.y"
-                                 {(yyval.nPtr) = new lab3::OperationNode(REDUCE, (yylsp[-4]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));}
-#line 1648 "parser.tab.c"
-    break;
-
-  case 51: /* expr: EXTEND id '[' indexes ']'  */
-#line 160 "parser.y"
-                                 {(yyval.nPtr) = new lab3::OperationNode(EXTEND, (yylsp[-4]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));}
-#line 1654 "parser.tab.c"
-    break;
-
-  case 52: /* expr: DIGITIZE id  */
-#line 161 "parser.y"
-                   {(yyval.nPtr) = new lab3::OperationNode(DIGITIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));}
-#line 1660 "parser.tab.c"
-    break;
-
-  case 53: /* expr: SIZE id  */
-#line 162 "parser.y"
-               {(yyval.nPtr) = new lab3::OperationNode(SIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));}
-#line 1666 "parser.tab.c"
-    break;
-
-  case 54: /* expr: expr '+' expr  */
-#line 163 "parser.y"
-                     {(yyval.nPtr) = new lab3::OperationNode('+', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
-#line 1672 "parser.tab.c"
-    break;
-
-  case 55: /* expr: expr '-' expr  */
-#line 164 "parser.y"
-                     {(yyval.nPtr) = new lab3::OperationNode('-', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
-#line 1678 "parser.tab.c"
-    break;
-
-  case 56: /* expr: expr '*' expr  */
-#line 165 "parser.y"
-                     {(yyval.nPtr) = new lab3::OperationNode('*', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
-#line 1684 "parser.tab.c"
-    break;
-
-  case 57: /* expr: expr '/' expr  */
-#line 166 "parser.y"
-                     {(yyval.nPtr) = new lab3::OperationNode('/', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
-#line 1690 "parser.tab.c"
-    break;
-
-  case 58: /* expr: GET ENVIRONMENT  */
-#line 167 "parser.y"
-                       {(yyval.nPtr) = new lab3::OperationNode(ENVIRONMENT, (yylsp[-1]).first_line, 0);}
-#line 1696 "parser.tab.c"
-    break;
-
-  case 59: /* expr: GET id  */
-#line 168 "parser.y"
-              {(yyval.nPtr) = new lab3::OperationNode(GET, (yylsp[-1]).first_line, 1, new lab3::ParameterNode(*(yyvsp[0].name)));}
-#line 1702 "parser.tab.c"
-    break;
-
-  case 60: /* expr: expr AND expr  */
-#line 169 "parser.y"
-                     {(yyval.nPtr) = new lab3::OperationNode(AND, (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
-#line 1708 "parser.tab.c"
-    break;
-
-  case 61: /* expr: BOOL  */
-#line 170 "parser.y"
-            {(yyval.nPtr) = (yyvsp[0].boolVal);}
+#line 174 "parser.y"
+                          { try {
+         (yyval.nPtr) = new lab3::OperationNode(' ', (yylsp[-1]).first_line, 2, (yyvsp[-1].nPtr), varTable.at(*(yyvsp[0].name)));
+         } catch(std::exception &ex) {
+         hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+         }
+         }
 #line 1714 "parser.tab.c"
     break;
 
-  case 62: /* expr: NOT expr  */
-#line 171 "parser.y"
-                {(yyval.nPtr) = new lab3::OperationNode(NOT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1720 "parser.tab.c"
-    break;
-
-  case 63: /* expr: LOGITIZE id  */
-#line 172 "parser.y"
-                   {(yyval.nPtr) = new lab3::OperationNode(LOGITIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));}
-#line 1726 "parser.tab.c"
-    break;
-
-  case 64: /* expr: MXEQ expr  */
-#line 173 "parser.y"
-                 {(yyval.nPtr) = new lab3::OperationNode(MXEQ, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1732 "parser.tab.c"
-    break;
-
-  case 65: /* expr: MXLT expr  */
-#line 174 "parser.y"
-                 {(yyval.nPtr) = new lab3::OperationNode(MXLT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1738 "parser.tab.c"
-    break;
-
-  case 66: /* expr: MXGT expr  */
-#line 175 "parser.y"
-                 {(yyval.nPtr) = new lab3::OperationNode(MXGT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1744 "parser.tab.c"
-    break;
-
-  case 67: /* expr: MXLTE expr  */
-#line 176 "parser.y"
-                  {(yyval.nPtr) = new lab3::OperationNode(MXLTE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1750 "parser.tab.c"
-    break;
-
-  case 68: /* expr: MXGTE expr  */
-#line 177 "parser.y"
-                  {(yyval.nPtr) = new lab3::OperationNode(MXGTE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1756 "parser.tab.c"
-    break;
-
-  case 69: /* expr: ELEQ expr  */
-#line 178 "parser.y"
-                 {(yyval.nPtr) = new lab3::OperationNode(ELEQ, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1762 "parser.tab.c"
-    break;
-
-  case 70: /* expr: ELLT expr  */
-#line 179 "parser.y"
-                 {(yyval.nPtr) = new lab3::OperationNode(ELLT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1768 "parser.tab.c"
-    break;
-
-  case 71: /* expr: ELGT expr  */
+  case 43: /* parameters: parameters id '[' indexes ']'  */
 #line 180 "parser.y"
-                 {(yyval.nPtr) = new lab3::OperationNode(ELGT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1774 "parser.tab.c"
+                                         { try {
+         (yyval.nPtr) = new lab3::OperationNode(' ', (yylsp[-4]).first_line, 3, (yyvsp[-4].nPtr), varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
+         }catch (std::exception) {
+         hasError = true; std::cout << "Some error on line " << (yylsp[-4]).first_line << std::endl; yyerrok;
+         }
+         }
+#line 1725 "parser.tab.c"
     break;
 
-  case 72: /* expr: ELLTE expr  */
-#line 181 "parser.y"
-                  {(yyval.nPtr) = new lab3::OperationNode(ELLTE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1780 "parser.tab.c"
+  case 44: /* parameters: id  */
+#line 186 "parser.y"
+              { try {
+         (yyval.nPtr) = varTable.at(*(yyvsp[0].name));
+         }catch (std::exception &ex) {
+            hasError = true; std::cout << "Some error on line " << (yylsp[0]).first_line << std::endl; yyerrok;
+         }
+         }
+#line 1736 "parser.tab.c"
     break;
 
-  case 73: /* expr: ELGTE expr  */
-#line 182 "parser.y"
-                  {(yyval.nPtr) = new lab3::OperationNode(ELGTE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+  case 45: /* parameters: id '[' indexes ']'  */
+#line 192 "parser.y"
+                              {try {
+         (yyval.nPtr) = new lab3::OperationNode('[', (yylsp[-3]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
+         } catch (std::exception &ex) {
+         hasError = true; std::cout << "Some error on line " << (yylsp[-3]).first_line << std::endl; yyerrok;
+         }
+         }
+#line 1747 "parser.tab.c"
+    break;
+
+  case 47: /* expr: '(' expr ')'  */
+#line 203 "parser.y"
+                    {(yyval.nPtr) = (yyvsp[-1].nPtr);}
+#line 1753 "parser.tab.c"
+    break;
+
+  case 48: /* expr: id  */
+#line 204 "parser.y"
+          { try {
+                (yyval.nPtr) = varTable.at(*(yyvsp[0].name));
+            }catch (std::exception &ex) {
+                hasError = true; std::cout << "Some error on line " << (yylsp[0]).first_line << std::endl; yyerrok;
+            }
+     }
+#line 1764 "parser.tab.c"
+    break;
+
+  case 49: /* expr: id '[' indexes ']'  */
+#line 210 "parser.y"
+                          { try {
+                            (yyval.nPtr) = new lab3::OperationNode('[', (yylsp[-3]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
+                            }catch (std::exception &ex) {
+                                hasError = true; std::cout << "Some error on line " << (yylsp[-3]).first_line << std::endl; yyerrok;
+                            }
+     }
+#line 1775 "parser.tab.c"
+    break;
+
+  case 50: /* expr: REDUCE id '[' indexes ']'  */
+#line 216 "parser.y"
+                                 { try {
+                                    (yyval.nPtr) = new lab3::OperationNode(REDUCE, (yylsp[-4]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
+                                  }catch (std::exception &ex) {
+                                        hasError = true; std::cout << "Some error on line " << (yylsp[-4]).first_line << std::endl; yyerrok;
+                            }
+     }
 #line 1786 "parser.tab.c"
     break;
 
+  case 51: /* expr: EXTEND id '[' indexes ']'  */
+#line 222 "parser.y"
+                                 { try {
+                                     (yyval.nPtr) = new lab3::OperationNode(EXTEND, (yylsp[-4]).first_line, 2, varTable.at(*(yyvsp[-3].name)), (yyvsp[-1].nPtr));
+                                   }catch (std::exception &ex) {
+                                      hasError = true; std::cout << "Some error on line " << (yylsp[-4]).first_line << std::endl; yyerrok;
+                                   }
+     }
+#line 1797 "parser.tab.c"
+    break;
+
+  case 52: /* expr: DIGITIZE id  */
+#line 228 "parser.y"
+                   { try {
+     (yyval.nPtr) = new lab3::OperationNode(DIGITIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));
+     } catch (std::exception &ex) {
+     hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+     }
+     }
+#line 1808 "parser.tab.c"
+    break;
+
+  case 53: /* expr: SIZE id  */
+#line 234 "parser.y"
+               { try {
+     (yyval.nPtr) = new lab3::OperationNode(SIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));
+     } catch (std::exception &ex) {
+     hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+     }
+     }
+#line 1819 "parser.tab.c"
+    break;
+
+  case 54: /* expr: expr '+' expr  */
+#line 240 "parser.y"
+                     {(yyval.nPtr) = new lab3::OperationNode('+', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
+#line 1825 "parser.tab.c"
+    break;
+
+  case 55: /* expr: expr '-' expr  */
+#line 241 "parser.y"
+                     {(yyval.nPtr) = new lab3::OperationNode('-', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
+#line 1831 "parser.tab.c"
+    break;
+
+  case 56: /* expr: expr '*' expr  */
+#line 242 "parser.y"
+                     {(yyval.nPtr) = new lab3::OperationNode('*', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
+#line 1837 "parser.tab.c"
+    break;
+
+  case 57: /* expr: expr '/' expr  */
+#line 243 "parser.y"
+                     {(yyval.nPtr) = new lab3::OperationNode('/', (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
+#line 1843 "parser.tab.c"
+    break;
+
+  case 58: /* expr: GET ENVIRONMENT  */
+#line 244 "parser.y"
+                       {(yyval.nPtr) = new lab3::OperationNode(ENVIRONMENT, (yylsp[-1]).first_line, 0);}
+#line 1849 "parser.tab.c"
+    break;
+
+  case 59: /* expr: GET id  */
+#line 245 "parser.y"
+              {(yyval.nPtr) = new lab3::OperationNode(GET, (yylsp[-1]).first_line, 1, new lab3::ParameterNode(*(yyvsp[0].name)));}
+#line 1855 "parser.tab.c"
+    break;
+
+  case 60: /* expr: expr AND expr  */
+#line 246 "parser.y"
+                     {(yyval.nPtr) = new lab3::OperationNode(AND, (yylsp[-2]).first_line, 2, (yyvsp[-2].nPtr), (yyvsp[0].nPtr));}
+#line 1861 "parser.tab.c"
+    break;
+
+  case 61: /* expr: BOOL  */
+#line 247 "parser.y"
+            {(yyval.nPtr) = (yyvsp[0].boolVal);}
+#line 1867 "parser.tab.c"
+    break;
+
+  case 62: /* expr: NOT expr  */
+#line 248 "parser.y"
+                {(yyval.nPtr) = new lab3::OperationNode(NOT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1873 "parser.tab.c"
+    break;
+
+  case 63: /* expr: LOGITIZE id  */
+#line 249 "parser.y"
+                   { try {
+     (yyval.nPtr) = new lab3::OperationNode(LOGITIZE, (yylsp[-1]).first_line, 1, varTable.at(*(yyvsp[0].name)));
+     } catch (std::exception &ex) {
+     hasError = true; std::cout << "Some error on line " << (yylsp[-1]).first_line << std::endl; yyerrok;
+     }
+     }
+#line 1884 "parser.tab.c"
+    break;
+
+  case 64: /* expr: MXEQ expr  */
+#line 255 "parser.y"
+                 {(yyval.nPtr) = new lab3::OperationNode(MXEQ, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1890 "parser.tab.c"
+    break;
+
+  case 65: /* expr: MXLT expr  */
+#line 256 "parser.y"
+                 {(yyval.nPtr) = new lab3::OperationNode(MXLT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1896 "parser.tab.c"
+    break;
+
+  case 66: /* expr: MXGT expr  */
+#line 257 "parser.y"
+                 {(yyval.nPtr) = new lab3::OperationNode(MXGT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1902 "parser.tab.c"
+    break;
+
+  case 67: /* expr: MXLTE expr  */
+#line 258 "parser.y"
+                  {(yyval.nPtr) = new lab3::OperationNode(MXLTE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1908 "parser.tab.c"
+    break;
+
+  case 68: /* expr: MXGTE expr  */
+#line 259 "parser.y"
+                  {(yyval.nPtr) = new lab3::OperationNode(MXGTE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1914 "parser.tab.c"
+    break;
+
+  case 69: /* expr: ELEQ expr  */
+#line 260 "parser.y"
+                 {(yyval.nPtr) = new lab3::OperationNode(ELEQ, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1920 "parser.tab.c"
+    break;
+
+  case 70: /* expr: ELLT expr  */
+#line 261 "parser.y"
+                 {(yyval.nPtr) = new lab3::OperationNode(ELLT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1926 "parser.tab.c"
+    break;
+
+  case 71: /* expr: ELGT expr  */
+#line 262 "parser.y"
+                 {(yyval.nPtr) = new lab3::OperationNode(ELGT, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1932 "parser.tab.c"
+    break;
+
+  case 72: /* expr: ELLTE expr  */
+#line 263 "parser.y"
+                  {(yyval.nPtr) = new lab3::OperationNode(ELLTE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1938 "parser.tab.c"
+    break;
+
+  case 73: /* expr: ELGTE expr  */
+#line 264 "parser.y"
+                  {(yyval.nPtr) = new lab3::OperationNode(ELGTE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
+#line 1944 "parser.tab.c"
+    break;
+
   case 74: /* expr: MXFALSE expr  */
-#line 183 "parser.y"
+#line 265 "parser.y"
                     {(yyval.nPtr) = new lab3::OperationNode(MXFALSE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1792 "parser.tab.c"
+#line 1950 "parser.tab.c"
     break;
 
   case 75: /* expr: MXTRUE expr  */
-#line 184 "parser.y"
+#line 266 "parser.y"
                    {(yyval.nPtr) = new lab3::OperationNode(MXTRUE, (yylsp[-1]).first_line, 1, (yyvsp[0].nPtr));}
-#line 1798 "parser.tab.c"
+#line 1956 "parser.tab.c"
     break;
 
 
-#line 1802 "parser.tab.c"
+#line 1960 "parser.tab.c"
 
       default: break;
     }
