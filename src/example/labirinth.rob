@@ -7,22 +7,24 @@ TASK FINDEXIT bool
     VAR successStep = 0
     FOR successCounter BOUNDARY successBoundary STEP successStep (
         PLEASE SWITCH env[7,6,1]
-            TRUE (
+        TRUE (
             PLEASE SWITCH env[6,5,1]
             TRUE (
+                PRINT env[6,5,1]
                 PLEASE ROTATE LEFT
                 SWITCH env[5,6,1]
                 TRUE (
+                    PRINT env[5,6,1]
                     ROTATE LEFT THANKS
                 )
             )
         ) FALSE (
             ROTATE RIGHT
         )
-        PLEASE env = GET ENVIRONMENT
-        SWITCH env[6,5,2]
-        FALSE successCounter = 2
         MOVE
+        PLEASE env = GET ENVIRONMENT
+        SWITCH env[6,6,2]
+        FALSE successCounter = 2
     )
     RESULT bool
 )
