@@ -1,23 +1,24 @@
 TASK fib n
 (
-VAR one = 1
+PLEASE PRINT n THANKS
+PLEASE VAR one = 1 THANKS
 SWITCH MXLTE (n - 2)
     TRUE RESULT one
 VAR nn = 0
-nn = n - 1
-VAR nnn = 0
-nnn = n - 2
-DO fib nn
+PLEASE nn = n - 1
+VAR nnn = 0 THANKS
+PLEASE nnn = n - 2
+DO fib nn THANKS
 VAR tmp = 0
-tmp = GET fib
+tmp = GET fib THANKS
 DO fib nnn
-tmp = tmp + GET fib
-RESULT tmp
+PLEASE tmp = tmp + GET fib
+RESULT tmp THANKS
 )
 TASK FINDEXIT a
 (
-VAR ten = 10
-DO fib ten
+PLEASE VAR ten = 10
+PLEASE DO fib ten
 PRINT GET fib
 RESULT a
 )

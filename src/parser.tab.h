@@ -72,12 +72,13 @@ inline std::vector<std::vector<char> > labyrinth;
 inline dir currentDir;
 inline std::pair<int, int> currentPos;
 inline std::pair<int, int> exitPos;
+inline bool hasError = false;
 /* prototypes */
 int yylex(void);
 
 void yyerror(char *s);
 
-#line 81 "parser.tab.h"
+#line 82 "parser.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -138,14 +139,14 @@ void yyerror(char *s);
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 33 "parser.y"
+#line 34 "parser.y"
 
     lab3::AbstractNode *nPtr;
     lab3::BoolConstNode *boolVal;
     lab3::IntConstNode *intVal;
     std::string *name;
 
-#line 149 "parser.tab.h"
+#line 150 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

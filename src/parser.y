@@ -24,6 +24,7 @@ inline std::vector<std::vector<char> > labyrinth;
 inline dir currentDir;
 inline std::pair<int, int> currentPos;
 inline std::pair<int, int> exitPos;
+inline bool hasError = false;
 /* prototypes */
 int yylex(void);
 
@@ -58,9 +59,12 @@ void yyerror(char *s);
 
 program:
     functions { try {
-                    if (!functionsTable.contains("FINDEXIT"))
+                    if (!functionsTable.contains("FINDEXIT")) {
+                        hasError = true;
                         throw std::runtime_error("Could not find FINDEXIT function");
-                    functionsTable.at("FINDEXIT")->exec(new lab3::BoolVariableNode("tmp", true));
+                    }
+                    if (!hasError)
+                        functionsTable.at("FINDEXIT")->exec(new lab3::BoolVariableNode("tmp", true));
                 } catch (std::exception &ex) {
                 }
                 for (const auto &[key, value] : functionsTable)
@@ -74,8 +78,10 @@ program:
 
 functions:
     functions '\n' function
+    | functions '\n' error {hasError = true; std::cout << "Some error on line " << @3.first_line << std::endl; yyerrok;}
     | function
     | '\n' {$$ = nullptr;}
+    | error  {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
 
 function:
     TASK id ids '\n' stmtsGroup {auto tmp = new lab3::FunctionNode(*$2, $3, $5);
@@ -97,13 +103,12 @@ indexes: inds {$$ = $1;}
 inds: inds ',' expr {$$ = new lab3::OperationNode(',', @1.first_line, 2, $1, $3); }
     | expr { $$ = new lab3::OperationNode(',', @1.first_line, 1, $1); }
 
-stmtsGroup: '(' '\n' stmts '\n' ')' {$$ = $3;}
+stmtsGroup: '(' '\n' stmts ')' {$$ = $3;}
 
-stmts: stmts '\n' stmt {$$ = new lab3::OperationNode('\n', @1.first_line, 2, $1, $3);}
-     | stmt {$$ = $1;}
-     | stmts '\n' {$$ = new lab3::OperationNode('\n', @1.first_line, 1, $1);}
-     | stmts error {std::cout << "Some error on line " << @2.first_line << std::endl; yyerrok;}
-
+stmts: stmts stmt '\n' {$$ = new lab3::OperationNode('\n', @1.first_line, 2, $1, $2);}
+     | stmt '\n' {$$ = $1;}
+     | stmts error '\n' {hasError = true; std::cout << "Some error on line " << @2.first_line << std::endl; yyerrok;}
+     | error '\n' {hasError = true; std::cout << "Some error on line " << @1.first_line << std::endl; yyerrok;}
 stmt:  id '=' expr {$$ = new lab3::OperationNode('=', @1.first_line, 2, varTable.at(*$1), $3);}
      | id '[' indexes ']' '=' expr {$$ = new lab3::OperationNode('=', @1.first_line, 3, varTable.at(*$1), $3, $6);}
      | VAR id '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolVariableNode(*$2, $4->getVal())}).second)
