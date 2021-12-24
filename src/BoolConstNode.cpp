@@ -61,3 +61,7 @@ void lab3::BoolConstNode::assign(lab3::AbstractVariableNode *value) {
 void lab3::BoolConstNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
     throw std::runtime_error("Can\'t assign value to constant");
 }
+
+lab3::AbstractVariableNode * lab3::BoolConstNode::changeSize(std::list<int> dims) {
+    throw std::runtime_error("Can't change size of constant");
+}

@@ -192,11 +192,37 @@ lab3::BoolVariableNode *lab3::BoolArrayVariableNode::get(std::list<int> indexes)
         iter = (BoolArrayVariableNode *)(*iter)[indexes.front()];
         indexes.pop_front();
     }
-    BoolVariableNode *it = iter;
+    BoolVariableNode *it = (*iter)[indexes.front()];
     while (it->isArray()) {
         it = (*(BoolArrayVariableNode *)it)[1];
     }
     return it;
+}
+
+lab3::AbstractVariableNode * lab3::BoolArrayVariableNode::changeSize(std::list<int> dims) {
+    if (dims.empty())
+        throw std::runtime_error("Wrong array size");
+    auto result = new BoolArrayVariableNode(dims.front());
+    dims.pop_front();
+    for (int i = 0; i < std::min(result->getSize(), this->getSize()); ++i) {
+        delete result->array[i];
+        if (this->array[i]->isArray())
+            result->array[i] = dynamic_cast<BoolVariableNode *>(this->array[i]->changeSize(dims));
+        else if (dims.size() == 0)
+            result->array[i] = dynamic_cast<BoolVariableNode *>(this->array[i]->clone());
+        else throw std::runtime_error("Wrong array size");
+    }
+    if (result->getSize() <= this->getSize())
+        return result;
+    for (int i = this->getSize(); i < result->getSize(); ++i) {
+        delete result->array[i];
+        if (this->array[0]->isArray())
+            result->array[i] = new BoolArrayVariableNode("tmp", true, dims);
+        else if (dims.size() == 0)
+            result->array[i] = new BoolVariableNode("tmp", true);
+        else throw std::runtime_error("Wrong array size");
+    }
+    return result;
 }
 
 

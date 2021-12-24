@@ -57,6 +57,7 @@ extern int yydebug;
 #include "FunctionNode.h"
 #include "ParameterNode.h"
 
+enum dir {U, L, D, R};
 inline std::map<std::string, lab3::AbstractNode *> functionsTable;
 inline std::map<std::string, lab3::AbstractNode *> lastCall;
 inline std::map<std::string, lab3::AbstractNode *> varTable;
@@ -67,12 +68,16 @@ inline int suspectnessBorder = (rand() % 30 + 120);
 inline int mood = 0;
 inline int probability = rand() % 41 + 10;
 inline bool errorFlag = false;
+inline std::vector<std::vector<char> > labyrinth;
+inline dir currentDir;
+inline std::pair<int, int> currentPos;
+inline std::pair<int, int> exitPos;
 /* prototypes */
 int yylex(void);
 
 void yyerror(char *s);
 
-#line 76 "parser.tab.h"
+#line 81 "parser.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -133,14 +138,14 @@ void yyerror(char *s);
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 28 "parser.y"
+#line 33 "parser.y"
 
     lab3::AbstractNode *nPtr;
     lab3::BoolConstNode *boolVal;
     lab3::IntConstNode *intVal;
     std::string *name;
 
-#line 144 "parser.tab.h"
+#line 149 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -272,9 +272,41 @@ lab3::IntVariableNode *lab3::IntArrayVariableNode::get(std::list<int> indexes) {
         iter = (IntArrayVariableNode *)(*iter)[indexes.front()];
         indexes.pop_front();
     }
-    IntVariableNode *it = iter;
+    IntVariableNode *it = (*iter)[indexes.front()];
     while (it->isArray()) {
         it = (*(IntArrayVariableNode *)it)[1];
     }
     return it;
+}
+
+lab3::AbstractVariableNode *lab3::IntArrayVariableNode::changeSize(std::list<int> dims) {
+    if (dims.empty())
+        throw std::runtime_error("Wrong array size");
+    auto result = new IntArrayVariableNode(dims.front());
+    dims.pop_front();
+    for (int i = 0; i < std::min(result->getSize(), this->getSize()); ++i) {
+        delete result->array[i];
+        if (this->array[i]->isArray())
+            result->array[i] = dynamic_cast<IntVariableNode *>(this->array[i]->changeSize(dims));
+        else if (dims.size() == 0)
+            result->array[i] = dynamic_cast<IntVariableNode *>(this->array[i]->clone());
+        else throw std::runtime_error("Wrong array size");
+    }
+    if (result->getSize() <= this->getSize())
+        return result;
+    for (int i = this->getSize(); i < result->getSize(); ++i) {
+        delete result->array[i];
+        if (this->array[0]->isArray())
+            result->array[i] = new IntArrayVariableNode("tmp", 0, dims);
+        else if (dims.size() == 0)
+            result->array[i] = new IntVariableNode("tmp", true);
+        else throw std::runtime_error("Wrong array size");
+    }
+    return result;
+}
+
+lab3::IntArrayVariableNode::IntArrayVariableNode(int size) : IntVariableNode("tmp", 0) {
+    nodeType = INT_ARR;
+    for (int i = 0; i < size; ++i)
+        array.push_back(new IntVariableNode("tmp", 0));
 }

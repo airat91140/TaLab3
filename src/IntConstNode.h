@@ -47,6 +47,8 @@ namespace lab3 {
 
         virtual AbstractVariableNode *sub(IntConstNode *other);
 
+        AbstractVariableNode * changeSize(std::list<int> dims) override;
+
         virtual AbstractVariableNode *mul(IntConstNode *other);
 
         virtual AbstractVariableNode *div(IntConstNode *other);

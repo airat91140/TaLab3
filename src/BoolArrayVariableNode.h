@@ -60,6 +60,8 @@ namespace lab3 {
 
         BoolVariableNode *mxtrue() override;
 
+        AbstractVariableNode * changeSize(std::list<int> dims) override;
+
     protected:
         void countBools(std::pair<int, int> &cnt) override;
 

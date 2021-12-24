@@ -31,7 +31,10 @@ namespace lab3 {
 
         std::ostream &print(std::ostream &ostream) const override;
 
-        virtual bool addInCycle(IntVariableNode *bound, IntVariableNode *step); //returns if it was added or not
+        virtual bool addInCycle(IntVariableNode *bound, IntVariableNode *step);
+
+        AbstractVariableNode * changeSize(std::list<int> dims) override;
+        //returns if it was added or not
 
         void assign(AbstractVariableNode *value) override;
 

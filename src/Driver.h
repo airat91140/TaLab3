@@ -9,21 +9,23 @@
 #include <map>
 #include <stack>
 #include <vector>
+#include "BoolArrayVariableNode.h"
 
 namespace lab3 {
     class Driver {
+    private:
+        static int getMoodRate();
+
+        static bool getWall(std::pair<int, int> pos);
+
+        static std::ostream &print(std::ostream &out);
+
+        static std::string formLine(const std::vector<char> &array);
+
     public:
-        static void parseMap(std::istream &file);
-//        Driver(const char *str);
-//        Driver();
-//        enum dir {U, L, R, D};
-//        static std::map<std::string, lab3::AbstractNode *> functionsTable;
-//        static std::map<std::string, lab3::AbstractNode *> lastCall;
-//        static std::vector<std::vector<bool> > labyrinth;
-//        static std::pair<int, int> position;
-//        static dir curDir;
-//        static std::stack<FunctionNode *> functionStack;
-//        static bool hasResult;
+        static void parseMap(const std::string &file);
+        static BoolArrayVariableNode *getEnv();
+        static bool move(int i); // i = 0 move forward, i = 1 rotate right, i = -1 rotate left
     };
 }
 

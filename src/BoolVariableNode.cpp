@@ -55,3 +55,7 @@ void lab3::BoolVariableNode::assign(lab3::AbstractVariableNode *value) {
 void lab3::BoolVariableNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
     throw std::runtime_error("Array size mismatch");
 }
+
+lab3::AbstractVariableNode * lab3::BoolVariableNode::changeSize(std::list<int> dims) {
+    throw std::runtime_error("Can't change size of not array");
+}

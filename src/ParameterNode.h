@@ -23,6 +23,8 @@ namespace lab3 {
 
         void assign(AbstractVariableNode *value) override;
 
+        AbstractVariableNode *changeSize(std::list<int> dims) override;
+
         void assignAt(AbstractVariableNode *value, std::list<int> indexes) override;
 
         AbstractNode *exec(AbstractNode *node) override;

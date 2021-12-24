@@ -54,3 +54,7 @@ void lab3::IntVariableNode::assignAt(lab3::AbstractVariableNode *value, std::lis
     throw std::runtime_error("Array size mismatch");
 }
 
+lab3::AbstractVariableNode * lab3::IntVariableNode::changeSize(std::list<int> dims) {
+    throw std::runtime_error("Can't change size of not array");
+}
+

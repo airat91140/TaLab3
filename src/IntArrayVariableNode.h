@@ -81,11 +81,15 @@ namespace lab3 {
 
         AbstractVariableNode *ellte() override;
 
+        AbstractVariableNode *changeSize(std::list<int> dims) override;
+
         AbstractVariableNode *elgte() override;
 
         IntArrayVariableNode();
 
         IntVariableNode *get(std::list<int> indexes);
+
+        IntArrayVariableNode(int size);
     };
 }
 

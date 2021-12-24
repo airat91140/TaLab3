@@ -105,8 +105,11 @@ void lab3::FunctionNode::changeVars(lab3::AbstractNode *root) {
         auto tmp = (OperationNode *) root;
         if ((*tmp)[i]->nodeType <= BOOL_ARR && (*tmp)[i]->nodeType >= INT_VAR || (*tmp)[i]->nodeType == PARAMETER) {
             if (this->varTable.contains(((AbstractVariableNode *) (*tmp)[i])->getName())) {
+                auto toDelete = (*tmp)[i];
                 (*tmp)[i] = this->varTable.at(((AbstractVariableNode *) (*tmp)[i])->getName());
+                delete toDelete;
             } else if ((*tmp)[i]->nodeType == PARAMETER && ((AbstractVariableNode *) (*tmp)[i])->getName().empty()) {
+                delete (*tmp)[i];
                 (*tmp)[i] = lastCall.at(name);
             }
         } else changeVars((*tmp)[i]);

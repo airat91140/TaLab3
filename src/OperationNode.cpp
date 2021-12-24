@@ -6,6 +6,7 @@
 #include <stack>
 #include <iostream>
 #include "OperationNode.h"
+#include "Driver.h"
 
 
 lab3::OperationNode::OperationNode(int operTag, int line, int operNum, ...) {
@@ -33,7 +34,7 @@ lab3::AbstractNode *&lab3::OperationNode::operator[](int i) {
     return children.at(i);
 }
 
-const lab3::AbstractNode *lab3::OperationNode::operator[](int i) const{
+const lab3::AbstractNode *lab3::OperationNode::operator[](int i) const {
     return children.at(i);
 }
 
@@ -69,7 +70,6 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
                                 children.at(2)->exec(nullptr);
                             }
                         } else throw std::runtime_error("Type mismatch");
-                        delete tmpLogic;
                         return nullptr;
                     } else if (operNum == 5) { //with else
                         AbstractNode *tmpLogic = children.at(0)->exec(nullptr);
@@ -83,22 +83,22 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
                                 children.at(4)->exec(nullptr);
                             }
                         }
-                        delete tmpLogic;
-                        delete tmpConstFirst;
-                        delete tmpConstSecond;
                     } else throw std::runtime_error("Invalid number of arguments");
                     return nullptr;
                 case PRINT:
                     std::cout << *children.at(0)->exec(nullptr) << std::endl;
                     return nullptr;
                 case MOVE:
+                    Driver::move(0);
                     break;
                 case LEFT:
+                    Driver::move(-1);
                     break;
                 case RIGHT:
+                    Driver::move(1);
                     break;
                 case ENVIRONMENT:
-                    break;
+                    return Driver::getEnv();
                 case RESULT:
                     ((ParameterNode *) children.at(1))->setVar((AbstractVariableNode *) children.at(0)->exec(nullptr));
                     hasResult = true;
@@ -125,9 +125,21 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
                         throw std::runtime_error("Type mismatch");
                     break;
                 case REDUCE:
-
-                case EXTEND:
-
+                case EXTEND: {
+                    AbstractVariableNode *res;
+                    if (children.at(0)->exec(nullptr)->nodeType != BOOL_ARR &&
+                        children.at(0)->exec(nullptr)->nodeType != INT_ARR)
+                        throw std::runtime_error("Type mismatch");
+                    try {
+                        res = ((AbstractVariableNode *) children.at(0)->exec(nullptr))->changeSize(
+                                AbstractVariableNode::makeDims(children.at(1)));
+                    } catch (std::exception &ex) {
+                        delete res;
+                        throw ex;
+                    }
+                    return res;
+                    break;
+                }
                 case SIZE:
                     if ((children.at(0)->nodeType == BOOL_VAR) || (children.at(0)->nodeType == INT_VAR))
                         return new IntVariableNode("tmp", 1);
@@ -379,7 +391,8 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
                 case GET: {
                     return lastCall.at(((AbstractVariableNode *) children.at(0))->getName())->exec(nullptr);
                 }
-                case VAR: break;
+                case VAR:
+                    break;
             }
         } catch (std::out_of_range &ex) {
             std::cout << "Indexation error on a line " << line << std::endl;
@@ -405,19 +418,22 @@ std::ostream &lab3::OperationNode::print(std::ostream &ostream) const {
 }
 
 lab3::OperationNode::~OperationNode() {
-
+    for (const auto &item: children) {
+        if (item->nodeType == OPERATION)
+            delete item;
+    }
 }
 
 std::ostream &lab3::operator<<(std::ostream &os, const lab3::OperationNode &node) {
     return node.print(os);
 }
 
-lab3::OperationNode::OperationNode(const lab3::OperationNode &other)  : AbstractNode(other) {
+lab3::OperationNode::OperationNode(const lab3::OperationNode &other) : AbstractNode(other) {
     this->line = other.line;
     this->nodeType = other.nodeType;
     this->operTag = other.operTag;
     operNum = other.operNum;
-    for (const auto &i : other.children) {
+    for (const auto &i: other.children) {
         this->children.push_back(i->clone());
     }
 }

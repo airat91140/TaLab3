@@ -9,6 +9,7 @@
 #include "FunctionNode.h"
 #include "ParameterNode.h"
 
+enum dir {U, L, D, R};
 inline std::map<std::string, lab3::AbstractNode *> functionsTable;
 inline std::map<std::string, lab3::AbstractNode *> lastCall;
 inline std::map<std::string, lab3::AbstractNode *> varTable;
@@ -19,6 +20,10 @@ inline int suspectnessBorder = (rand() % 30 + 120);
 inline int mood = 0;
 inline int probability = rand() % 41 + 10;
 inline bool errorFlag = false;
+inline std::vector<std::vector<char> > labyrinth;
+inline dir currentDir;
+inline std::pair<int, int> currentPos;
+inline std::pair<int, int> exitPos;
 /* prototypes */
 int yylex(void);
 
@@ -52,12 +57,18 @@ void yyerror(char *s);
 %%
 
 program:
-    functions { if (!functionsTable.contains("FINDEXIT"))
-                    throw std::runtime_error("Could not find FINDEXIT function");
-
-                functionsTable.at("FINDEXIT")->exec(new lab3::BoolVariableNode("tmp", true));
+    functions { try {
+                    if (!functionsTable.contains("FINDEXIT"))
+                        throw std::runtime_error("Could not find FINDEXIT function");
+                    functionsTable.at("FINDEXIT")->exec(new lab3::BoolVariableNode("tmp", true));
+                } catch (std::exception &ex) {
+                }
                 for (const auto &[key, value] : functionsTable)
                     delete value;
+                if (exitPos == currentPos)
+                    std::cout << "Congratulations!! your Robot survived!!" << std:: endl;
+                else
+                    std::cout << "Your robot died in labyrinth(((" << std::endl;
                 return 0;
                }
 
@@ -140,8 +151,8 @@ expr: INTEGER
      | '(' expr ')' {$$ = $2;}
      | id {$$ = varTable.at(*$1);}
      | id '[' indexes ']' {$$ = new lab3::OperationNode('[', @1.first_line, 2, varTable.at(*$1), $3);}
-     | REDUCE id '[' INTEGER ']' {$$ = new lab3::OperationNode(REDUCE, @1.first_line, 2, varTable.at(*$2), $4);}
-     | EXTEND id '[' INTEGER ']' {$$ = new lab3::OperationNode(EXTEND, @1.first_line, 2, varTable.at(*$2), $4);}
+     | REDUCE id '[' indexes ']' {$$ = new lab3::OperationNode(REDUCE, @1.first_line, 2, varTable.at(*$2), $4);}
+     | EXTEND id '[' indexes ']' {$$ = new lab3::OperationNode(EXTEND, @1.first_line, 2, varTable.at(*$2), $4);}
      | DIGITIZE id {$$ = new lab3::OperationNode(DIGITIZE, @1.first_line, 1, varTable.at(*$2));}
      | SIZE id {$$ = new lab3::OperationNode(SIZE, @1.first_line, 1, varTable.at(*$2));}
      | expr '+' expr {$$ = new lab3::OperationNode('+', @1.first_line, 2, $1, $3);}

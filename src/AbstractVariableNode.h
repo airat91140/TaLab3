@@ -31,6 +31,7 @@ namespace lab3 {
 
         virtual void assignAt(AbstractVariableNode *value, std::list<int> indexes) = 0;
 
+        virtual AbstractVariableNode * changeSize(std::list<int> dims) = 0;
     };
 }
 

@@ -45,3 +45,9 @@ void lab3::ParameterNode::assign(lab3::AbstractVariableNode *value) {
 void lab3::ParameterNode::assignAt(lab3::AbstractVariableNode *value, std::list<int> indexes) {
 }
 
+lab3::AbstractVariableNode *lab3::ParameterNode::changeSize(std::list<int> dims) {
+    if (var != nullptr)
+        return var->changeSize(dims);
+    throw std::runtime_error("Strange access");
+}
+

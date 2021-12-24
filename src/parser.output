@@ -79,8 +79,8 @@ Grammar
    44     | '(' expr ')'
    45     | id
    46     | id '[' indexes ']'
-   47     | REDUCE id '[' INTEGER ']'
-   48     | EXTEND id '[' INTEGER ']'
+   47     | REDUCE id '[' indexes ']'
+   48     | EXTEND id '[' indexes ']'
    49     | DIGITIZE id
    50     | SIZE id
    51     | expr '+' expr
@@ -123,7 +123,7 @@ Terminals, with rules where they appear
     ']' (93) 18 20 22 40 42 46 47 48
     error (256) 16
     END (258)
-    INTEGER <intVal> (259) 21 22 43 47 48
+    INTEGER <intVal> (259) 21 22 43
     BOOL <boolVal> (260) 19 20 25 26 27 28 29 30 58
     id <name> (261) 5 6 7 17 18 19 20 21 22 23 24 34 38 39 40 41 42 45 46 47 48 49 50 56 60
     SWITCH (262) 25 26 27 28 29 30
@@ -184,7 +184,7 @@ Nonterminals, with rules where they appear
         on right: 5 6
     indexes <nPtr> (61)
         on left: 8 9
-        on right: 18 20 22 40 42 46
+        on right: 18 20 22 40 42 46 47 48
     inds <nPtr> (62)
         on left: 10 11
         on right: 8 10
@@ -623,14 +623,14 @@ State 35
 
 State 36
 
-   47 expr: REDUCE • id '[' INTEGER ']'
+   47 expr: REDUCE • id '[' indexes ']'
 
     id  shift, and go to state 74
 
 
 State 37
 
-   48 expr: EXTEND • id '[' INTEGER ']'
+   48 expr: EXTEND • id '[' indexes ']'
 
     id  shift, and go to state 75
 
@@ -1345,14 +1345,14 @@ State 73
 
 State 74
 
-   47 expr: REDUCE id • '[' INTEGER ']'
+   47 expr: REDUCE id • '[' indexes ']'
 
     '['  shift, and go to state 108
 
 
 State 75
 
-   48 expr: EXTEND id • '[' INTEGER ']'
+   48 expr: EXTEND id • '[' indexes ']'
 
     '['  shift, and go to state 109
 
@@ -1849,16 +1849,72 @@ State 107
 
 State 108
 
-   47 expr: REDUCE id '[' • INTEGER ']'
+   47 expr: REDUCE id '[' • indexes ']'
 
-    INTEGER  shift, and go to state 126
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    $default  reduce using rule 9 (indexes)
+
+    indexes  go to state 126
+    inds     go to state 68
+    expr     go to state 69
 
 
 State 109
 
-   48 expr: EXTEND id '[' • INTEGER ']'
+   48 expr: EXTEND id '[' • indexes ']'
 
-    INTEGER  shift, and go to state 127
+    INTEGER   shift, and go to state 31
+    BOOL      shift, and go to state 32
+    id        shift, and go to state 33
+    GET       shift, and go to state 34
+    DIGITIZE  shift, and go to state 35
+    REDUCE    shift, and go to state 36
+    EXTEND    shift, and go to state 37
+    SIZE      shift, and go to state 38
+    NOT       shift, and go to state 39
+    LOGITIZE  shift, and go to state 40
+    MXEQ      shift, and go to state 41
+    MXLT      shift, and go to state 42
+    MXGT      shift, and go to state 43
+    MXLTE     shift, and go to state 44
+    MXGTE     shift, and go to state 45
+    ELEQ      shift, and go to state 46
+    ELLT      shift, and go to state 47
+    ELGT      shift, and go to state 48
+    ELLTE     shift, and go to state 49
+    ELGTE     shift, and go to state 50
+    MXFALSE   shift, and go to state 51
+    MXTRUE    shift, and go to state 52
+    '('       shift, and go to state 53
+
+    $default  reduce using rule 9 (indexes)
+
+    indexes  go to state 127
+    inds     go to state 68
+    expr     go to state 69
 
 
 State 110
@@ -2097,14 +2153,14 @@ State 125
 
 State 126
 
-   47 expr: REDUCE id '[' INTEGER • ']'
+   47 expr: REDUCE id '[' indexes • ']'
 
     ']'  shift, and go to state 135
 
 
 State 127
 
-   48 expr: EXTEND id '[' INTEGER • ']'
+   48 expr: EXTEND id '[' indexes • ']'
 
     ']'  shift, and go to state 136
 
@@ -2211,14 +2267,14 @@ State 134
 
 State 135
 
-   47 expr: REDUCE id '[' INTEGER ']' •
+   47 expr: REDUCE id '[' indexes ']' •
 
     $default  reduce using rule 47 (expr)
 
 
 State 136
 
-   48 expr: EXTEND id '[' INTEGER ']' •
+   48 expr: EXTEND id '[' indexes ']' •
 
     $default  reduce using rule 48 (expr)
 

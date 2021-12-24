@@ -34,6 +34,8 @@ namespace lab3 {
 
         std::ostream &print(std::ostream &ostream) const override;
 
+        AbstractVariableNode * changeSize(std::list<int> dims) override;
+
         virtual AbstractVariableNode * and_(BoolConstNode *other);
 
         virtual AbstractVariableNode *not_();
