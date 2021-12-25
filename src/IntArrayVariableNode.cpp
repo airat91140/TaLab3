@@ -159,7 +159,7 @@ lab3::AbstractVariableNode *lab3::IntArrayVariableNode::ellt() {
     auto res = new BoolArrayVariableNode(array.size());
     for (int i = 1; i <= array.size(); ++i) {
         delete (*res)[i];
-        (*res)[i] = dynamic_cast<BoolVariableNode *>((*this)[i]->eleq());
+        (*res)[i] = dynamic_cast<BoolVariableNode *>((*this)[i]->ellt());
     }
     return res;
 }
