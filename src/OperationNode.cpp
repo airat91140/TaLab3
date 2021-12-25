@@ -113,7 +113,7 @@ lab3::AbstractNode *lab3::OperationNode::exec(lab3::AbstractNode *node) {
                 }
                 case PLEASE:
                 case THANKS:
-                    mood += 4;
+                    mood += 5;
                     if (mood > suspectnessBorder)
                         throw std::runtime_error("You are suspected");
                     children.at(0)->exec(nullptr);

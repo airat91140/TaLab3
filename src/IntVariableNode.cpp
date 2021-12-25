@@ -34,7 +34,7 @@ std::ostream &lab3::IntVariableNode::print(std::ostream &ostream) const {
 }
 
 lab3::AbstractVariableNode *lab3::IntVariableNode::logitize() {
-    return dynamic_cast<AbstractVariableNode *>(new IntVariableNode("tmp", val));
+    return dynamic_cast<AbstractVariableNode *>(new BoolVariableNode("tmp", val));
 }
 
 std::ostream &lab3::operator<<(std::ostream &os, const lab3::IntVariableNode &node) {

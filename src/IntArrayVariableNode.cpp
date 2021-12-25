@@ -76,7 +76,7 @@ lab3::AbstractNode *lab3::IntArrayVariableNode::exec(lab3::AbstractNode *node) {
 
 bool lab3::IntArrayVariableNode::addInCycle(lab3::IntVariableNode *bound, lab3::IntVariableNode *step) {
     for (int i = 1; i <= this->array.size(); ++i) {
-        if (addInCycle((*dynamic_cast<IntArrayVariableNode *>(bound))[i],
+        if (array.at(i - 1)->addInCycle((*dynamic_cast<IntArrayVariableNode *>(bound))[i],
                        (*dynamic_cast<IntArrayVariableNode *>(step))[i]))
             return true;
     }
@@ -110,7 +110,7 @@ const lab3::IntVariableNode *lab3::IntArrayVariableNode::operator[](int index) c
 }
 
 lab3::AbstractVariableNode *lab3::IntArrayVariableNode::logitize() {
-    return IntVariableNode::logitize();
+    return dynamic_cast<AbstractVariableNode *>(new BoolArrayVariableNode(this));
 }
 
 int lab3::IntArrayVariableNode::compareM() { // 2 не выполняется для большинства, -1 < 0, 0 =0, 1 >0
@@ -299,7 +299,7 @@ lab3::AbstractVariableNode *lab3::IntArrayVariableNode::changeSize(std::list<int
         if (this->array[0]->isArray())
             result->array[i] = new IntArrayVariableNode("tmp", 0, dims);
         else if (dims.size() == 0)
-            result->array[i] = new IntVariableNode("tmp", true);
+            result->array[i] = new IntVariableNode("tmp", 0);
         else throw std::runtime_error("Wrong array size");
     }
     return result;

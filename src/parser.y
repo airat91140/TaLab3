@@ -71,6 +71,7 @@ program:
                     if (!hasError)
                         functionsTable.at("FINDEXIT")->exec(new lab3::BoolVariableNode("tmp", true));
                 } catch (std::exception &ex) {
+                    std::cout << ex.what();
                 }
                 for (const auto &[key, value] : functionsTable)
                     delete value;
@@ -130,15 +131,23 @@ stmt:  id '=' expr { try {
      | VAR id '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolVariableNode(*$2, $4->getVal())}).second)
                         {hasError = true; std::cout << "Problem with declaration of variable " << *$2 << " Line: " << @1.first_line << std::endl; yyerrok;}
                         $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
-     | VAR id '[' indexes ']' '=' BOOL {if (!varTable.insert({*$2, new lab3::BoolArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
+     | VAR id '[' indexes ']' '=' BOOL {try {if (!varTable.insert({*$2, new lab3::BoolArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
                                                 {hasError = true; std::cout <<"Problem with declaration of variable " << *$2 << " Line: "  << @1.first_line << std::endl; yyerrok;}
                                              $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
+                                             catch (std::exception &ex) {
+                                                hasError = true; std::cout <<"Problem with declaration of variable " << *$2 << " Line: "  << @1.first_line << std::endl; yyerrok;
+                                             }
+                                             }
      | VAR id '=' INTEGER  {if (!varTable.insert({*$2, new lab3::IntVariableNode(*$2, $4->getVal())}).second)
                                     {hasError = true; std::cout << "Problem with declaration of variable " << *$2 << " Line: "  << @1.first_line << std::endl; yyerrok;}
                                 $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
-     | VAR id '[' indexes ']' '=' INTEGER {if (!varTable.insert({*$2, new lab3::IntArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
+     | VAR id '[' indexes ']' '=' INTEGER { try {if (!varTable.insert({*$2, new lab3::IntArrayVariableNode(*$2, $7->getVal(), lab3::AbstractVariableNode::makeDims($4))}).second)
                                                     {hasError = true; std::cout << "Problem with declaration of variable " << *$2 << " Line: "  << @1.first_line << std::endl; yyerrok;}
                                                 $$ = new lab3::OperationNode(VAR, @1.first_line, 0);}
+                                                catch (std::exception &ex) {
+                                                    hasError = true; std::cout <<"Problem with declaration of variable " << *$2 << " Line: "  << @1.first_line << std::endl; yyerrok;
+                                                }
+                                                }
      | FOR id BOUNDARY id STEP id stmtsGroup {try {
      $$ = new lab3::OperationNode(FOR, @1.first_line, 4, varTable.at(*$2), varTable.at(*$4), varTable.at(*$6), $7);
      } catch (std::exception &ex) {
